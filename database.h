@@ -1,20 +1,22 @@
 #pragma once
-#define passSize 33
+#define PASS_SIZE 33
+#define NAME_SIZE 20
+
 
 void importarDatabase();
 void sobrescreverDatabase();
 
 typedef struct {
   int id;
-  char nome[20];
-  char senha[passSize];
+  char nome[NAME_SIZE];
+  char senha[PASS_SIZE];
   char materia[3];
 } Professor;
 
 typedef struct {
   int matricula;
   char nome[20];
-  char senha[passSize];
+  char senha[PASS_SIZE];
   int ano;
   int turma;
   int idPai;
@@ -36,13 +38,13 @@ typedef struct {
 typedef struct {
   int id;
   char nome[20];
-  char senha[passSize];
+  char senha[PASS_SIZE];
 } Pai;
 
 typedef struct {
   int id;
   char nome[20];
-  char senha[passSize];
+  char senha[PASS_SIZE];
 } Admin;
 
 unsigned long criptografar(const unsigned char *str);
@@ -51,8 +53,8 @@ void cadastrarProfessor(char nome[20], char senha[33], char materia[3]);
 void cadastrarAluno(int matricula, char nome[20], char senha[33], int ano, int turma, int idPai);
 void cadastrarProva(int idProfessor, int ano, int turma);
 void cadastrarNota(int matriculaAluno, int idProva, int nota);
-void cadastrarPai(char nome[20], char senha[passSize]);
-void cadastrarAdmin(int nome[20], char senha[passSize]);
+void cadastrarPai(char nome[20], char senha[PASS_SIZE]);
+void cadastrarAdmin(int nome[20], char senha[PASS_SIZE]);
 
 void deletarProfessor(int id);
 void deletarAluno(int matricula);
@@ -64,11 +66,11 @@ void editarProfessor(int id, char nome[20], char senha[33], char materia[3]);
 void editarAluno(int matricula, char nome[20], char senha[33], int ano, int turma, int idPai);
 void editarProva(int id, int idProfessor, int ano, int turma);
 void editarNota(int matriculaAluno, int idProva, int nota);
-void editarPai(int id, char nome[20], char senha[passSize]);
-void editarAdmin(int id, int nome[20], char senha[passSize]);
+void editarPai(int id, char nome[20], char senha[PASS_SIZE]);
+void editarAdmin(int id, int nome[20], char senha[PASS_SIZE]);
 
-void validarProfessor(int id, char senha[passSize]);
-void validarAluno(int matricula, char senha[passSize]);
-void validarProva(int id, char senha[passSize]);
-void validarPai(int id, char senha[passSize]);
-void validarAdmin(int id, char senha[passSize]);
+void validarProfessor(int id, char senha[PASS_SIZE]);
+void validarAluno(int matricula, char senha[PASS_SIZE]);
+void validarProva(int id, char senha[PASS_SIZE]);
+void validarPai(int id, char senha[PASS_SIZE]);
+void validarAdmin(int id, char senha[PASS_SIZE]);

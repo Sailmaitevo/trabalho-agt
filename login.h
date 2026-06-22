@@ -1,5 +1,6 @@
 #pragma once
-#define Senha char[33]
+#include "database.h"
+#include <stdio.h>
 
 void mostrarLogin();
 void loginAluno();
