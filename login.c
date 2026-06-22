@@ -1,25 +1,53 @@
 #include "login.h"
-#define USER_PASS_SIZE 16
 
-void mostrarLogin() {
-  char nome[NAME_SIZE];
-  char senha[USER_PASS_SIZE];
+void login(void (*existe)(char*), void (*buscarID)(char*), void (*validar)(int, char*), void (*mostrarMenu)()){
+  char usuario[NAME_SIZE];
+  char senha[PASS_SIZE];
+  
+  int flag = 0;
+  printf("Insira seu nome de usuario (0 para voltar): ");
+  while(1){
+    scanf("%s", usuario);
+    
+    if(usuario == 0){
+      menuLogin();
+      return;
+    }
+    if(existe(usuario)) break;
 
-  printf("Digite o nome do usuario (maximo de %d caracteres): ", NAME_SIZE);
-  scanf("%s", nome);
-
-  printf("Digite a senha do usuario (maximo de %d caracteres): ", USER_PASS_SIZE);
-  scanf("%s", senha);
-
-  // funcao para checar se o usuario existe na database
-  if (0) {
-    printf("Usuario nao encontrado!");
+    printf("Nome de usuario invalido!\nTente novamente (0 para voltar):");
   }
-  // e para checar se a senha esta correta
-  else if (0) {
-    printf("Senha nao esta correta!");
-  } else {
-    printf("Seja bem-vindo, %s", nome);
+  limpar();
+  printf("Ola, %s!\nInsira sua senha: ", usuario);
+  
+  int id = buscarID(usuario);
+
+  int flag = 0;
+  for(int i = 0; i < 5; i++){
+    scanf("%s", senha);
+    if(validar(id, senha)){
+      flag = 1;
+      break;
+    }
+  }
+  if(!flag){
+    printf("Senha errada inserida mais de 5 vezes, encerrando o programa");
+    exit();
   }
 
+  mostrarMenu();
+  return;
 }
+
+void loginAluno(){
+  login(&existeAluno, &buscarAluno, &validarAluno, &mostrarMenuAluno);
+};
+void loginPai(){
+  login(&existePai, &buscarPai, &validarPai, &mostrarMenuPai);
+};
+void loginProfessor(){
+  login(&existeProfessor, &buscarProfessor, &validarProfessor, &mostrarMenuProfessor);
+};
+void loginAdmin(){
+  login(&existeAdmin, &buscarAdmin, &validarAdmin, &mostrarMenuAdmin);
+};
