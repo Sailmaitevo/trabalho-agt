@@ -1,7 +1,10 @@
 #pragma once
+#include <stdio.h>
+#include <stdlib.h>
+
 #define PASS_SIZE 16
 #define NAME_SIZE 20
-const unsigned MAXN = 1 << 10;
+const unsigned MAXN = 1 << 32;
 
 Professor PROFESSORES[MAXN];
 Aluno ALUNOS[MAXN];
@@ -37,9 +40,9 @@ typedef struct {
 } Prova;
 
 typedef struct {
-  int idProva;
-  int idAluno;
-  int nota;
+  unsigned idProva;
+  unsigned idAluno;
+  unsigned float nota;
 } Nota;
 
 typedef struct {
@@ -56,7 +59,7 @@ typedef struct {
 
 unsigned long criptografar(const unsigned char *str); // criptografa uma senha
 
-void cadastrarProfessor(char nome[NAME_SIZE], char senha[33], char materia[3]);
+void cadastrarProfessor(char nome[NAME_SIZE], char senha[33], char materia[4]);
 void cadastrarAluno(int id, char nome[NAME_SIZE], char senha[33], int ano, int turma, int idPai);
 void cadastrarProva(int idProfessor, int ano, int turma);
 void cadastrarPai(char nome[NAME_SIZE], char senha[PASS_SIZE]);
@@ -68,7 +71,7 @@ void deletarProva(int id);
 void deletarPai(int id);
 void deletarAdmin(int id);
 
-void editarProfessor(int id, char nome[NAME_SIZE], char senha[33], char materia[3]);
+void editarProfessor(int id, char nome[NAME_SIZE], char senha[33], char materia[4]);
 void editarAluno(int id, char nome[NAME_SIZE], char senha[33], int ano, int turma, int idPai);
 void editarProva(int id, int idProfessor, int ano, int turma);
 void editarNota(int idAluno, int idProva, int nota);
