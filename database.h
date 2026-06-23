@@ -4,14 +4,7 @@
 
 #define PASS_SIZE 16
 #define NAME_SIZE 20
-const unsigned MAXN = 1 << 32;
-
-Professor PROFESSORES[MAXN];
-Aluno ALUNOS[MAXN];
-Prova PROVAS[MAXN];
-Nota NOTAS[MAXN << 2];
-Pai PAIS[MAXN];
-Admin ADMINS[MAXN];
+const unsigned MAXN = 1 << 16;
 
 void importarDatabase();
 void sobrescreverDatabase();
@@ -84,13 +77,15 @@ void validarProva(int id, char senha[PASS_SIZE]);
 void validarPai(int id, char senha[PASS_SIZE]);
 void validarAdmin(int id, char senha[PASS_SIZE]);
 
-int existeProfessor(char nome[NAME_SIZE])
-int existeAluno(char nome[NAME_SIZE])
-int existeProva(char nome[NAME_SIZE])
-int existePai(char nome[NAME_SIZE])
-int existeAdmin(char nome[NAME_SIZE])
+int buscarProfessor(char nome[NAME_SIZE]);
+int buscarAluno(char nome[NAME_SIZE]);
+int buscarProva(char nome[NAME_SIZE]);
+int buscarPai(char nome[NAME_SIZE]);
+int buscarAdmin(char nome[NAME_SIZE]);
 
-int idProfessor(char nome[NAME_SIZE]); // nome do professor -> id do professor com aquele nome
-int idAluno(char nome[NAME_SIZE]); // nome do aluno -> id do aluno com aquele nome
-int idPai(char nome[NAME_SIZE]); // nome do pai -> id do pai com aquele nome
-int idAdmin(char nome[NAME_SIZE]); // nome do admin -> id do admin com aquele nome
+Professor PROFESSORES[MAXN];
+Aluno ALUNOS[MAXN];
+Prova PROVAS[MAXN];
+Nota NOTAS[MAXN << 2];
+Pai PAIS[MAXN];
+Admin ADMINS[MAXN];

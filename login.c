@@ -41,14 +41,14 @@ void login(void (*buscar)(char*), void (*validar)(int, char*), void (*mostrarMen
 }
 
 void loginAluno(){
-  login(&existeAluno, &buscarAluno, &validarAluno, &mostrarMenuAluno);
+  login(&buscarAluno, &validarAluno, &mostrarMenuAluno);
 }
 void loginPai(){
-  login(&existePai, &buscarPai, &validarPai, &mostrarMenuPai);
+  login(&buscarPai, &validarPai, &mostrarMenuPai);
 }
 void loginProfessor(){
-  login(&existeProfessor, &buscarProfessor, &validarProfessor, &mostrarMenuProfessor);
+  login(&buscarProfessor, &validarProfessor, &mostrarMenuProfessor);
 }
 void loginAdmin(){
-  login(&existeAdmin, &buscarAdmin, &validarAdmin, &mostrarMenuAdmin);
+  login(&buscarAdmin, &validarAdmin, &mostrarMenuAdmin);
 }

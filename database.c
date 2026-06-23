@@ -133,27 +133,28 @@ int validarAdmin(int id, char senha[PASS_SIZE]){
     return ADMINS[id-1].senh senhaCriptografada;
 }
 
-int existeProfessor(char nome[NAME_SIZE]){
+int buscarProfessor(char nome[NAME_SIZE]){
     for(int i = 0; i < MAXN; i++){
         if(PROFESSORES[i].nome == nome) return i+1;
     }
     return 0;
 }
-int existeAluno(char nome[NAME_SIZE]){
+int buscarAluno(char nome[NAME_SIZE]){
     for(int i = 0; i < MAXN; i++){
         if(ALUNOS[i].nome == nome) return i+1;
     }
     return 0;
 }
-int existePai(char nome[NAME_SIZE]){
+int buscarPai(char nome[NAME_SIZE]){
     for(int i = 0; i < MAXN; i++){
         if(PAIS[i].nome == nome) return i+1;
     }
     return 0;
 }
-int existeAdmin(char nome[NAME_SIZE]){
+int buscarAdmin(char nome[NAME_SIZE]){
     for(int i = 0; i < MAXN; i++){
         if(ADMINS[i].nome == nome) return i+1;
     }
     return 0;
 }
+
