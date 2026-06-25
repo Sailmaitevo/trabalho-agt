@@ -1,8 +1,9 @@
 #pragma once
 #include "menu.h"
-#include "database.h"
 
-void verNotas();
-void verMediaGeral();
-void verMedias();
+void alunoVerNotas();
+void alunoVerMediaGeral();
+void alunoVerMedias();
 void mostrarMenuAluno();
+
+int alunoPreencherNotas(int id, char *materia, Nota *notas);

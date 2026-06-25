@@ -1,14 +1,13 @@
 #pragma once
 #include "menu.h"
-#include "database.h"
 
-void cadastrar();
-void deletar();
+void admCadastrar();
+void admDeletar();
 
-void listarProfessores();
-void listarAlunos();
-void listarTurmas();
-void listarNotas(int idAluno);
-void listarProvas(int idProfessor);
+void admListarProfessores();
+void admListarAlunos();
+void admListarTurmas();
+void admListarMedias(int idAluno);
+void admListarProvas(int idProfessor);
 
 void mostrarMenuAdmin();

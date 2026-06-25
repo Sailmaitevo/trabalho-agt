@@ -10,20 +10,22 @@ void login(int (*buscar)(char*), int (*validar)(int, char[PASS_SIZE]), void (*mo
   while(1){
     scanf("%s", usuario);
     
-    if(usuario == "0"){
+    if(!strcmp(usuario, "0")){
       menuLogin();
       return;
     }
+	
     id = buscar(usuario);
     if(id) break;
 
-    printf("Nome de usuario invalido!\nTente novamente (0 para voltar):");
+    printf("Nome de usuario (%s) invalido!\nTente novamente (0 para voltar):", usuario);
   }
-  limpar();
+  
+  cabecalho();
 
   printf("Ola, %s!\nInsira sua senha: ", usuario);
 
-  int flag = 0;
+  flag = 0;
   for(int i = 0; i < 5; i++){
     scanf("%s", senha);
     if(validar(id, senha)){
