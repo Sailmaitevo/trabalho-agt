@@ -12,21 +12,18 @@ void cabecalho(){
 void menuLogin(){
   cabecalho();
   int opcao;
-  printf("Bem-vindo, escolha uma forma de login:\n1- Aluno\n2- Professor\n3- Pai\n4- Administrador\n");
+  printf("Bem-vindo, escolha uma forma de login:\n1- Aluno\n2- Professor\n3- Administrador\n");
   scanf("%d", &opcao);
   switch(opcao){
     case 1:
       loginAluno();
-      break;
+      return;
     case 2:
       loginProfessor();
-      break;
+      return;
     case 3:
-      loginPai();
-      break;
-    case 4:
       loginAdmin();
-      break;
+      return;
     default:
       menuLogin();
       return;

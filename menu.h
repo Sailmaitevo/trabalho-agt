@@ -3,7 +3,9 @@
 #include "menuAdmin.h"
 #include "menuProfessor.h"
 #include "menuAluno.h"
-#include "menuPai.h"
+
+int SESSION_ID;
 
 void limpar();
 void menuLogin();
+void cabecalho();

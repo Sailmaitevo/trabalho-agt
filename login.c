@@ -1,6 +1,6 @@
 #include "login.h"
 
-void login(int (*buscar)(char*), int (*validar)(int, char[PASS_SIZE]), void (*mostrarMenu)(int)){
+void login(int (*buscar)(char*), int (*validar)(int, char[PASS_SIZE]), void (*mostrarMenu)()){
   char usuario[NAME_SIZE];
   char senha[PASS_SIZE];
   int id;
@@ -36,15 +36,13 @@ void login(int (*buscar)(char*), int (*validar)(int, char[PASS_SIZE]), void (*mo
     exit(EXIT_FAILURE);
   }
 
-  mostrarMenu(id);
+  SESSION_ID = id;
+  mostrarMenu();
   return;
 }
 
 void loginAluno(){
   login(&buscarAluno, &validarAluno, &mostrarMenuAluno);
-}
-void loginPai(){
-  login(&buscarPai, &validarPai, &mostrarMenuPai);
 }
 void loginProfessor(){
   login(&buscarProfessor, &validarProfessor, &mostrarMenuProfessor);

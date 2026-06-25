@@ -5,8 +5,7 @@
 #include "database.h"
 #include "menu.h"
 
-void login(int (*buscar)(char*), int (*validar)(int, char[PASS_SIZE]), void (*mostrarMenu)(int));
+void login(int (*buscar)(char*), int (*validar)(int, char[PASS_SIZE]), void (*mostrarMenu)());
 void loginAluno();
-void loginPai();
 void loginProfessor();
 void loginAdmin();

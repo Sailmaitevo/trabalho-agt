@@ -2,11 +2,11 @@
 #include "menu.h"
 #include "database.h"
 
-void limpar();
-void mostrarMenuProfessor();
-void listarNotas(int turma);
+void listarNotas(char turma);
 void consultarNotas(int aluno);
 void listarAlunos();
 void cadastrarProva();
+void listarTurmas();
+void verTurma(int ano, char turma);
 
-void mostrarMenuProfessor(int id);
+void mostrarMenuProfessor();

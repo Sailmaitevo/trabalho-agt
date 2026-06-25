@@ -1,7 +1,8 @@
 #include "database.h"
+const char MSG_DB_CHEIO[] = "Erro! O banco de dados esta cheio!\nSobrescrevendo o banco de dados e fechando a aplicação...";
 
-unsigned long criptografar(const unsigned char *str) {
-    unsigned long hash = 7723;
+unsigned criptografar(const unsigned char *str) {
+    unsigned hash = 7723;
     int c;
 
     while ((c = *str++)) {
@@ -24,7 +25,7 @@ void cadastrarProfessor(char nome[NAME_SIZE], char senha[PASS_SIZE], char materi
     sobrescreverDatabase();
 }
 
-void cadastrarAluno(int id, char nome[NAME_SIZE], char senha[PASS_SIZE], int ano, int turma, int idPai){
+void cadastrarAluno(int id, char nome[NAME_SIZE], char senha[PASS_SIZE], int ano, char turma, int idPai){
     for(int i = 0; i < MAXN; i++){
         if(ALUNOS[i].id == 0){
 			Aluno aluno = {i+1, nome, criptografar(senha), ano, turma, idPai};
@@ -37,7 +38,7 @@ void cadastrarAluno(int id, char nome[NAME_SIZE], char senha[PASS_SIZE], int ano
     sobrescreverDatabase(); 
 }
 
-void cadastrarProva(int idProfessor, int ano, int turma){
+void cadastrarProva(int idProfessor, int ano, char turma){
     for(int i = 0; i < MAXN; i++){
         if(PROVAS[i].id == 0){
 			Prova prova = {i+1, ano, turma};
@@ -47,20 +48,7 @@ void cadastrarProva(int idProfessor, int ano, int turma){
         }
     }
     limpar();
-    printf("Erro! O banco de dados esta cheio!");
-    sobrescreverDatabase();
-}
-
-void cadastrarPai(char nome[NAME_SIZE], char senha[PASS_SIZE]){
-    for(int i = 0; i < MAXN; i++){
-        if(PAIS[i].id == 0){
-			Pai pai = {i+1, nome, criptografar(senha)};
-            PAIS[i] = pai;
-            return;
-        }
-    }
-    limpar();
-    printf("Erro! O banco de dados esta cheio!");
+    printf("Erro! O banco de dados esta cheio!\nSobrescrevendo o banco de dados e fechando a aplicação...");
     sobrescreverDatabase();
 }
 
@@ -79,7 +67,7 @@ void cadastrarAdmin(char nome[NAME_SIZE], char senha[PASS_SIZE]){
 
 void zerarNotas(int idProva){
     Prova prova = PROVAS[idProva-1];
-    unsigned long ultimoIndex = 0;
+    int ultimoIndex = 0;
 
     for(int i = 0; i < MAXN; i++){
         if (ultimoIndex == MAXN << 2){
@@ -118,32 +106,21 @@ void deletarProva(int id){
 	Prova prova = {0, 0, 0};
     PROVAS[id-1] = prova;
 }
-void deletarPai(int id){
-    for(int i = 0; i < MAXN; i++){
-        if(ALUNOS[i].idPai == id) ALUNOS[i].idPai = 0;
-    }
-	Pai pai = {0, "", 0};
-    PAIS[id-1] = pai;
-}
 void deletarAdmin(int id){
 	Admin admin = {0, "", 0};
     ADMINS[id-1] = admin;
 }
 
 int validarProfessor(int id, char senha[PASS_SIZE]){
-    unsigned long senhaCriptografada = criptografar(senha);
+    unsigned senhaCriptografada = criptografar(senha);
     return PROFESSORES[id-1].senha == senhaCriptografada;
 }
 int validarAluno(int id, char senha[PASS_SIZE]){
-    unsigned long senhaCriptografada = criptografar(senha);
+    unsigned senhaCriptografada = criptografar(senha);
     return ALUNOS[id-1].senha == senhaCriptografada;
 }
-int validarPai(int id, char senha[PASS_SIZE]){
-    unsigned long senhaCriptografada = criptografar(senha);
-    return PAIS[id-1].senha == senhaCriptografada;
-}
 int validarAdmin(int id, char senha[PASS_SIZE]){
-    unsigned long senhaCriptografada = criptografar(senha);
+    unsigned senhaCriptografada = criptografar(senha);
     return ADMINS[id-1].senha == senhaCriptografada;
 }
 
@@ -159,16 +136,9 @@ int buscarAluno(char nome[NAME_SIZE]){
     }
     return 0;
 }
-int buscarPai(char nome[NAME_SIZE]){
-    for(int i = 0; i < MAXN; i++){
-        if(PAIS[i].nome == nome) return i+1;
-    }
-    return 0;
-}
 int buscarAdmin(char nome[NAME_SIZE]){
     for(int i = 0; i < MAXN; i++){
         if(ADMINS[i].nome == nome) return i+1;
     }
     return 0;
 }
-
