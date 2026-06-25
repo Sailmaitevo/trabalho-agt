@@ -1,6 +1,6 @@
 #include "login.h"
 
-void login(void (*buscar)(char*), void (*validar)(int, char*), void (*mostrarMenu)()){
+void login(int (*buscar)(char*), int (*validar)(int, char[PASS_SIZE]), void (*mostrarMenu)(int)){
   char usuario[NAME_SIZE];
   char senha[PASS_SIZE];
   int id;
@@ -33,10 +33,10 @@ void login(void (*buscar)(char*), void (*validar)(int, char*), void (*mostrarMen
   }
   if(!flag){
     printf("Senha errada inserida mais de 5 vezes, encerrando o programa");
-    exit();
+    exit(EXIT_FAILURE);
   }
 
-  mostrarMenu();
+  mostrarMenu(id);
   return;
 }
 

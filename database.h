@@ -35,7 +35,7 @@ typedef struct {
 typedef struct {
   unsigned idProva;
   unsigned idAluno;
-  unsigned float nota;
+  float nota;
 } Nota;
 
 typedef struct {
@@ -56,7 +56,7 @@ void cadastrarProfessor(char nome[NAME_SIZE], char senha[33], char materia[4]);
 void cadastrarAluno(int id, char nome[NAME_SIZE], char senha[33], int ano, int turma, int idPai);
 void cadastrarProva(int idProfessor, int ano, int turma);
 void cadastrarPai(char nome[NAME_SIZE], char senha[PASS_SIZE]);
-void cadastrarAdmin(int nome[NAME_SIZE], char senha[PASS_SIZE]);
+void cadastrarAdmin(char nome[NAME_SIZE], char senha[PASS_SIZE]);
 
 void deletarProfessor(int id);
 void deletarAluno(int id);
@@ -71,15 +71,13 @@ void editarNota(int idAluno, int idProva, int nota);
 void editarPai(int id, char nome[NAME_SIZE], char senha[PASS_SIZE]);
 void editarAdmin(int id, int nome[NAME_SIZE], char senha[PASS_SIZE]);
 
-void validarProfessor(int id, char senha[PASS_SIZE]);
-void validarAluno(int id, char senha[PASS_SIZE]);
-void validarProva(int id, char senha[PASS_SIZE]);
-void validarPai(int id, char senha[PASS_SIZE]);
-void validarAdmin(int id, char senha[PASS_SIZE]);
+int validarProfessor(int id, char senha[PASS_SIZE]);
+int validarAluno(int id, char senha[PASS_SIZE]);
+int validarPai(int id, char senha[PASS_SIZE]);
+int validarAdmin(int id, char senha[PASS_SIZE]);
 
 int buscarProfessor(char nome[NAME_SIZE]);
 int buscarAluno(char nome[NAME_SIZE]);
-int buscarProva(char nome[NAME_SIZE]);
 int buscarPai(char nome[NAME_SIZE]);
 int buscarAdmin(char nome[NAME_SIZE]);
 

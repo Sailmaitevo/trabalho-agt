@@ -14,7 +14,8 @@ unsigned long criptografar(const unsigned char *str) {
 void cadastrarProfessor(char nome[NAME_SIZE], char senha[PASS_SIZE], char materia[4]){
     for(int i = 0; i < MAXN; i++){
         if(PROFESSORES[i].id == 0){
-            PROFESSORES[i] = {i+1, nome, criptografar(senha), materia};
+			Professor professor = {i+1, nome, criptografar(senha), materia};
+            PROFESSORES[i] = professor;
             return;
         }
     }
@@ -26,7 +27,8 @@ void cadastrarProfessor(char nome[NAME_SIZE], char senha[PASS_SIZE], char materi
 void cadastrarAluno(int id, char nome[NAME_SIZE], char senha[PASS_SIZE], int ano, int turma, int idPai){
     for(int i = 0; i < MAXN; i++){
         if(ALUNOS[i].id == 0){
-            ALUNOS[i] = {i+1, nome, criptografar(senha), ano, turma, idPai};
+			Aluno aluno = {i+1, nome, criptografar(senha), ano, turma, idPai};
+            ALUNOS[i] = aluno;
             return;
         }
     }
@@ -38,7 +40,8 @@ void cadastrarAluno(int id, char nome[NAME_SIZE], char senha[PASS_SIZE], int ano
 void cadastrarProva(int idProfessor, int ano, int turma){
     for(int i = 0; i < MAXN; i++){
         if(PROVAS[i].id == 0){
-            PROVAS[i] = {i+1, ano, turma};
+			Prova prova = {i+1, ano, turma};
+            PROVAS[i] = prova;
             criarNotas(i);
             return;
         }
@@ -51,7 +54,8 @@ void cadastrarProva(int idProfessor, int ano, int turma){
 void cadastrarPai(char nome[NAME_SIZE], char senha[PASS_SIZE]){
     for(int i = 0; i < MAXN; i++){
         if(PAIS[i].id == 0){
-            PAIS[i] = {i+1, nome, criptografar(senha)};
+			Pai pai = {i+1, nome, criptografar(senha)};
+            PAIS[i] = pai;
             return;
         }
     }
@@ -63,7 +67,8 @@ void cadastrarPai(char nome[NAME_SIZE], char senha[PASS_SIZE]){
 void cadastrarAdmin(char nome[NAME_SIZE], char senha[PASS_SIZE]){
     for(int i = 0; i < MAXN; i++){
         if(ADMINS[i].id == 0){
-            ADMINS[i] = {i+1, nome, criptografar(senha)};
+			Admin admin = {i+1, nome, criptografar(senha)};
+            ADMINS[i] = admin;
             return;
         }
     }
@@ -86,7 +91,8 @@ void zerarNotas(int idProva){
         if(ALUNOS[i].ano == prova.ano && ALUNOS[i].turma == prova.turma){
             for(ultimoIndex; ultimoIndex < MAXN; ultimoIndex++){
                 if(NOTAS[ultimoIndex].idProva == 0){
-                    NOTAS[ultimoIndex] = {idProva, i+1, 0.0};
+					Nota nota = {idProva, i+1, 0.0};
+                    NOTAS[ultimoIndex] = nota;
                     break;
                 }
             }
@@ -95,25 +101,33 @@ void zerarNotas(int idProva){
 }
 
 void deletarProfessor(int id){
-    PROFESSORES[id-1] = {0, "\0", 0, "---"};
+	Professor professor = {0, "", 0, "---"};
+    PROFESSORES[id-1] = professor;
 }
 void deletarAluno(int id){
-    ALUNOS[id-1] = {0, "\0", 0, 0, 0, 0};
+    Aluno aluno = {0, "", 0, 0, 0, 0};
+	ALUNOS[id-1] = aluno;
 }
 void deletarProva(int id){
     for(int i = 0; i < (MAXN << 2); i++){
-        if(NOTAS[i].idProva == id) NOTAS[i] = {0, 0, 0.0};
+        if(NOTAS[i].idProva == id){
+			Nota nota = {0, 0, 0.0};
+			NOTAS[i] = nota;
+		}
     }
-    PROVA[id-1] = {0, ano, turma};
+	Prova prova = {0, 0, 0};
+    PROVAS[id-1] = prova;
 }
 void deletarPai(int id){
     for(int i = 0; i < MAXN; i++){
         if(ALUNOS[i].idPai == id) ALUNOS[i].idPai = 0;
     }
-    PAIS[id-1] = {0, "", 0};
+	Pai pai = {0, "", 0};
+    PAIS[id-1] = pai;
 }
 void deletarAdmin(int id){
-    ADMINS[id-1] = {0, "", 0}
+	Admin admin = {0, "", 0};
+    ADMINS[id-1] = admin;
 }
 
 int validarProfessor(int id, char senha[PASS_SIZE]){
@@ -130,7 +144,7 @@ int validarPai(int id, char senha[PASS_SIZE]){
 }
 int validarAdmin(int id, char senha[PASS_SIZE]){
     unsigned long senhaCriptografada = criptografar(senha);
-    return ADMINS[id-1].senh senhaCriptografada;
+    return ADMINS[id-1].senha == senhaCriptografada;
 }
 
 int buscarProfessor(char nome[NAME_SIZE]){

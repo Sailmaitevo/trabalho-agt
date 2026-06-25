@@ -1,5 +1,5 @@
 #pragma once
-#include "menu.h
+#include "menu.h"
 #include "database.h"
 
 void limpar();
@@ -9,10 +9,4 @@ void consultarNotas(int aluno);
 void listarAlunos();
 void cadastrarProva();
 
-// Inserir um item*
-// Remover um item*
-// Ver listagem completa*
-// Consultar um item*
-// Inserir dados no cadastro específico**
-// Listar dados do cadastro específico**
-// Sair
+void mostrarMenuProfessor(int id);
