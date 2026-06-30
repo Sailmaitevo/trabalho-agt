@@ -6,7 +6,7 @@
 
 #define PASS_SIZE 16
 #define NAME_SIZE 20
-#define MAXN 65536
+#define MAXN 1024
 
 void importarDatabase();
 void sobrescreverDatabase();
