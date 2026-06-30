@@ -5,7 +5,7 @@
 #include <math.h>
 
 #define PASS_SIZE 16
-#define NAME_SIZE 20
+#define NAME_SIZE 21
 #define MAXN 1024
 
 void importarDatabase();
@@ -13,14 +13,14 @@ void sobrescreverDatabase();
 
 typedef struct {
   int id;
-  char *nome;
+  char nome[NAME_SIZE];
   unsigned senha;
-  char *materia;
+  char materia[4];
 } Professor;
 
 typedef struct {
   int id;
-  char *nome;
+  char nome[NAME_SIZE];
   unsigned senha;
   int ano;
   char turma;
@@ -41,7 +41,7 @@ typedef struct {
 
 typedef struct {
   int id;
-  char *nome;
+  char nome[NAME_SIZE];
   unsigned senha;
 } Admin;
 

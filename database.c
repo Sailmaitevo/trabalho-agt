@@ -23,7 +23,7 @@ void importarDatabase(){
 	fgets(linhaAdmins, sizeof(linhaAdmins), admins);
 	
 	for(int i = 0; fgets(linhaAdmins, sizeof(linhaAdmins), admins) != NULL; i++){
-		sscanf(linhaAdmins, "%d,%s,%u", &ADMINS[i].id, &ADMINS[i].nome, &ADMINS[i].senha);
+		sscanf(linhaAdmins, "%d,%[^,],%u", &ADMINS[i].id, &ADMINS[i].nome, &ADMINS[i].senha);
 	}
 	
 	FILE *alunos = importarArquivo("Database/Alunos.csv", "id,nome,senha,ano,turma");
@@ -31,7 +31,7 @@ void importarDatabase(){
 	fgets(linhaAlunos, sizeof(linhaAlunos), alunos);
 	
 	for(int i = 0; fgets(linhaAlunos, sizeof(linhaAlunos), alunos) != NULL; i++){
-		sscanf(linhaAlunos, "%d,%s,%u,%d,%c", &ALUNOS[i].id, &ALUNOS[i].nome, &ALUNOS[i].senha, &ALUNOS[i].ano, &ALUNOS[i].turma);
+		sscanf(linhaAlunos, "%d,%[^,],%u,%d,%c", &ALUNOS[i].id, &ALUNOS[i].nome, &ALUNOS[i].senha, &ALUNOS[i].ano, &ALUNOS[i].turma);
 	}
 	
 	FILE *professores = importarArquivo("Database/Professores.csv", "id,nome,senha,materia");
@@ -39,7 +39,7 @@ void importarDatabase(){
 	fgets(linhaProfessores, sizeof(linhaProfessores), professores);
 	
 	for(int i = 0; fgets(linhaProfessores, sizeof(linhaProfessores), professores) != NULL; i++){
-		sscanf(linhaProfessores, "%d,%s,%u,%s", &PROFESSORES[i].id, &PROFESSORES[i].nome, &PROFESSORES[i].senha, &PROFESSORES[i].materia);
+		sscanf(linhaProfessores, "%d,%[^,],%u,%s", &PROFESSORES[i].id, &PROFESSORES[i].nome, &PROFESSORES[i].senha, &PROFESSORES[i].materia);
 	}
 	
 	FILE *provas = importarArquivo("Database/Provas.csv", "id,idProfessor,ano,turma");
@@ -117,7 +117,9 @@ unsigned criptografar(const unsigned char *str) {
 void cadastrarProfessor(char nome[NAME_SIZE], char senha[PASS_SIZE], char materia[4]){
     for(int i = 0; i < MAXN; i++){
         if(PROFESSORES[i].id == 0){
-			Professor professor = {i+1, nome, criptografar(senha), materia};
+			Professor professor = {i+1, "", criptografar(senha), ""};
+			strcpy(professor.nome, nome);
+			strcpy(professor.materia, materia);
             PROFESSORES[i] = professor;
             return;
         }
@@ -130,7 +132,8 @@ void cadastrarProfessor(char nome[NAME_SIZE], char senha[PASS_SIZE], char materi
 void cadastrarAluno(int id, char nome[NAME_SIZE], char senha[PASS_SIZE], int ano, char turma){
     for(int i = 0; i < MAXN; i++){
         if(ALUNOS[i].id == 0){
-			Aluno aluno = {i+1, nome, criptografar(senha), ano, turma};
+			Aluno aluno = {i+1, "", criptografar(senha), ano, turma};
+			strcpy(aluno.nome, nome);
             ALUNOS[i] = aluno;
             return;
         }
@@ -155,7 +158,8 @@ void cadastrarProva(int idProfessor, int ano, char turma){
 void cadastrarAdmin(char nome[NAME_SIZE], char senha[PASS_SIZE]){
     for(int i = 0; i < MAXN; i++){
         if(ADMINS[i].id == 0){
-			Admin admin = {i+1, nome, criptografar(senha)};
+			Admin admin = {i+1, "", criptografar(senha)};
+			strcpy(admin.nome, nome);
             ADMINS[i] = admin;
             return;
         }
