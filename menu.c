@@ -10,7 +10,7 @@ void limpar() {
 
 void cabecalho(){
   limpar();
-  printf("==== SIGEC (Sistema Integrado de Gestao Escolar em C) ====\n");
+  printf("==== SIGA (Sistema Integrado de Gestão Algoritmica) ====\n");
 }
 
 void menuLogin(){

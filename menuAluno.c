@@ -61,7 +61,7 @@ int alunoPreencherNotas(int id, char *materia, Nota *notas){
     for(int i = 0; i < (MAXN); i++){
         Nota nota = NOTAS[i];
         const char *materiaNota = PROFESSORES[PROVAS[nota.idProva - 1].idProfessor - 1].materia;
-        if(nota.idAluno == id && materia == materiaNota){
+        if(nota.idAluno == id && !strcmp(materia, materiaNota)){
             notas[index] = NOTAS[i];
             index++;
         }
@@ -71,5 +71,30 @@ int alunoPreencherNotas(int id, char *materia, Nota *notas){
 }
 
 void mostrarMenuAluno(){
+	Aluno usuario = ALUNOS[SESSION_ID - 1];
+	
+	int opcao;
+	
+	do {
+		cabecalho();
+		printf("Bem-vindo, %s, o que você quer fazer hoje?\n", usuario.nome);
+		printf("0 - sair\n");
+		printf("1 - ver notas\n");
+		printf("2 - ver medias\n");
+		
+		scanf("%d", &opcao);
+		
+		printf("Opcao: %d", opcao);
+		
+		switch(opcao){
+			case 0:
+				cabecalho();
+				printf("Saindo...");
+				sobrescreverDatabase();
+			default:
+				printf("Ainda implementando...");
+		}
+	} while(opcao);
+	
 	return;
 }

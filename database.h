@@ -47,8 +47,8 @@ typedef struct {
 
 unsigned criptografar(const unsigned char *str); // criptografa uma senha
 
-void cadastrarProfessor(char nome[NAME_SIZE], char senha[33], char materia[4]);
-void cadastrarAluno(int id, char nome[NAME_SIZE], char senha[33], int ano, char turma);
+void cadastrarProfessor(char nome[NAME_SIZE], char senha[PASS_SIZE], char materia[4]);
+void cadastrarAluno(char nome[NAME_SIZE], char senha[PASS_SIZE], int ano, char turma);
 void cadastrarProva(int idProfessor, int ano, char turma);
 void cadastrarAdmin(char nome[NAME_SIZE], char senha[PASS_SIZE]);
 
@@ -57,12 +57,6 @@ void deletarAluno(int id);
 void deletarProva(int id);
 void deletarAdmin(int id);
 void zerarNotas(int id, int delete);
-
-void editarProfessor(int id, char nome[NAME_SIZE], char senha[33], char materia[4]);
-void editarAluno(int id, char nome[NAME_SIZE], char senha[33], int ano, char turma);
-void editarProva(int id, int idProfessor, int ano, char turma);
-void editarNota(int idAluno, int idProva, int nota);
-void editarAdmin(int id, int nome[NAME_SIZE], char senha[PASS_SIZE]);
 
 int validarProfessor(int id, char senha[PASS_SIZE]);
 int validarAluno(int id, char senha[PASS_SIZE]);

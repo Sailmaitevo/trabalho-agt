@@ -20,7 +20,6 @@ void importarDatabase(){
 	printf("Importando banco de dados...\n");
 	FILE *admins = importarArquivo("Database/Admins.csv", "id,nome,senha\n1,admin,1713679732");
 	char linhaAdmins[NAME_SIZE+19];
-	fgets(linhaAdmins, sizeof(linhaAdmins), admins);
 	
 	for(int i = 0; fgets(linhaAdmins, sizeof(linhaAdmins), admins) != NULL; i++){
 		sscanf(linhaAdmins, "%d,%[^,],%u", &ADMINS[i].id, &ADMINS[i].nome, &ADMINS[i].senha);
@@ -28,7 +27,6 @@ void importarDatabase(){
 	
 	FILE *alunos = importarArquivo("Database/Alunos.csv", "id,nome,senha,ano,turma");
 	char linhaAlunos[NAME_SIZE+23];
-	fgets(linhaAlunos, sizeof(linhaAlunos), alunos);
 	
 	for(int i = 0; fgets(linhaAlunos, sizeof(linhaAlunos), alunos) != NULL; i++){
 		sscanf(linhaAlunos, "%d,%[^,],%u,%d,%c", &ALUNOS[i].id, &ALUNOS[i].nome, &ALUNOS[i].senha, &ALUNOS[i].ano, &ALUNOS[i].turma);
@@ -36,7 +34,6 @@ void importarDatabase(){
 	
 	FILE *professores = importarArquivo("Database/Professores.csv", "id,nome,senha,materia");
 	char linhaProfessores[NAME_SIZE+24];
-	fgets(linhaProfessores, sizeof(linhaProfessores), professores);
 	
 	for(int i = 0; fgets(linhaProfessores, sizeof(linhaProfessores), professores) != NULL; i++){
 		sscanf(linhaProfessores, "%d,%[^,],%u,%s", &PROFESSORES[i].id, &PROFESSORES[i].nome, &PROFESSORES[i].senha, &PROFESSORES[i].materia);
@@ -44,22 +41,18 @@ void importarDatabase(){
 	
 	FILE *provas = importarArquivo("Database/Provas.csv", "id,idProfessor,ano,turma");
 	char linhaProvas[18];
-	fgets(linhaProvas, sizeof(linhaProvas), provas);
-	printf("Cheguei aqui");
+	
 	for(int i = 0; fgets(linhaProvas, sizeof(linhaProvas), provas) != NULL; i++){
 		sscanf(linhaProvas, "%d,%d,%d,%c", &PROVAS[i].id, &PROVAS[i].idProfessor, &PROVAS[i].ano, &PROVAS[i].turma);
 	}
-	printf("Li provas");
-	
+		
 	FILE *notas = importarArquivo("Database/Notas.csv", "idProva,idAluno,nota");
 	char linhaNotas[17];
-	fgets(linhaNotas, sizeof(linhaNotas), notas);
 	
 	for(int i = 0; fgets(linhaNotas, sizeof(linhaNotas), notas) != NULL; i++){
 		sscanf(linhaNotas, "%d,%d,%f", &NOTAS[i].idProva, &NOTAS[i].idAluno, &NOTAS[i].nota);
 		NOTAS[i].nota = roundf(NOTAS[i].nota * 10.0)/10.0;
 	}
-	printf("Li notas");	
 	
 	fclose(admins);
 	fclose(alunos);
@@ -75,23 +68,17 @@ void sobrescreverDatabase(){
 	FILE *professores = fopen("Database/Professores.csv", "w");
 	FILE *provas = fopen("Database/Provas.csv", "w");
 	
-	fprintf(admins, "id,nome,senha");
-	fprintf(alunos, "id,nome,senha,ano,turma");
-	fprintf(notas, "idProva,idAluno,nota");
-	fprintf(professores, "id,nome,senha,materia");
-	fprintf(provas, "id,idProfessor,ano,turma");
-	
 	for(int i = 0; i < MAXN; i++){
-		if(!ADMINS[i].id)
-			fprintf(admins, "\n%d,%s,%u", ADMINS[i].id, ADMINS[i].nome, ADMINS[i].senha);
-		if(!ALUNOS[i].id)
-			fprintf(alunos, "\n%d,%s,%u,%d,%c", ALUNOS[i].id, ALUNOS[i].nome, ALUNOS[i].senha, ALUNOS[i].ano, ALUNOS[i].turma);
-		if(!NOTAS[i].idProva)
-			fprintf(notas, "\n%d,%d,%f", NOTAS[i].idProva, NOTAS[i].idAluno, NOTAS[i].nota);
-		if(!PROFESSORES[i].id)
-			fprintf(professores, "\n%d,%s,%u,%s", PROFESSORES[i].id, PROFESSORES[i].nome, PROFESSORES[i].senha, PROFESSORES[i].materia);
-		if(!PROVAS[i].id)
-			fprintf(provas, "\n%d,%d,%d,%c", PROVAS[i].id, PROVAS[i].idProfessor, PROVAS[i].ano, PROVAS[i].turma);
+		if(ADMINS[i].id)
+			fprintf(admins, "%d,%s,%u\n", ADMINS[i].id, ADMINS[i].nome, ADMINS[i].senha);
+		if(ALUNOS[i].id)
+			fprintf(alunos, "%d,%s,%u,%d,%c\n", ALUNOS[i].id, ALUNOS[i].nome, ALUNOS[i].senha, ALUNOS[i].ano, ALUNOS[i].turma);
+		if(NOTAS[i].idProva)
+			fprintf(notas, "%d,%d,%f\n", NOTAS[i].idProva, NOTAS[i].idAluno, NOTAS[i].nota);
+		if(PROFESSORES[i].id)
+			fprintf(professores, "%d,%s,%u,%s\n", PROFESSORES[i].id, PROFESSORES[i].nome, PROFESSORES[i].senha, PROFESSORES[i].materia);
+		if(PROVAS[i].id)
+			fprintf(provas, "%d,%d,%d,%c\n", PROVAS[i].id, PROVAS[i].idProfessor, PROVAS[i].ano, PROVAS[i].turma);
 	}
 	
 	fclose(admins);
@@ -100,6 +87,7 @@ void sobrescreverDatabase(){
 	fclose(professores);
 	fclose(provas);
 	
+	printf("\nObrigado por utilizar nosso servico\nAte breve");
 	exit(EXIT_SUCCESS);
 }
 
@@ -107,9 +95,8 @@ unsigned criptografar(const unsigned char *str) {
     unsigned hash = 7723;
     int c;
 
-    while ((c = *str++)) {
+    while ((c = *str++))
         hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
-    }
 
     return hash;
 }
@@ -128,8 +115,7 @@ void cadastrarProfessor(char nome[NAME_SIZE], char senha[PASS_SIZE], char materi
     printf("Erro! O banco de dados esta cheio!");
     sobrescreverDatabase();
 }
-
-void cadastrarAluno(int id, char nome[NAME_SIZE], char senha[PASS_SIZE], int ano, char turma){
+void cadastrarAluno(char nome[NAME_SIZE], char senha[PASS_SIZE], int ano, char turma){
     for(int i = 0; i < MAXN; i++){
         if(ALUNOS[i].id == 0){
 			Aluno aluno = {i+1, "", criptografar(senha), ano, turma};
@@ -141,7 +127,6 @@ void cadastrarAluno(int id, char nome[NAME_SIZE], char senha[PASS_SIZE], int ano
     printf("Erro! O banco de dados esta cheio!");
     sobrescreverDatabase(); 
 }
-
 void cadastrarProva(int idProfessor, int ano, char turma){
     for(int i = 0; i < MAXN; i++){
         if(PROVAS[i].id == 0){
@@ -154,7 +139,6 @@ void cadastrarProva(int idProfessor, int ano, char turma){
     printf("Erro! O banco de dados esta cheio!\nSobrescrevendo o banco de dados e fechando a aplicação...");
     sobrescreverDatabase();
 }
-
 void cadastrarAdmin(char nome[NAME_SIZE], char senha[PASS_SIZE]){
     for(int i = 0; i < MAXN; i++){
         if(ADMINS[i].id == 0){
@@ -206,6 +190,10 @@ void deletarProva(int id){
     PROVAS[id-1] = prova;
 }
 void deletarAdmin(int id){
+	if(id == 1){
+		printf("Não é possível remover o usário administrador principal");
+		return;
+	}
 	Admin admin = {0, "", 0};
     ADMINS[id-1] = admin;
 }
