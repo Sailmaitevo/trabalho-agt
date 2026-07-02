@@ -13,9 +13,9 @@ void alunoVerNotas(int id, char materia[4]){
 	cabecalho();
     printf("Notas em %s - Prof. %s\n", materia, PROFESSORES[buscarProfessorPorMateria(materia)-1].nome);
     for(int i = 0; i < tamanho; i++){
-        printf("%s: %f\n", PROVAS[notas[i].idProva-1].nome, notas[i].nota);
+        printf("%s: %.1f\n", PROVAS[notas[i].idProva-1].nome, notas[i].nota);
     }
-    printf("Media na materia: %f", soma/tamanho);
+    printf("Media na materia: %.1f", soma/tamanho);
 	
 	printf("\n\nPressione ENTER para voltar\n");
 	
@@ -62,11 +62,11 @@ void alunoVerMedias(int id){
     float soma = 0;
     int contador = 0;
     for(int i = 0; i < maxIndex; i++){
-		printf("Media em %s: %f\n", materias[i].materia, materias[i].soma/materias[i].contador);
+		printf("Media em %s: %.1f\n", materias[i].materia, materias[i].soma/materias[i].contador);
         soma += materias[i].soma/materias[i].contador;
         contador++;
     }
-    printf("Media geral: %f", soma/contador);
+    printf("Media geral: %.1f", soma/contador);
 	
 	printf("\n\nEscolha uma materia para ver detalhes ou 0 para voltar:\n");
 	char opcao[4];

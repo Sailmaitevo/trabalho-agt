@@ -49,7 +49,7 @@ void importarDatabase(){
 	char linhaNotas[17];
 	
 	for(int i = 0; fgets(linhaNotas, sizeof(linhaNotas), notas) != NULL; i++){
-		sscanf(linhaNotas, "%d,%d,%f", &NOTAS[i].idProva, &NOTAS[i].idAluno, &NOTAS[i].nota);
+		sscanf(linhaNotas, "%d,%d,%.1f", &NOTAS[i].idProva, &NOTAS[i].idAluno, &NOTAS[i].nota);
 		NOTAS[i].nota = roundf(NOTAS[i].nota * 10.0)/10.0;
 	}
 	
@@ -73,7 +73,7 @@ void sobrescreverDatabase(){
 		if(ALUNOS[i].id)
 			fprintf(alunos, "%d,%s,%u,%d,%c\n", ALUNOS[i].id, ALUNOS[i].nome, ALUNOS[i].senha, ALUNOS[i].ano, ALUNOS[i].turma);
 		if(NOTAS[i].idProva)
-			fprintf(notas, "%d,%d,%f\n", NOTAS[i].idProva, NOTAS[i].idAluno, NOTAS[i].nota);
+			fprintf(notas, "%d,%d,%.1f\n", NOTAS[i].idProva, NOTAS[i].idAluno, NOTAS[i].nota);
 		if(PROFESSORES[i].id)
 			fprintf(professores, "%d,%s,%u,%s\n", PROFESSORES[i].id, PROFESSORES[i].nome, PROFESSORES[i].senha, PROFESSORES[i].materia);
 		if(PROVAS[i].id)
