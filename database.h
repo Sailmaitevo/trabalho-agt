@@ -28,6 +28,7 @@ typedef struct {
 
 typedef struct {
   int id;
+  char nome[NAME_SIZE];
   int idProfessor;
   int ano;
   char turma;
@@ -49,7 +50,7 @@ unsigned criptografar(const unsigned char *str); // criptografa uma senha
 
 void cadastrarProfessor(char nome[NAME_SIZE], char senha[PASS_SIZE], char materia[4]);
 void cadastrarAluno(char nome[NAME_SIZE], char senha[PASS_SIZE], int ano, char turma);
-void cadastrarProva(int idProfessor, int ano, char turma);
+void cadastrarProva(char nome[NAME_SIZE], int idProfessor, int ano, char turma);
 void cadastrarAdmin(char nome[NAME_SIZE], char senha[PASS_SIZE]);
 
 void deletarProfessor(int id);
@@ -65,6 +66,7 @@ int validarAdmin(int id, char senha[PASS_SIZE]);
 int buscarProfessor(char nome[NAME_SIZE]);
 int buscarAluno(char nome[NAME_SIZE]);
 int buscarAdmin(char nome[NAME_SIZE]);
+int buscarProva(char nome[NAME_SIZE]);
 int buscarProfessorPorMateria(char materia[4]);
 
 Professor PROFESSORES[MAXN];

@@ -1,67 +1,91 @@
 #include "menuAluno.h"
 
-void alunoVerNotas(int id, char *materia){
-    Nota notas[MAXN];
+void alunoVerNotas(int id, char materia[4]){
+    Nota notas[MAXN] = {};
     int tamanho = alunoPreencherNotas(id, materia, notas);
+	
     float soma = 0;
     
     for(int i = 0; i < tamanho; i++){
         soma += notas[i].nota;
     }
 
-    printf("Notas em %s - Prof. %s", materia, PROFESSORES[buscarProfessorPorMateria(materia)].nome);
-    for(int i = 0; i <= tamanho; i++){
-        printf("Prova %d: %f\n", notas[i].idProva, notas[i].nota);
+	cabecalho();
+    printf("Notas em %s - Prof. %s\n", materia, PROFESSORES[buscarProfessorPorMateria(materia)-1].nome);
+    for(int i = 0; i < tamanho; i++){
+        printf("%s: %f\n", PROVAS[notas[i].idProva-1].nome, notas[i].nota);
     }
     printf("Media na materia: %f", soma/tamanho);
+	
+	printf("\n\nPressione ENTER para voltar\n");
+	
+	int c;
+	while((c = getchar()) != '\n');
+	fflush(stdout);
+	while((c = getchar()) != '\n');
 }
 
 void alunoVerMedias(int id){
-    typedef struct {
-        char *materia;
+	typedef struct {
+		char materia[4];
         float soma;
         unsigned int contador;
     } Materia;
-
-    Nota notas[MAXN];
-    Materia materias[MAXN];
+	
+    Nota notas[MAXN] = {};
+    Materia materias[MAXN] = {};
     int tamanho = alunoPreencherNotas(id, "***", notas);
     int maxIndex = 0;
-
+	
     for(int i = 0; i < tamanho; i++){ // percorre todas as notas do aluno para separar por materia
         int flag = 1;
-		char *materia = PROFESSORES[PROVAS[notas[i].idProva-1].idProfessor-1].materia;
+		char materia[4];
+		strcpy(materia, PROFESSORES[PROVAS[notas[i].idProva-1].idProfessor-1].materia);
         for(int j = 0; j <= maxIndex; j++){ // percorre o array de notas vendo se ja existe um struct da materia em questao
-            if(materia == materias[j].materia){
-                materias[j].soma += notas[i].nota;
+            if(!strcmp(materia, materias[j].materia)){
+				materias[j].soma += notas[i].nota;
                 materias[j].contador++;
                 flag = 0;
                 break;
             }
         }
         if(!flag) continue;
-        maxIndex++;
-		Materia a = {materia, notas[i].nota, 1};
+        
+		Materia a = {"", notas[i].nota, 1};
+		strcpy(a.materia, materia);
         materias[maxIndex] = a;
+		maxIndex++;
     }
-
+	
+	printf("AAAAAAAAAAAAAAAAAAAAAAA\n\n");
+	cabecalho();
     float soma = 0;
     int contador = 0;
-    for(int i = 0; i <= maxIndex; i++){
-        printf("Media em %s: %f\n", materias[i].materia, materias[i].soma/materias[i].contador);
+    for(int i = 0; i < maxIndex; i++){
+		printf("Media em %s: %f\n", materias[i].materia, materias[i].soma/materias[i].contador);
         soma += materias[i].soma/materias[i].contador;
         contador++;
     }
     printf("Media geral: %f", soma/contador);
+	
+	printf("\n\nEscolha uma materia para ver detalhes ou 0 para voltar:\n");
+	char opcao[4];
+	scanf("%s", opcao);
+	for(int i = 0; i < maxIndex; i++){
+		if(!strcmp(materias[i].materia, opcao)){
+			alunoVerNotas(id, materias[i].materia);
+			return;
+		}
+	}
 }
 
 int alunoPreencherNotas(int id, char *materia, Nota *notas){
-    int index;
+    int index = 0;
 
     for(int i = 0; i < (MAXN); i++){
         Nota nota = NOTAS[i];
         const char *materiaNota = PROFESSORES[PROVAS[nota.idProva - 1].idProfessor - 1].materia;
-        if(nota.idAluno == id && !strcmp(materia, materiaNota)){
+        if(nota.idAluno == id && (!strcmp(materia, materiaNota) || !strcmp(materia, "***"))){
             notas[index] = NOTAS[i];
             index++;
         }
@@ -71,28 +95,25 @@ int alunoPreencherNotas(int id, char *materia, Nota *notas){
 }
 
 void mostrarMenuAluno(){
-	Aluno usuario = ALUNOS[SESSION_ID - 1];
-	
 	int opcao;
 	
 	do {
 		cabecalho();
-		printf("Bem-vindo, %s, o que você quer fazer hoje?\n", usuario.nome);
+		printf("Bem-vindo, %s, o que voce quer fazer hoje?\n", ALUNOS[SESSION_ID - 1].nome);
 		printf("0 - sair\n");
 		printf("1 - ver notas\n");
-		printf("2 - ver medias\n");
 		
 		scanf("%d", &opcao);
-		
-		printf("Opcao: %d", opcao);
 		
 		switch(opcao){
 			case 0:
 				cabecalho();
 				printf("Saindo...");
 				sobrescreverDatabase();
-			default:
-				printf("Ainda implementando...");
+			case 1:
+				printf("\n\nA OPCAO E %d", opcao);
+				alunoVerMedias(SESSION_ID);
+				break;
 		}
 	} while(opcao);
 	
