@@ -33,3 +33,19 @@ void menuLogin(){
       return;
   }
 }
+
+void padString(char *string, int size){
+	for(int i = strlen(string); i < size; i++){
+		string[i] = ' ';
+	}
+	string[size] = 0;
+}
+
+void esperar(char *msg){
+	printf("%s", msg);
+	
+	int c;
+	while((c = getchar()) != '\n');
+	fflush(stdout);
+	while((c = getchar()) != '\n');
+}

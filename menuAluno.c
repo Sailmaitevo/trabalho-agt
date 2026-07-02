@@ -1,8 +1,11 @@
 #include "menuAluno.h"
 
-void alunoVerNotas(int id, char materia[4]){
+void alunoVerNotas(int id, int idProfessor){
+	printf("OI");
     Nota notas[MAXN] = {};
-    int tamanho = alunoPreencherNotas(id, materia, notas);
+	Professor professor = PROFESSORES[idProfessor - 1];
+	
+    int tamanho = alunoPreencherNotas(id, idProfessor, notas);
 	
     float soma = 0;
     
@@ -11,7 +14,7 @@ void alunoVerNotas(int id, char materia[4]){
     }
 
 	cabecalho();
-    printf("Notas em %s - Prof. %s\n", materia, PROFESSORES[buscarProfessorPorMateria(materia)-1].nome);
+    printf("Notas em %s - Prof. %s\n", professor.materia, professor.nome);
     for(int i = 0; i < tamanho; i++){
         printf("%s: %.1f\n", PROVAS[notas[i].idProva-1].nome, notas[i].nota);
     }
@@ -19,30 +22,27 @@ void alunoVerNotas(int id, char materia[4]){
 	
 	printf("\n\nPressione ENTER para voltar\n");
 	
-	int c;
-	while((c = getchar()) != '\n');
-	fflush(stdout);
-	while((c = getchar()) != '\n');
+	alunoVerMedias(id);
 }
 
 void alunoVerMedias(int id){
 	typedef struct {
 		char materia[4];
         float soma;
-        unsigned int contador;
+        unsigned contador;
+		int idProfessor;
     } Materia;
 	
     Nota notas[MAXN] = {};
     Materia materias[MAXN] = {};
-    int tamanho = alunoPreencherNotas(id, "***", notas);
+    int tamanho = alunoPreencherNotas(id, 0, notas);
     int maxIndex = 0;
 	
-    for(int i = 0; i < tamanho; i++){ // percorre todas as notas do aluno para separar por materia
+    for(int i = 0; i < tamanho; i++){
         int flag = 1;
-		char materia[4];
-		strcpy(materia, PROFESSORES[PROVAS[notas[i].idProva-1].idProfessor-1].materia);
+		int idProfessor = PROVAS[notas[i].idProva-1].idProfessor;
         for(int j = 0; j <= maxIndex; j++){ // percorre o array de notas vendo se ja existe um struct da materia em questao
-            if(!strcmp(materia, materias[j].materia)){
+            if(idProfessor == materias[j].idProfessor){
 				materias[j].soma += notas[i].nota;
                 materias[j].contador++;
                 flag = 0;
@@ -51,41 +51,37 @@ void alunoVerMedias(int id){
         }
         if(!flag) continue;
         
-		Materia a = {"", notas[i].nota, 1};
-		strcpy(a.materia, materia);
-        materias[maxIndex] = a;
+		Materia aux = {"", notas[i].nota, 1, idProfessor};
+		strcpy(aux.materia, PROFESSORES[idProfessor-1].materia);
+        materias[maxIndex] = aux;
 		maxIndex++;
     }
 	
-	printf("AAAAAAAAAAAAAAAAAAAAAAA\n\n");
 	cabecalho();
     float soma = 0;
     int contador = 0;
     for(int i = 0; i < maxIndex; i++){
-		printf("Media em %s: %.1f\n", materias[i].materia, materias[i].soma/materias[i].contador);
+		printf("%d - %s: %.1f\n", i+1, materias[i].materia, materias[i].soma/materias[i].contador);
         soma += materias[i].soma/materias[i].contador;
         contador++;
     }
     printf("Media geral: %.1f", soma/contador);
 	
-	printf("\n\nEscolha uma materia para ver detalhes ou 0 para voltar:\n");
-	char opcao[4];
-	scanf("%s", opcao);
-	for(int i = 0; i < maxIndex; i++){
-		if(!strcmp(materias[i].materia, opcao)){
-			alunoVerNotas(id, materias[i].materia);
-			return;
-		}
+	int opcao;
+	printf("\n\nInsira uma materia (utilize o numero) para ver detalhes ou 0 para voltar: ");
+	scanf("%d", &opcao);
+	if(opcao >= 1 && opcao <= maxIndex){
+		alunoVerNotas(id, materias[opcao-1].idProfessor);
 	}
 }
 
-int alunoPreencherNotas(int id, char *materia, Nota *notas){
+int alunoPreencherNotas(int id, int idProfessor, Nota *notas){
     int index = 0;
 
-    for(int i = 0; i < (MAXN); i++){
+    for(int i = 0; i < MAXN; i++){
         Nota nota = NOTAS[i];
-        const char *materiaNota = PROFESSORES[PROVAS[nota.idProva - 1].idProfessor - 1].materia;
-        if(nota.idAluno == id && (!strcmp(materia, materiaNota) || !strcmp(materia, "***"))){
+        int idProfessorNota = PROVAS[nota.idProva - 1].idProfessor;
+        if(nota.idAluno == id && (idProfessor == idProfessorNota || idProfessor == 0)){
             notas[index] = NOTAS[i];
             index++;
         }
@@ -94,7 +90,28 @@ int alunoPreencherNotas(int id, char *materia, Nota *notas){
     return index;
 }
 
+float alunoMedia(int id, int idProfessor){
+	Nota notas[MAXN] = {};
+	int tamanho = alunoPreencherNotas(id, idProfessor, notas);
+	if(!tamanho) return 0;
+	
+	float soma = 0;
+	for(int i = 0; i < tamanho; i++){
+		soma += notas[i].nota;
+	}
+	return soma / tamanho;
+};
+
+float alunoNota(int idProva, int idAluno){
+	for(int i = 0; i < MAXN; i++){
+		if(NOTAS[i].idProva == idProva && NOTAS[i].idAluno == idAluno) return NOTAS[i].nota;
+	}
+	
+	return 0;
+}
+
 void mostrarMenuAluno(){
+	
 	int opcao;
 	
 	do {
@@ -110,12 +127,10 @@ void mostrarMenuAluno(){
 				cabecalho();
 				printf("Saindo...");
 				sobrescreverDatabase();
+				break;
 			case 1:
-				printf("\n\nA OPCAO E %d", opcao);
 				alunoVerMedias(SESSION_ID);
 				break;
 		}
 	} while(opcao);
-	
-	return;
 }

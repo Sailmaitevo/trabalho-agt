@@ -49,7 +49,7 @@ void importarDatabase(){
 	char linhaNotas[17];
 	
 	for(int i = 0; fgets(linhaNotas, sizeof(linhaNotas), notas) != NULL; i++){
-		sscanf(linhaNotas, "%d,%d,%.1f", &NOTAS[i].idProva, &NOTAS[i].idAluno, &NOTAS[i].nota);
+		sscanf(linhaNotas, "%d,%d,%f", &NOTAS[i].idProva, &NOTAS[i].idAluno, &NOTAS[i].nota);
 		NOTAS[i].nota = roundf(NOTAS[i].nota * 10.0)/10.0;
 	}
 	
@@ -231,13 +231,7 @@ int buscarAdmin(char nome[NAME_SIZE]){
 }
 int buscarProva(char nome[NAME_SIZE]){
 	for(int i = 0; i < MAXN; i++){
-        if(!strcmp(PROVAS[i].nome, nome)) return i+1;
-    }
-    return 0;
-}
-int buscarProfessorPorMateria(char materia[4]){
-	for(int i = 0; i < MAXN; i++){
-		if(!strcmp(PROFESSORES[i].materia, materia)) return i+1;
+		if(!strcmp(PROFESSORES[i].nome, nome)) return i+1;
 	}
 	return 0;
 }
