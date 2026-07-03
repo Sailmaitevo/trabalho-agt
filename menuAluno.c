@@ -122,6 +122,7 @@ void mostrarMenuAluno(){
 		printf("Bem-vindo, %s, o que voce quer fazer hoje?\n", ALUNOS[SESSION_ID - 1].nome);
 		printf("0 - sair\n");
 		printf("1 - ver notas\n");
+		printf("2 - Alterar senha\n");
 		
 		scanf("%d", &opcao);
 		
@@ -133,6 +134,33 @@ void mostrarMenuAluno(){
 				break;
 			case 1:
 				alunoVerMedias(SESSION_ID);
+				break;
+			case 2:
+				char senha[PASS_SIZE], senhaNova[PASS_SIZE], senhaNovaConfirmar[PASS_SIZE];
+				printf("Digite sua senha atual: ");
+				scanf("%s", senha);
+				getchar();
+				if(validarAluno(SESSION_ID, senha)){
+					while(1){
+						cabecalho();
+						printf("Digite sua nova senha (3 a %d caracteres): ", PASS_SIZE);
+						while(1){
+							scanf("%s", senhaNova);
+							getchar();
+							if(strlen(senha) > 2) break;
+							printf("Input invalido, tente de novo: ");
+						}
+						printf("Digite a nova senha novamente: ");
+						scanf("%s", senhaNovaConfirmar);
+						if(strcmp(senhaNova, senhaNovaConfirmar)){
+							ALUNOS[SESSION_ID-1].senha = criptografar(senhaNova);
+							printf("Senha alterada com sucesso");
+							break;
+						} else {
+							printf("As duas senhas nao batem, tente novamente");
+						}
+					}
+				}
 				break;
 		}
 	} while(opcao);

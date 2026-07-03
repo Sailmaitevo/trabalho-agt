@@ -44,7 +44,7 @@ void professorListarTurmas(int id){
 
 int professorListarNotas(int id, int ano, char turma){
 	Aluno alunos[MAXN] = {};
-	int tamanho = preencherTurma(ano, turma, alunos);
+	int tamanho = professorPreencherTurma(ano, turma, alunos);
 	if(!tamanho) return 0;
 	
 	cabecalho();
@@ -63,6 +63,11 @@ void professorConsultarNotas(int id, int idAluno){
 	cabecalho();
 	Prova provas[MAXN] = {};
 	int tamanho = professorPreencherProvas(id, ALUNOS[idAluno-1].ano, ALUNOS[idAluno-1].turma, provas);
+	if(!tamanho){
+		printf("Nao foram encontradas provas para %s", ALUNOS[idAluno-1].nome);
+		esperar();
+		return;
+	}
 	
 	printf("Notas d@ alun@ %d - %s\n", idAluno, ALUNOS[idAluno-1].nome);
 	for(int i = 0; i < tamanho; i++){
@@ -89,18 +94,29 @@ int professorPreencherProvas(int id, int ano, char turma, Prova *provas){
 void professorTabelaDeNotas(int id){
 	int ano; char turma;
 	
+	int tamanhoA;
+	Aluno alunos[MAXN] = {};
+	
 	printf("\nEscolha uma turma para fazer a tabela: ");
-	scanf("%d%c", &ano, &turma);
-	getchar();
+	while(1){
+		scanf("%d%c", &ano, &turma);
+		getchar();
+
+		tamanhoA = professorPreencherTurma(ano, turma, alunos);
+		
+		if(tamanhoA) break;
+		printf("Turma invalida! Tente novamente: ");
+	}
 	
 	cabecalho();
 	printf("Tabela de notas da turma %d%c:", ano, turma);
 	
 	Prova provas[MAXN] = {};
 	int tamanhoP = professorPreencherProvas(id, ano, turma, provas);
-	
-	Aluno alunos[MAXN] = {};
-	int tamanhoA = preencherTurma(ano, turma, alunos);
+	if(!tamanhoP){
+		printf("Nao foram encontradas provas para essa turma");
+		esperar("\n\nPressione ENTER para continuar");
+	}
 	
 	char s[NAME_SIZE] = "Nome";
 	padString(s, NAME_SIZE);
@@ -131,10 +147,10 @@ void professorTabelaDeNotas(int id){
 		printf("%s", c);
 	}
 	
-	esperar("\n\nPressione ENTER para sair");
+	esperar();
 }
 
-int preencherTurma(int ano, char turma, Aluno *alunos){
+int professorPreencherTurma(int ano, char turma, Aluno *alunos){
 	int index = 0;
 	
 	for(int i = 0; i < MAXN; i++){
@@ -152,13 +168,18 @@ void professorListarProvas(int id){
 	cabecalho();
 	Prova provas[MAXN];
 	int tamanho = professorPreencherProvas(id, 0, 0, provas);
+	if(!tamanho){
+		printf("Nao ha nenhuma prova registrada");
+		esperar();
+		return;
+	}
 	
 	printf("id - nome - turma");
 	for(int i = 0; i < tamanho; i++){
 		printf("\n%d - %s - %d%c", provas[i].id, provas[i].nome, provas[i].ano, provas[i].turma);
 	}
 	
-	esperar("\n\nPressione ENTER para voltar");
+	esperar();
 }
 
 void professorCriarProva(int id){
@@ -175,7 +196,7 @@ void professorCriarProva(int id){
 		getchar();
 		
 		Aluno alunos[MAXN];
-		tamanho = preencherTurma(ano, turma, alunos);
+		tamanho = professorPreencherTurma(ano, turma, alunos);
 		if(!tamanho) printf("Turma invalida, tente de novo\n");
 	} while(!tamanho);
 	
@@ -217,7 +238,7 @@ void professorEditarNotas(int id, int unico){
 	do{
 		scanf("%d%c", &ano, &turma);
 		getchar();
-		tamanhoA = preencherTurma(ano, turma, alunos);
+		tamanhoA = professorPreencherTurma(ano, turma, alunos);
 		
 		if(!tamanhoA) printf("Turma invalida, tente novamente: ");
 	} while(!tamanhoA);
@@ -290,6 +311,11 @@ void professorDeletarProva(int id){
 	cabecalho();
 	Prova provas[MAXN];
 	int tamanho = professorPreencherProvas(id, 0, 0, provas);
+	if(!tamanho){
+		printf("Nao ha provas cadastradas");
+		esperar();
+		return;
+	}
 	
 	printf("id - nome - turma");
 	for(int i = 0; i < tamanho; i++){
@@ -329,6 +355,7 @@ void mostrarMenuProfessor(){
 		printf("5 - Editar notas de um unico aluno\n");
 		printf("6 - Excluir prova\n");
 		printf("7 - Gerar tabela de notas\n");
+		printf("8 - alterar senha");
 		
 		scanf("%d", &opcao);
 		
@@ -355,7 +382,7 @@ void mostrarMenuProfessor(){
 					ALUNOS[aluno-1].turma != turma
 				) break;
 				professorConsultarNotas(SESSION_ID, aluno);
-				esperar("\n\nAperte ENTER para continuar ");
+				esperar();
 				
 				break;
 			case 2:
@@ -375,6 +402,33 @@ void mostrarMenuProfessor(){
 				break;
 			case 7:
 				professorTabelaDeNotas(SESSION_ID);
+				break;
+			case 8:
+				char senha[PASS_SIZE], senhaNova[PASS_SIZE], senhaNovaConfirmar[PASS_SIZE];
+				printf("Digite sua senha atual: ");
+				scanf("%s", senha);
+				getchar();
+				if(validarProfessor(SESSION_ID, senha)){
+					while(1){
+						cabecalho();
+						printf("Digite sua nova senha (3 a %d caracteres): ", PASS_SIZE);
+						while(1){
+							scanf("%s", senhaNova);
+							getchar();
+							if(strlen(senha) > 2) break;
+							printf("Input invalido, tente de novo: ");
+						}
+						printf("Digite a nova senha novamente: ");
+						scanf("%s", senhaNovaConfirmar);
+						if(strcmp(senhaNova, senhaNovaConfirmar)){
+							PROFESSORES[SESSION_ID-1].senha = criptografar(senhaNova);
+							printf("Senha alterada com sucesso");
+							break;
+						} else {
+							printf("As duas senhas nao batem, tente novamente");
+						}
+					}
+				}
 				break;
 		}
 	} while(opcao);

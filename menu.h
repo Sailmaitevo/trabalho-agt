@@ -10,4 +10,4 @@ void limpar();
 void menuLogin();
 void cabecalho();
 void padString(char *string, int padding);
-void esperar(char *msg);
+void esperar();

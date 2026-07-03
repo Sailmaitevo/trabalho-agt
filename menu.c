@@ -43,8 +43,8 @@ void padString(char *string, int size){
 	string[size - 1] = 0;
 }
 
-void esperar(char *msg){
-	printf("%s", msg);
+void esperar(){
+	printf("\n\nPressione ENTER para continuar");
 	
 	int c;
 	while((c = getchar()) != '\n');
