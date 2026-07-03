@@ -128,11 +128,11 @@ void cadastrarAluno(char nome[NAME_SIZE], char senha[PASS_SIZE], int ano, char t
 }
 void cadastrarProva(char nome[NAME_SIZE], int idProfessor, int ano, char turma){
     for(int i = 0; i < MAXN; i++){
-        if(PROVAS[i].id == 0){
+        if(!PROVAS[i].id){
 			Prova prova = {i+1, "", idProfessor, ano, turma};
 			strcpy(prova.nome, nome);
             PROVAS[i] = prova;
-            zerarNotas(i, 0);
+            zerarNotas(i+1, 0);
             return;
         }
     }
@@ -174,6 +174,27 @@ void zerarNotas(int idProva, int delete){
             }
         }
     }
+}
+
+void editarNota(int idProva, int idAluno, float nota){
+	int ultimoVazio = -1;
+	
+	for(int i = 0; i < MAXN; i++){
+		if(NOTAS[i].idAluno == idAluno && NOTAS[i].idProva == idProva){
+			NOTAS[i].nota = nota;
+			return;
+		}
+		if(NOTAS[i].idProva == 0) ultimoVazio = i;
+	}
+	
+	if(ultimoVazio == -1){
+		printf(MSG_DB_CHEIO);
+		sobrescreverDatabase();
+	}
+	
+	NOTAS[ultimoVazio].idAluno = idAluno;
+	NOTAS[ultimoVazio].idProva = idProva;
+	NOTAS[ultimoVazio].nota    =    nota;
 }
 
 void deletarProfessor(int id){
@@ -229,9 +250,9 @@ int buscarAdmin(char nome[NAME_SIZE]){
     }
     return 0;
 }
-int buscarProva(char nome[NAME_SIZE]){
+int buscarProva(char nome[NAME_SIZE], int ano, char turma){
 	for(int i = 0; i < MAXN; i++){
-		if(!strcmp(PROFESSORES[i].nome, nome)) return i+1;
+		if(!strcmp(PROVAS[i].nome, nome) && PROVAS[i].ano == ano && PROVAS[i].turma == turma) return i+1;
 	}
 	return 0;
 }

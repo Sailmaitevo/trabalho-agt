@@ -35,10 +35,10 @@ void menuLogin(){
 }
 
 void padString(char *string, int size){
-	for(int i = strlen(string); i < size; i++){
+	for(int i = strlen(string); i < size - 1; i++){
 		string[i] = ' ';
 	}
-	string[size] = 0;
+	string[size - 1] = 0;
 }
 
 void esperar(char *msg){

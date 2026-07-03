@@ -67,6 +67,8 @@ void deletarAdmin(int id);
 // Se delete for facil, coloca uma nota 0 para cada aluno da turma
 void zerarNotas(int id, int delete);
 
+void editarNota(int idProva, int idAluno, float nota);
+
 // Conferem se a senha bate para o usuario
 int validarProfessor(int id, char senha[PASS_SIZE]);
 int validarAluno(int id, char senha[PASS_SIZE]);
@@ -76,7 +78,7 @@ int validarAdmin(int id, char senha[PASS_SIZE]);
 int buscarProfessor(char nome[NAME_SIZE]);
 int buscarAluno(char nome[NAME_SIZE]);
 int buscarAdmin(char nome[NAME_SIZE]);
-int buscarProva(char nome[NAME_SIZE]);
+int buscarProva(char nome[NAME_SIZE], int ano, char turma);
 
 Professor PROFESSORES[MAXN];
 Aluno ALUNOS[MAXN];

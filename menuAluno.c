@@ -104,9 +104,12 @@ float alunoMedia(int id, int idProfessor){
 
 float alunoNota(int idProva, int idAluno){
 	for(int i = 0; i < MAXN; i++){
-		if(NOTAS[i].idProva == idProva && NOTAS[i].idAluno == idAluno) return NOTAS[i].nota;
+		if(NOTAS[i].idProva == idProva && NOTAS[i].idAluno == idAluno){
+			//printf("ACHEI UMA NOTA");
+			return NOTAS[i].nota;
+		}
 	}
-	
+	//printf("NAO ACHEI, E ZERO MESMO");
 	return 0;
 }
 
