@@ -181,13 +181,16 @@ void professorCriarProva(int id){
 	
 	int confirma;
 	do {
-		printf("Insira o nome para a prova (ate 20 caracteres sem espaco)");
+		printf("Insira o nome para a prova (ate 20 caracteres sem espaco): ");
 		scanf("%s", &nome);
-		
-		if(buscarProva(nome, ano, turma)) continue;
-		
 		getchar();
-		printf("O nome e %s, confirma? (s/n)");
+		
+		if(buscarProva(nome, ano, turma)){
+			printf("Prova ja existe, tente novamente.\n");
+			continue;
+		}
+		
+		printf("O nome e %s, confirma? (s/n)", nome);
 		confirma = getchar();
 	} while (confirma != 's');
 	
@@ -221,10 +224,9 @@ void professorEditarNotas(int id, int unico){
 	
 	cabecalho();
 	printf("Provas da turma %d%c", ano, turma);
-	
-	printf("Provas da turma %d%c", ano, turma);
+
 	for(int i = 0; i < MAXN; i++){
-		if(PROVAS[i].idProfessor == id) printf("\n%s", PROVAS[i].nome);
+		if(PROVAS[i].idProfessor == id && PROVAS[i].ano == ano && PROVAS[i].turma == turma) printf("\n%s", PROVAS[i].nome);
 	}
 	printf("\n\nEscolha uma das provas acima: ");
 	
@@ -250,9 +252,11 @@ void professorEditarNotas(int id, int unico){
 		printf("\n\nEscolha um por id: ");
 		while(1){
 			scanf("%d", &idAluno);
+			int flag = 0;
 			for(int i = 0; i < tamanhoA; i++){
-				if(alunos[i].id == idAluno) break;
+				if(alunos[i].id == idAluno) flag = 1;
 			}
+			if(flag) break;
 			printf("Id de aluno invalido, tente novamente: ");
 		}
 		
@@ -282,8 +286,33 @@ void professorEditarNotas(int id, int unico){
 	}
 }
 
-void professorEditarNotaUnica(int id){
+void professorDeletarProva(int id){
+	cabecalho();
+	Prova provas[MAXN];
+	int tamanho = professorPreencherProvas(id, 0, 0, provas);
 	
+	printf("id - nome - turma");
+	for(int i = 0; i < tamanho; i++){
+		printf("\n%d - %s - %d%c", provas[i].id, provas[i].nome, provas[i].ano, provas[i].turma);;
+	}
+	
+	int idProva;
+	printf("\n\nEscolha uma dessas provas (pelo id): ");
+	int flag = 0;
+	while(1){
+		scanf("%d", &idProva);
+		for(int i = 0; i < tamanho; i++){
+			if(provas[i].id == idProva) flag = 1;
+		}
+		if(flag) break;
+		printf("Id invalido, tente novamente: ");
+	}
+	
+	cabecalho();
+	char resposta[NAME_SIZE];
+	printf("Voce esta prestes a deletar %s, tem certeza?\nDigite o nome da prova para confirmar: ", PROVAS[idProva-1].nome);
+	scanf("%s", resposta);
+	if(!strcmp(resposta, PROVAS[idProva-1].nome)) deletarProva(idProva);
 }
 
 void mostrarMenuProfessor(){
@@ -342,7 +371,7 @@ void mostrarMenuProfessor(){
 				professorEditarNotas(SESSION_ID, 1);
 				break;
 			case 6:
-				// professorDeletarProva();
+				professorDeletarProva(SESSION_ID);
 				break;
 			case 7:
 				professorTabelaDeNotas(SESSION_ID);
