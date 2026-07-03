@@ -80,8 +80,8 @@ int buscarAluno(char nome[NAME_SIZE]);
 int buscarAdmin(char nome[NAME_SIZE]);
 int buscarProva(char nome[NAME_SIZE], int ano, char turma);
 
-Professor PROFESSORES[MAXN];
-Aluno ALUNOS[MAXN];
-Prova PROVAS[MAXN];
-Nota NOTAS[MAXN];
-Admin ADMINS[MAXN];
+extern Professor PROFESSORES[MAXN];
+extern Aluno ALUNOS[MAXN];
+extern Prova PROVAS[MAXN];
+extern Nota NOTAS[MAXN];
+extern Admin ADMINS[MAXN];

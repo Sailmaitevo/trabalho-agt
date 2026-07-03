@@ -1,4 +1,11 @@
 #include "database.h"
+
+Professor PROFESSORES[MAXN];
+Aluno ALUNOS[MAXN];
+Prova PROVAS[MAXN];
+Nota NOTAS[MAXN];
+Admin ADMINS[MAXN];
+
 const char MSG_DB_CHEIO[] = "Erro! O banco de dados esta cheio!\nSobrescrevendo o banco de dados e fechando a aplicação...";
 
 FILE *importarArquivo(char *caminho){

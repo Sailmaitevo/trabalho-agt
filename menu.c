@@ -1,5 +1,7 @@
 #include "menu.h"
 
+int SESSION_ID;
+
 void limpar() {
 	#ifdef _WIN32
 		system("cls");

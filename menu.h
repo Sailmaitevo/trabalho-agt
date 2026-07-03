@@ -4,7 +4,7 @@
 #include "menuProfessor.h"
 #include "menuAluno.h"
 
-int SESSION_ID;
+extern int SESSION_ID;
 
 void limpar();
 void menuLogin();
