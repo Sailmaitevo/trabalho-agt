@@ -470,3 +470,30 @@ int preencherTurma(int ano, char turma, Aluno alunos[TURMA_SIZE]){
 	
 	return length;
 }
+
+int acharIdTipo(int *id, int *tipo, char nome[NAME_SIZE]) {
+	int novoId = *id;
+	int novoTipo;
+	novoId = buscarAluno(nome);
+	if (novoId == 0) {
+		novoId = buscarProfessor(nome);
+		if (novoId == 0) {
+			novoId = buscarAdmin(nome);
+			if (novoId == 0) {
+				return 0;
+				// printf("Nome invalido, tente de novo:");
+				// valido = 0;
+			} else {
+				novoTipo = TIPO_ADMIN;
+			}
+		} else {
+			novoTipo = TIPO_PROF;
+		}
+	} else {
+		novoTipo = TIPO_ALUNO;
+	}
+	*id = novoId;
+	*tipo = novoTipo;
+
+	return 1;
+}

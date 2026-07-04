@@ -95,6 +95,7 @@ char fazerMinusculo(char c);
 char fazerMaiusculo(char c);
 char ehLetra(char c);
 void acharNome(int id, int tipo, char nome[NAME_SIZE]);
+int acharIdTipo(int *id, int *tipo, char nome[NAME_SIZE]);
 
 int alunoPreencherNotas(int id, int idProfessor, Nota *notas);
 int alunoPreencherFaltas(int id, Faltas *faltas);

@@ -26,26 +26,9 @@ void login(){
 	int valido = 0;
 	while(!valido){
 		digitaString(NAME_SIZE, usuario);
-
-		id = buscarAdmin(usuario);
-		if (id == 0) {
-			id = buscarProfessor(usuario);
-			if (id == 0) {
-				id = buscarAluno(usuario);
-				if (id != 0) {
-					tipo = TIPO_ALUNO;
-					valido = 1;
-				}
-			} else {
-				tipo = TIPO_PROF;
-				valido = 1;
-			}
-		} else {
-			tipo = TIPO_ADMIN;
+		if (acharIdTipo(&id, &tipo, usuario)) {
 			valido = 1;
-		}
-
-		if (!valido) {
+		} else {
 			printf("Nome de usuario (%s) invalido!\nTente novamente:", usuario);
 		}
 	}

@@ -185,24 +185,12 @@ void admDeletar(){
 	int id = 0;
 	while(!valido) {
 		digitaString(NAME_SIZE, nome);
-		valido = 1;
-		id = buscarAluno(nome);
-		if (id == 0) {
-			id = buscarProfessor(nome);
-			if (id == 0) {
-				id = buscarAdmin(nome);
-				if (id == 0) {
-					printf("Nome invalido, tente de novo:");
-					valido = 0;
-				} else {
-					tipo = TIPO_ADMIN;
-				}
-			} else {
-				tipo = TIPO_PROF;
-			}
+		if (acharIdTipo(&id, &tipo, nome)) {
+			valido = 1;
 		} else {
-			tipo = TIPO_ALUNO;
+			printf("Nome invalido, tente de novo:");
 		}
+		
 	}
 	acharNome(id, tipo, nome);
 
