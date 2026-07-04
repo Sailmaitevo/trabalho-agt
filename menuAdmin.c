@@ -123,9 +123,7 @@ void admCadastrar(){
 					if(tamanho >= TURMA_SIZE) printf("Turma %d%c cheia, escolha outra: ", ano, turma);
 					if(!tamanho){
 						printf("Turma %d%c inexistente, digite S para cria-la: ", ano, turma);
-						char resposta[2];
-						digitaString(2, resposta);
-						if (fazerMinusculo(resposta[0]) != 's') {
+						if (!inputSimNao()) {
 							valido = 0;
 							printf("Digite outra turma:");
 							mostrarAreaInput();
@@ -171,96 +169,67 @@ void admCadastrar(){
 	}
 }
 void admDeletar(){
-	int permissao = admPedirNivelDePermissao(1);
+	char nome[NAME_SIZE];
 	
 	cabecalho();
-	switch(permissao){
-		Aluno aluno;
-		Professor professor;
-		Admin admin;
-		int id;
-		char confirma;
-		case 1:
-			for(int i = 0; i < MAXN; i++){
-				aluno = ALUNOS[i];
-				if(!aluno.id) continue;
-				
-				printf("\n%d - %s - %d%c", aluno.id, aluno.nome, aluno.ano, aluno.turma);
+
+	int valido = 0;
+	printf("Digite o nome para excluir:");
+	
+	int tipo = 0;
+	int id = 0;
+	while(!valido) {
+		digitaString(NAME_SIZE, nome);
+		valido = 1;
+		id = buscarAluno(nome);
+		if (id == 0) {
+			id = buscarProfessor(nome);
+			if (id == 0) {
+				id = buscarAdmin(nome);
+				if (id == 0) {
+					printf("Nome invalido, tente de novo:");
+					valido = 0;
+				} else {
+					tipo = TIPO_ADMIN;
+				}
+			} else {
+				tipo = TIPO_PROF;
 			}
-			printf("\n\nEscolha um id para excluir (0 volta): ");
-			while(1){
-				scanf("%d", &id);
-				getchar();
-				if(!id) return;
-				
-				aluno = ALUNOS[id-1];
-				if(!aluno.id) printf("Aluno inexistente, tente novamente: ");
-				else break;
-			}
-			cabecalho();
-			printf("Voce esta prestes a deletar %s, tem certeza?\nDigite S para confirmar: ", aluno.nome);
-			scanf("%c", &confirma);
-			if(confirma != 'S') return;
-			
-			deletarAluno(id);
-			printf("Alun@ deletad@ com sucesso");
-			esperar();
-			break;
-		case 2:
-			for(int i = 0; i < MAXN; i++){
-				professor = PROFESSORES[i];
-				if(!professor.id) continue;
-				
-				printf("\n%d - %s - %s", professor.id, professor.nome, professor.materia);
-			}
-			printf("\n\nEscolha um id para excluir (0 volta): ");
-			while(1){
-				scanf("%d", &id);
-				getchar();
-				if(!id) return;
-				
-				professor = PROFESSORES[id-1];
-				if(!professor.id) printf("Professor inexistente, tente novamente: ");
-				else break;
-			}
-			cabecalho();
-			printf("Voce esta prestes a deletar %s, tem certeza?\nDigite S para confirmar: ", professor.nome);
-			scanf("%c", &confirma);
-			if(confirma != 'S') return;
-			
-			deletarProfessor(id);
-			printf("Professor deletado com sucesso");
-			esperar();
-			break;
-		case 3:
-			for(int i = 0; i < MAXN; i++){
-				admin = ADMINS[i];
-				if(!admin.id) continue;
-				
-				printf("\n%d - %s", admin.id, admin.nome);
-			}
-			printf("\n\nEscolha um id para excluir (0 volta): ");
-			while(1){
-				scanf("%d", &id);
-				getchar();
-				if(!id) return;
-				
-				admin = ADMINS[id-1];
-				if(!admin.id) printf("Admin inexistente, tente novamente: ");
-				else if(admin.id == 1) printf("Nao e possivel deletar o admin inicial, tente novamente: ");
-				else if(admin.id == SESSION_ID) printf("Voce nao pode se deletar, tente novamente: ");
-				else break;
-			}
-			cabecalho();
-			printf("Voce esta prestes a deletar %s, tem certeza?\nDigite S para confirmar: ", admin.nome);
-			scanf("%c", &confirma);
-			if(confirma != 'S') return;
-			
-			deletarAdmin(id);
-			printf("Professor deletado com sucesso");
-			esperar();
-			break;
+		} else {
+			tipo = TIPO_ALUNO;
+		}
 	}
+	acharNome(id, tipo, nome);
+
+	if (tipo == TIPO_ADMIN && (id == 1 || id == SESSION_ID)) {
+		if (id == 1) {
+			printf("Nao eh possivel deletar o admin inicial.");
+		} else {
+			printf("Voce nao pode se deletar.");
+		} 
+	} else {
+		printf("Voce esta prestes a deletar %s, tem certeza?\nDigite S para confirmar: ", nome);
+	
+		if (inputSimNao()) {
+			switch (tipo) {
+				case TIPO_ALUNO:
+					deletarAluno(id);
+					printf("Aluno@ deletad@ com sucesso");
+					break;
+				case TIPO_ADMIN:
+					deletarAdmin(id);
+					printf("Admin deletado com sucesso");
+					break;
+				case TIPO_PROF:
+					deletarProfessor(id);
+					printf("Professor deletado com sucesso");
+					break;
+			}
+		} else {
+			printf("Delecao cancelada");	
+		}
+	}
+	esperar();
 }
 void admEditar(){
 	int permissao = admPedirNivelDePermissao(0);

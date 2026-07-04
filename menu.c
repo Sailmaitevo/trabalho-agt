@@ -40,3 +40,9 @@ void consumirInput() {
   int c;
   while ((c = getchar()) != '\n' && c != EOF);
 }
+
+int inputSimNao() {
+	char resposta[2];
+	digitaString(2, resposta);
+	return fazerMinusculo(resposta[0]) == 's';
+}

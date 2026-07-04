@@ -13,3 +13,4 @@ void padString(char *string, int padding);
 void esperar();
 void mostrarAreaInput();
 void consumirInput();
+int inputSimNao();
