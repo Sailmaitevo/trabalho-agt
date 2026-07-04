@@ -337,6 +337,18 @@ char fazerMinusculo(char c) {
   }
 }
 
+char fazerMaiusculo(char c) {
+	if (c >= 'a' && c <= 'z') {
+		return c - 'a' + 'A';
+	} else {
+		return c;
+	}
+}
+
+char ehLetra(char c) {
+	return (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z');
+}
+
 int compararNomes(char nome1[NAME_SIZE], char nome2[NAME_SIZE]) {
   for (int i = 0; i < NAME_SIZE - 1; i++) {
     char c1 = nome1[i];
@@ -442,16 +454,19 @@ int preencherProvas(int id, int ano, char turma, Prova *provas){
 	
 	return index;
 }
-int preencherTurma(int ano, char turma, Aluno *alunos){
-	int index = 0;
+int preencherTurma(int ano, char turma, Aluno alunos[TURMA_SIZE]){
+	int length = 0;
 	
 	for(int i = 0; i < MAXN; i++){
 		Aluno aluno = ALUNOS[i];
 		if(ano == aluno.ano && aluno.turma == turma){
-			alunos[index] = aluno;
-			index++;
+			alunos[length] = aluno;
+			length++;
+			if (length >= TURMA_SIZE) {
+				break;
+			}
 		}
 	}
 	
-	return index;
+	return length;
 }

@@ -41,7 +41,7 @@ void professorListarTurmas(int id){
     printf("Media geral: %.1f", soma/contador);
 }
 int professorListarNotas(int id, int ano, char turma){
-	Aluno alunos[MAXN] = {};
+	Aluno alunos[TURMA_SIZE] = {};
 	int tamanho = preencherTurma(ano, turma, alunos);
 	if(!tamanho) return 0;
 	

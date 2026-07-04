@@ -10,6 +10,7 @@
 #define TIPO_ADMIN 1
 #define TIPO_PROF 2
 #define TIPO_ALUNO 3
+#define TURMA_SIZE 40
 
 void importarDatabase(); // Essa funcao importa o database, deve ser usada so no inicio da execucao
 void sobrescreverDatabase(); // Essa funcao sobrescreve o database com os vetores devidamente alterados, deve ser usada so ao fim das sessoes
@@ -90,6 +91,8 @@ int buscarAdmin(char nome[NAME_SIZE]);
 int buscarProva(char nome[NAME_SIZE], int ano, char turma);
 int compararNomes(char nome1[NAME_SIZE], char nome2[NAME_SIZE]);
 char fazerMinusculo(char c);
+char fazerMaiusculo(char c);
+char ehLetra(char c);
 void acharNome(int id, int tipo, char nome[NAME_SIZE]);
 
 int alunoPreencherNotas(int id, int idProfessor, Nota *notas);
@@ -98,7 +101,7 @@ float alunoMedia(int id, int idProfessor);
 float alunoNota(int idProva, int idAluno);
 int alunoFaltas(int idProfessor, int idAluno);
 
-int preencherTurma(int ano, char turma, Aluno *alunos); // Preenche um vetor de alunos com todos os alunos de uma mesma turma
+int preencherTurma(int ano, char turma, Aluno alunos[TURMA_SIZE]); // Preenche um vetor de alunos com todos os alunos de uma mesma turma
 int preencherProvas(int id, int ano, char turma, Prova *provas); // Preenche um vetor de provas com todas as provas aplicadas para uma turma
 
 extern Professor PROFESSORES[MAXN];

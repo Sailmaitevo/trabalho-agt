@@ -72,47 +72,69 @@ void admCadastrar(){
 	if(!permissao) return;
 	
 	char nome[NAME_SIZE];
-	printf("Digite o nome (ate 20 caracteres sem espaco): ");
-	while(1){
-		scanf("%s", nome);
-		getchar();
+	printf("Digite o nome (ate 20 caracteres): ");
+	int valido = 0;
+	while(!valido){
+		digitaString(NAME_SIZE, nome);
 		
-		if(strlen(nome)) break;
-		
-		if(permissao == 1 && buscarAluno ||
-			permissao == 2 && buscarProfessor ||
-			permissao == 3 && buscarAdmin(nome)
-		){
-			printf("Esse nome ja foi cadastrado, tente novamente: ");
-			continue;
+		if(strlen(nome) > 0) {
+			if(
+				buscarAluno(nome) ||
+				buscarProfessor(nome) ||
+				buscarAdmin(nome)
+			){
+				printf("Esse nome ja foi cadastrado, tente novamente: ");
+				continue;
+			} else {
+				valido = 1;
+			}
+		} else {
+			printf("Digite um nome: ");
 		}
-		
-		printf("Nome invalido, tente novamente: ");
 	}
 	
-	cabecalho();
 	char senhaPadrao[PASS_SIZE] = "123456";
 	switch(permissao){
 		int ano, id;
 		char turma, materia[4];
 		case 1:
-			printf("Digite a turma d@ alun@ %s", nome);
-			while(1){
-				if(!scanf("%d%c", &ano, &turma)){
-					printf("Input invalido, tente novamente: ");
-					continue;
-				};
-				getchar();
-				
-				Aluno alunos[MAXN];
-				int tamanho = preencherTurma(ano, turma, alunos);
-				if(tamanho >= 40) printf("Turma %d%c cheia, escolha outra: ", ano, turma);
-				if(!tamanho){
-					printf("Turma %d%c inexistente, digite S para cria-la: ", ano, turma);
-					if(getchar() == 'S') break;
-					else printf("Digite outra turma: ");
-					while(getchar() != '\n');
+			printf("Digite a turma de %s (Ano e letra, ex. 9A):", nome);
+			mostrarAreaInput();
+			int valido = 0;
+			while(!valido){
+				int resultado = scanf("%d%c", &ano, &turma);
+				if (resultado && turma != '\n') {
+					consumirInput();
 				}
+				if (resultado && ehLetra(turma)) {
+					if (ano < 1 || ano > 12) {
+						printf("Ano invalido. O ano deve ser de 1-9 para o ensino fundamental e 10-12 para o ensino medio.\nDigite novamente:");
+						mostrarAreaInput();
+					} else {
+						valido = 1;
+						turma = fazerMaiusculo(turma);
+					}
+				} else {
+					printf("Formato invalido, voce deve digitar no formato ano e letra, ex. 9A.\nTente novamente:");
+					mostrarAreaInput();
+				}
+
+				if (valido) {
+					Aluno alunos[TURMA_SIZE];
+					int tamanho = preencherTurma(ano, turma, alunos);
+					if(tamanho >= TURMA_SIZE) printf("Turma %d%c cheia, escolha outra: ", ano, turma);
+					if(!tamanho){
+						printf("Turma %d%c inexistente, digite S para cria-la: ", ano, turma);
+						char resposta[2];
+						digitaString(2, resposta);
+						if (fazerMinusculo(resposta[0]) != 's') {
+							valido = 0;
+							printf("Digite outra turma:");
+							mostrarAreaInput();
+						}
+					}
+				}
+				
 			}
 			
 			id = cadastrarAluno(nome, senhaPadrao, ano, turma);
@@ -384,10 +406,16 @@ int admPedirNivelDePermissao(int admin){
 	printf("0 - Voltar\n");
 	printf("1 - Aluno\n");
 	printf("2 - Professor\n");
-	if(admin) printf("3 - Admin\n");
+	if(admin) printf("3 - Admin");
+
+	mostrarAreaInput();
 	
 	int opcao;
-	if(!scanf("%d", &opcao) || !(opcao >= 1 && opcao <= admin ? 3 : 2)) opcao = 0;
+
+	if(!scanf("%d", &opcao) || !(opcao >= 1 && opcao <= admin ? 3 : 2)) {
+		opcao = 0;
+	}
+	consumirInput();
 	return opcao;
 }
 
@@ -398,18 +426,19 @@ void mostrarMenuAdmin(){
 	
 	do {
 		cabecalho();
-		printf("Bem-vindo, %s, o que você quer fazer hoje?\n", usuario.nome);
-		printf("0 - sair\n");
-		printf("1 - ver professores\n");
-		printf("2 - ver alunos\n");
-		printf("3 - ver turmas\n");
-		printf("4 - cadastrar usuario\n");
-		printf("5 - deletar usuario\n");
-		printf("6 - editar dados de um usuario\n");
-		printf("7 - alterar senha\n");
+		printf("Bem-vindo, %s. O que voce quer fazer hoje?\n", usuario.nome);
+		printf("0 - Sair\n");
+		printf("1 - Ver professores\n");
+		printf("2 - Ver alunos\n");
+		printf("3 - Ver turmas\n");
+		printf("4 - Cadastrar usuario\n");
+		printf("5 - Deletar usuario\n");
+		printf("6 - Editar dados de um usuario\n");
+		printf("7 - Alterar senha");
 		
+		mostrarAreaInput();
 		scanf("%d", &opcao);
-		getchar();
+		consumirInput();
 		
 		switch(opcao){
 			char senha[PASS_SIZE], senhaNova[PASS_SIZE], senhaNovaConfirmar[PASS_SIZE];
