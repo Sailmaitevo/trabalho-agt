@@ -88,6 +88,9 @@ int buscarProfessor(char nome[NAME_SIZE]);
 int buscarAluno(char nome[NAME_SIZE]);
 int buscarAdmin(char nome[NAME_SIZE]);
 int buscarProva(char nome[NAME_SIZE], int ano, char turma);
+int compararNomes(char nome1[NAME_SIZE], char nome2[NAME_SIZE]);
+char fazerMinusculo(char c);
+void acharNome(int id, int tipo, char nome[NAME_SIZE]);
 
 int alunoPreencherNotas(int id, int idProfessor, Nota *notas);
 int alunoPreencherFaltas(int id, Faltas *faltas);

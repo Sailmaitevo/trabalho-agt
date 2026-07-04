@@ -42,9 +42,10 @@ void login(){
 		}
 	}
 
+	acharNome(id, tipo, usuario);
 	cabecalho();
 
-	printf("Insira a senha de %s: ", usuario);
+	printf("Digite a senha de %s: ", usuario);
 
 	flag = 0;
 	for(int i = 0; i < LIMITE_TENTATIVA; i++){

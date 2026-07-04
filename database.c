@@ -300,19 +300,25 @@ int validarSenha(int id, int tipo, char senha[PASS_SIZE]) {
 
 int buscarProfessor(char nome[NAME_SIZE]){
     for(int i = 0; i < MAXN; i++){
-        if(!strcmp(PROFESSORES[i].nome, nome)) return i+1;
+			if (compararNomes(PROFESSORES[i].nome, nome)) {
+				return i + 1;
+			}
     }
     return 0;
 }
 int buscarAluno(char nome[NAME_SIZE]){
 	for(int i = 0; i < MAXN; i++){
-		if(!strcmp(ALUNOS[i].nome, nome)) return i+1;
-    }
-    return 0;
+		if (compararNomes(ALUNOS[i].nome, nome)) {
+			return i + 1;
+		}
+	}
+	return 0;
 }
 int buscarAdmin(char nome[NAME_SIZE]){
     for(int i = 0; i < MAXN; i++){
-        if(!strcmp(ADMINS[i].nome, nome)) return i+1;
+				if(compararNomes(ADMINS[i].nome, nome)) {
+					return i + 1;
+				}
     }
     return 0;
 }
@@ -321,6 +327,43 @@ int buscarProva(char nome[NAME_SIZE], int ano, char turma){
 		if(!strcmp(PROVAS[i].nome, nome) && PROVAS[i].ano == ano && PROVAS[i].turma == turma) return i+1;
 	}
 	return 0;
+}
+
+char fazerMinusculo(char c) {
+  if (c >= 'A' && c <= 'Z') {
+    return c - 'A' + 'a';
+  } else {
+    return c;
+  }
+}
+
+int compararNomes(char nome1[NAME_SIZE], char nome2[NAME_SIZE]) {
+  for (int i = 0; i < NAME_SIZE - 1; i++) {
+    char c1 = nome1[i];
+    char c2 = nome2[i];
+    if (c1 == '\0' && c2 == '\0') {
+      return 1;
+    }
+    if (fazerMinusculo(c1) != fazerMinusculo(c2)) {
+      return 0;
+    }
+  }
+
+  return 1;
+}
+
+void acharNome(int id, int tipo, char nome[NAME_SIZE]) {
+	switch (tipo) {
+		case TIPO_ADMIN:
+			strcpy(nome, ADMINS[id - 1].nome);
+			break;
+		case TIPO_ALUNO:
+			strcpy(nome, ALUNOS[id - 1].nome);
+			break;
+		case TIPO_PROF:
+			strcpy(nome, PROFESSORES[id - 1].nome);
+			break;
+	}
 }
 
 int alunoPreencherNotas(int id, int idProfessor, Nota *notas){
