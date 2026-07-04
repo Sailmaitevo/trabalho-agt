@@ -8,10 +8,7 @@ void professorConsultarNotas(int id, int idAluno); // Listar as notas de um unic
 void professorCriarProva(int id); // Cadastra uma prova
 void professorEditarNotas(int id, int unico); // Edita as notas de uma prova
 void professorListarProvas(int id); // Lista as provas que o professor registrou
-
-void professorDeletarProva(int id);
-
-int preencherTurma(int ano, char turma, Aluno *alunos); // Preenche um vetor de alunos com todos os alunos de uma mesma turma
-int professorPreencherProvas(int id, int ano, char turma, Prova *provas); // Preenche um vetor de provas com todas as provas aplicadas para uma turma
+void professorIncrementarFaltas(int id); // Incrementa as faltas de um aluno
+void professorDeletarProva(int id); // Deleta uma prova
 
 void mostrarMenuProfessor();

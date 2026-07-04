@@ -5,10 +5,11 @@ Aluno ALUNOS[MAXN];
 Prova PROVAS[MAXN];
 Nota NOTAS[MAXN];
 Admin ADMINS[MAXN];
+Faltas FALTAS[MAXN];
 
 const char MSG_DB_CHEIO[] = "Erro! O banco de dados esta cheio!\nSobrescrevendo o banco de dados e fechando a aplicação...";
 
-FILE *importarArquivo(char *caminho){
+FILE *importarArquivo(char *caminho, char *padrao){
 	FILE *arquivo = fopen(caminho, "r");
 	if(arquivo == NULL){
 		arquivo = fopen(caminho, "w");
@@ -16,6 +17,7 @@ FILE *importarArquivo(char *caminho){
 			printf("Erro fatal: não foi possível criar o arquivo %s", caminho);
 			exit(EXIT_FAILURE);
 		}
+		fprintf(arquivo, padrao);
 	}
 	fclose(arquivo);
 	
@@ -24,40 +26,41 @@ FILE *importarArquivo(char *caminho){
 
 void importarDatabase(){
 	printf("Importando banco de dados...\n");
-	FILE *admins = importarArquivo("Database/Admins.csv");
+	FILE *admins = importarArquivo("Database/Admins.csv", "1,Adm,1713679732");
 	char linhaAdmins[NAME_SIZE+19];
-	
 	for(int i = 0; fgets(linhaAdmins, sizeof(linhaAdmins), admins) != NULL; i++){
 		sscanf(linhaAdmins, "%d,%[^,],%u", &ADMINS[i].id, &ADMINS[i].nome, &ADMINS[i].senha);
 	}
 	
-	FILE *alunos = importarArquivo("Database/Alunos.csv");
+	FILE *alunos = importarArquivo("Database/Alunos.csv", "");
 	char linhaAlunos[NAME_SIZE+23];
-	
 	for(int i = 0; fgets(linhaAlunos, sizeof(linhaAlunos), alunos) != NULL; i++){
 		sscanf(linhaAlunos, "%d,%[^,],%u,%d,%c", &ALUNOS[i].id, &ALUNOS[i].nome, &ALUNOS[i].senha, &ALUNOS[i].ano, &ALUNOS[i].turma);
 	}
 	
-	FILE *professores = importarArquivo("Database/Professores.csv");
+	FILE *professores = importarArquivo("Database/Professores.csv", "");
 	char linhaProfessores[NAME_SIZE+24];
-	
 	for(int i = 0; fgets(linhaProfessores, sizeof(linhaProfessores), professores) != NULL; i++){
 		sscanf(linhaProfessores, "%d,%[^,],%u,%s", &PROFESSORES[i].id, &PROFESSORES[i].nome, &PROFESSORES[i].senha, &PROFESSORES[i].materia);
 	}
 	
-	FILE *provas = importarArquivo("Database/Provas.csv");
+	FILE *provas = importarArquivo("Database/Provas.csv", "");
 	char linhaProvas[NAME_SIZE+19];
-	
 	for(int i = 0; fgets(linhaProvas, sizeof(linhaProvas), provas) != NULL; i++){
 		sscanf(linhaProvas, "%d,%[^,],%d,%d,%c", &PROVAS[i].id, PROVAS[i].nome, &PROVAS[i].idProfessor, &PROVAS[i].ano, &PROVAS[i].turma);
 	}
 		
-	FILE *notas = importarArquivo("Database/Notas.csv");
-	char linhaNotas[17];
-	
+	FILE *notas = importarArquivo("Database/Notas.csv", "");
+	char linhaNotas[26];
 	for(int i = 0; fgets(linhaNotas, sizeof(linhaNotas), notas) != NULL; i++){
 		sscanf(linhaNotas, "%d,%d,%f", &NOTAS[i].idProva, &NOTAS[i].idAluno, &NOTAS[i].nota);
 		NOTAS[i].nota = roundf(NOTAS[i].nota * 10.0)/10.0;
+	}
+	
+	FILE *faltas = importarArquivo("Database/Faltas.csv", "");
+	char linhaFaltas[32];
+	for(int i = 0; fgets(linhaFaltas, sizeof(linhaFaltas), faltas) != NULL; i++){
+		sscanf(linhaFaltas, "%d,%d,%d", &FALTAS[i].idProfessor, &FALTAS[i].idAluno, &FALTAS[i].numero);
 	}
 	
 	fclose(admins);
@@ -65,14 +68,15 @@ void importarDatabase(){
 	fclose(notas);
 	fclose(professores);
 	fclose(provas);
+	fclose(faltas);
 }
-
 void sobrescreverDatabase(){
 	FILE *admins = fopen("Database/Admins.csv", "w");
 	FILE *alunos = fopen("Database/Alunos.csv", "w");
 	FILE *notas = fopen("Database/Notas.csv", "w");
 	FILE *professores = fopen("Database/Professores.csv", "w");
 	FILE *provas = fopen("Database/Provas.csv", "w");
+	FILE *faltas = fopen("Database/Faltas.csv", "w");
 	
 	for(int i = 0; i < MAXN; i++){
 		if(ADMINS[i].id)
@@ -85,6 +89,8 @@ void sobrescreverDatabase(){
 			fprintf(professores, "%d,%s,%u,%s\n", PROFESSORES[i].id, PROFESSORES[i].nome, PROFESSORES[i].senha, PROFESSORES[i].materia);
 		if(PROVAS[i].id)
 			fprintf(provas, "%d,%s,%d,%d,%c\n", PROVAS[i].id, PROVAS[i].nome, PROVAS[i].idProfessor, PROVAS[i].ano, PROVAS[i].turma);
+		if(FALTAS[i].idAluno)
+			fprintf(faltas, "%d,%d,%d\n", FALTAS[i].idProfessor, FALTAS[i].idAluno, FALTAS[i].numero);
 	}
 	
 	fclose(admins);
@@ -92,6 +98,7 @@ void sobrescreverDatabase(){
 	fclose(notas);
 	fclose(professores);
 	fclose(provas);
+	fclose(faltas);
 	
 	printf("\nObrigado por utilizar nosso servico\nAte breve");
 	exit(EXIT_SUCCESS);
@@ -182,7 +189,6 @@ void zerarNotas(int idProva, int delete){
         }
     }
 }
-
 void editarNota(int idProva, int idAluno, float nota){
 	int ultimoVazio = -1;
 	
@@ -204,11 +210,61 @@ void editarNota(int idProva, int idAluno, float nota){
 	NOTAS[ultimoVazio].nota    =    nota;
 }
 
+void incrementarFaltas(int idProfessor, int idAluno, int incremento){
+	int primeiroVazio = MAXN;
+	for(int i = 0; i < MAXN; i++){
+		Faltas faltas = FALTAS[i];
+		if(!faltas.idAluno){
+			primeiroVazio = i < primeiroVazio ? i : primeiroVazio;
+			continue;
+		}
+		if(faltas.idAluno == idAluno && faltas.idProfessor == idProfessor){
+			FALTAS[i].numero += incremento;
+			if(FALTAS[i].numero < 0) FALTAS[i].numero = 0;
+			return;
+		}
+	}
+	if(primeiroVazio >= MAXN){
+		printf(MSG_DB_CHEIO);
+		sobrescreverDatabase();
+	}
+	Faltas faltas = {idProfessor, idAluno, incremento < 0 ? 0 : incremento};
+	FALTAS[primeiroVazio] = faltas;
+}
+
 void deletarProfessor(int id){
+	for(int i = 0; i < MAXN; i++){
+		if(FALTAS[i].idProfessor == id){
+			Faltas faltas = {0, 0, 0};
+			FALTAS[i] = faltas;
+		}
+		
+		if(PROVAS[NOTAS[i].idProva-1].idProfessor == id) deletarProva(NOTAS[i].idProva);
+	}
+	
 	Professor professor = {0, "", 0, "---"};
     PROFESSORES[id-1] = professor;
 }
 void deletarAluno(int id){
+	Aluno alunos[MAXN] = {};
+	int ano = ALUNOS[id-1].ano;
+	char turma = ALUNOS[id-1].turma;
+	int tamanho = preencherTurma(ano, turma, alunos) - 1;
+	
+	for(int i = 0; i < MAXN; i++){
+		if(FALTAS[i].idAluno == id){
+			Faltas faltas = {0, 0, 0};
+			FALTAS[i] = faltas;
+		}
+		if(NOTAS[i].idAluno == id){
+			Nota nota = {0, 0, 0};
+			NOTAS[i] = nota;
+		}
+		if(tamanho && PROVAS[i].ano == ano && PROVAS[i].turma == turma){
+			deletarProva(i+1);
+		}
+	}
+	
     Aluno aluno = {0, "", 0, 0, 0};
 	ALUNOS[id-1] = aluno;
 }
@@ -257,9 +313,99 @@ int buscarAdmin(char nome[NAME_SIZE]){
     }
     return 0;
 }
-int buscarProva(char nome[NAME_SIZE], int ano, char turma){
+int buscarProva(char nome[NAME_SIZE], int ano, char turma){	
 	for(int i = 0; i < MAXN; i++){
 		if(!strcmp(PROVAS[i].nome, nome) && PROVAS[i].ano == ano && PROVAS[i].turma == turma) return i+1;
 	}
 	return 0;
+}
+
+int alunoPreencherNotas(int id, int idProfessor, Nota *notas){
+    int index = 0;
+
+    for(int i = 0; i < MAXN; i++){
+        Nota nota = NOTAS[i];
+        int idProfessorNota = PROVAS[nota.idProva - 1].idProfessor;
+        if(nota.idAluno == id && (idProfessor == idProfessorNota || idProfessor == 0)){
+            notas[index] = NOTAS[i];
+            index++;
+        }
+    }
+
+    return index;
+}
+int alunoPreencherFaltas(int id, Faltas *arrayFaltas){
+	int index = 0;
+	printf("%d", FALTAS[0].numero);
+	
+	for(int i = 0; i < MAXN; i++){
+		Faltas faltas = FALTAS[i];
+		if(faltas.idAluno == id){
+			arrayFaltas[index] = FALTAS[i];
+			index++;
+		}
+	}
+	
+	return index;
+}
+float alunoMedia(int id, int idProfessor){
+	Nota notas[MAXN] = {};
+	int tamanho = alunoPreencherNotas(id, idProfessor, notas);
+	if(!tamanho) return 0;
+	
+	float soma = 0;
+	for(int i = 0; i < tamanho; i++){
+		soma += notas[i].nota;
+	}
+	return soma / tamanho;
+};
+float alunoNota(int idProva, int idAluno){
+	for(int i = 0; i < MAXN; i++){
+		if(NOTAS[i].idProva == idProva && NOTAS[i].idAluno == idAluno){
+			//printf("ACHEI UMA NOTA");
+			return NOTAS[i].nota;
+		}
+	}
+	return 0;
+}
+int alunoFaltas(int idProfessor, int idAluno){
+	int faltas = 0;
+	
+	for(int i = 0; i < MAXN; i++){
+		if(idAluno != FALTAS[i].idAluno) continue;
+		
+		if(!idProfessor) faltas += FALTAS[i].numero;
+		else if(idProfessor == FALTAS[i].idProfessor) return FALTAS[i].numero;
+	}
+	
+	return faltas;
+}
+
+int preencherProvas(int id, int ano, char turma, Prova *provas){
+	int index = 0;
+	
+	for(int i = 0; i < MAXN; i++){
+		Prova prova = PROVAS[i];
+		if((prova.ano == ano || ano == 0)
+		&& (prova.turma == turma || turma == 0)
+		&& (prova.idProfessor == id || id == 0)){
+			provas[index] = prova;
+			index++;
+		};
+	}
+	
+	return index;
+}
+int preencherTurma(int ano, char turma, Aluno *alunos){
+	int index = 0;
+	
+	for(int i = 0; i < MAXN; i++){
+		Aluno aluno = ALUNOS[i];
+		if(ano == aluno.ano && aluno.turma == turma){
+			alunos[index] = aluno;
+			index++;
+		}
+	}
+	
+	return index;
 }

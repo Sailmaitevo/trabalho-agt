@@ -1,7 +1,6 @@
 #include "menuAluno.h"
 
 void alunoVerNotas(int id, int idProfessor){
-	printf("OI");
     Nota notas[MAXN] = {};
 	Professor professor = PROFESSORES[idProfessor - 1];
 	
@@ -20,7 +19,7 @@ void alunoVerNotas(int id, int idProfessor){
     }
     printf("Media na materia: %.1f", soma/tamanho);
 	
-	printf("\n\nPressione ENTER para voltar\n");
+	esperar();
 	
 	alunoVerMedias(id);
 }
@@ -60,6 +59,13 @@ void alunoVerMedias(int id){
 	cabecalho();
     float soma = 0;
     int contador = 0;
+	
+	if(!tamanho){
+		printf("\nNao foram encontradas notas");
+		esperar();
+		return;
+	}
+	
     for(int i = 0; i < maxIndex; i++){
 		printf("%d - %s: %.1f\n", i+1, materias[i].materia, materias[i].soma/materias[i].contador);
         soma += materias[i].soma/materias[i].contador;
@@ -75,42 +81,20 @@ void alunoVerMedias(int id){
 	}
 }
 
-int alunoPreencherNotas(int id, int idProfessor, Nota *notas){
-    int index = 0;
-
-    for(int i = 0; i < MAXN; i++){
-        Nota nota = NOTAS[i];
-        int idProfessorNota = PROVAS[nota.idProva - 1].idProfessor;
-        if(nota.idAluno == id && (idProfessor == idProfessorNota || idProfessor == 0)){
-            notas[index] = NOTAS[i];
-            index++;
-        }
-    }
-
-    return index;
-}
-
-float alunoMedia(int id, int idProfessor){
-	Nota notas[MAXN] = {};
-	int tamanho = alunoPreencherNotas(id, idProfessor, notas);
-	if(!tamanho) return 0;
+void alunoVerFaltas(int id){
+	Faltas faltas[MAXN] = {};
+	int tamanho = alunoPreencherFaltas(id, faltas);
 	
-	float soma = 0;
+	cabecalho();
+	printf("Suas faltas");
+	if(!tamanho){
+		printf("\nNao foram encontradas faltas");
+	}
 	for(int i = 0; i < tamanho; i++){
-		soma += notas[i].nota;
+		printf("\n%s - %d", PROFESSORES[faltas[i].idProfessor-1].materia, faltas[i].numero);
 	}
-	return soma / tamanho;
-};
-
-float alunoNota(int idProva, int idAluno){
-	for(int i = 0; i < MAXN; i++){
-		if(NOTAS[i].idProva == idProva && NOTAS[i].idAluno == idAluno){
-			//printf("ACHEI UMA NOTA");
-			return NOTAS[i].nota;
-		}
-	}
-	//printf("NAO ACHEI, E ZERO MESMO");
-	return 0;
+	
+	esperar();
 }
 
 void mostrarMenuAluno(){
@@ -122,7 +106,8 @@ void mostrarMenuAluno(){
 		printf("Bem-vindo, %s, o que voce quer fazer hoje?\n", ALUNOS[SESSION_ID - 1].nome);
 		printf("0 - sair\n");
 		printf("1 - ver notas\n");
-		printf("2 - Alterar senha\n");
+		printf("2 - ver faltas\n");
+		printf("3 - alterar senha\n");
 		
 		scanf("%d", &opcao);
 		
@@ -137,6 +122,9 @@ void mostrarMenuAluno(){
 				alunoVerMedias(SESSION_ID);
 				break;
 			case 2:
+				alunoVerFaltas(SESSION_ID);
+				break;
+			case 3:
 				printf("Digite sua senha atual: ");
 				scanf("%s", senha);
 				getchar();
@@ -152,7 +140,7 @@ void mostrarMenuAluno(){
 						}
 						printf("Digite a nova senha novamente: ");
 						scanf("%s", senhaNovaConfirmar);
-						if(strcmp(senhaNova, senhaNovaConfirmar)){
+						if(!strcmp(senhaNova, senhaNovaConfirmar)){
 							ALUNOS[SESSION_ID-1].senha = criptografar(senhaNova);
 							printf("Senha alterada com sucesso");
 							break;

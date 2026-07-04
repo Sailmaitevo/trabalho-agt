@@ -47,6 +47,12 @@ typedef struct {
   unsigned senha;
 } Admin;
 
+typedef struct {
+	int idProfessor;
+	int idAluno;
+	int numero;
+} Faltas;
+
 // "Criptografia" (e so um djb2)
 unsigned criptografar(const unsigned char *str);
 
@@ -66,8 +72,10 @@ void deletarAdmin(int id);
 // Se delete for verdadeiro, procura as notas da prova passada e exclui
 // Se delete for facil, coloca uma nota 0 para cada aluno da turma
 void zerarNotas(int id, int delete);
-
 void editarNota(int idProva, int idAluno, float nota);
+
+// Funcao para incrementar (ou decrementar) o numero de faltas de um aluno
+void incrementarFaltas(int idProfessor, int idAluno, int incremento);
 
 // Conferem se a senha bate para o usuario
 int validarProfessor(int id, char senha[PASS_SIZE]);
@@ -80,8 +88,18 @@ int buscarAluno(char nome[NAME_SIZE]);
 int buscarAdmin(char nome[NAME_SIZE]);
 int buscarProva(char nome[NAME_SIZE], int ano, char turma);
 
+int alunoPreencherNotas(int id, int idProfessor, Nota *notas);
+int alunoPreencherFaltas(int id, Faltas *faltas);
+float alunoMedia(int id, int idProfessor);
+float alunoNota(int idProva, int idAluno);
+int alunoFaltas(int idProfessor, int idAluno);
+
+int preencherTurma(int ano, char turma, Aluno *alunos); // Preenche um vetor de alunos com todos os alunos de uma mesma turma
+int preencherProvas(int id, int ano, char turma, Prova *provas); // Preenche um vetor de provas com todas as provas aplicadas para uma turma
+
 extern Professor PROFESSORES[MAXN];
 extern Aluno ALUNOS[MAXN];
 extern Prova PROVAS[MAXN];
 extern Nota NOTAS[MAXN];
 extern Admin ADMINS[MAXN];
+extern Faltas FALTAS[MAXN];
