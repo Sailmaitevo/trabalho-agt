@@ -101,9 +101,9 @@ void admCadastrar(){
 			int valido = 0;
 			while(!valido){
 				int resultado = scanf("%d%c", &ano, &turma);
-				if (resultado && turma != '\n') {
-					consumirInput();
-				}
+				getchar();
+				consumirInput();
+				
 				if (resultado && ehLetra(turma)) {
 					if (ano < 1 || ano > 12) {
 						printf("Ano invalido. O ano deve ser de 1-9 para o ensino fundamental e 10-12 para o ensino medio.\nDigite novamente:");
