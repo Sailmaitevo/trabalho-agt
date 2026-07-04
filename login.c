@@ -1,10 +1,11 @@
 #include "login.h"
 
-void login(int (*buscar)(char*), int (*validar)(int, char[PASS_SIZE]), void (*mostrarMenu)()){
+void login(){
 	char usuario[NAME_SIZE];
 	char senha[PASS_SIZE];
 	int id;
 
+	int tipo = 0;
 	int flag = 0;
 	printf("Insira seu nome de usuario (0 para voltar): ");
 	while(1){
@@ -15,8 +16,23 @@ void login(int (*buscar)(char*), int (*validar)(int, char[PASS_SIZE]), void (*mo
 			return;
 		}
 
-		id = buscar(usuario);
-		if(id) break;
+		id = buscarAdmin(usuario);
+		if (id == 0) {
+			id = buscarProfessor(usuario);
+			if (id == 0) {
+				id = buscarAluno(usuario);
+				if (id != 0) {
+					tipo = TIPO_ALUNO;
+					break;
+				}
+			} else {
+				tipo = TIPO_PROF;
+				break;
+			}
+		} else {
+			tipo = TIPO_ADMIN;
+			break;
+		}
 
 		printf("Nome de usuario (%s) invalido!\nTente novamente (0 para voltar):", usuario);
 	}
@@ -28,7 +44,7 @@ void login(int (*buscar)(char*), int (*validar)(int, char[PASS_SIZE]), void (*mo
 	flag = 0;
 	for(int i = 0; i < 5; i++){
 		scanf("%s", senha);
-		if(validar(id, senha)){
+		if(validarSenha(id, tipo, senha)){
 			flag = 1;
 			break;
 		}
@@ -41,15 +57,15 @@ void login(int (*buscar)(char*), int (*validar)(int, char[PASS_SIZE]), void (*mo
 	}
 
 	SESSION_ID = id;
-	mostrarMenu();
-}
-
-void loginAluno(){
-	login(&buscarAluno, &validarAluno, &mostrarMenuAluno);
-}
-void loginProfessor(){
-	login(&buscarProfessor, &validarProfessor, &mostrarMenuProfessor);
-}
-void loginAdmin(){
-	login(&buscarAdmin, &validarAdmin, &mostrarMenuAdmin);
+	switch (tipo) {
+		case TIPO_ADMIN:
+			mostrarMenuAdmin();
+			break;
+		case TIPO_PROF:
+			mostrarMenuProfessor();
+			break;
+		case TIPO_ALUNO:
+			mostrarMenuAluno();
+			break;
+	}
 }

@@ -128,7 +128,7 @@ void mostrarMenuAluno(){
 				printf("Digite sua senha atual: ");
 				scanf("%s", senha);
 				getchar();
-				if(validarAluno(SESSION_ID, senha)){
+				if(validarSenha(SESSION_ID, TIPO_ALUNO, senha)){
 					while(1){
 						cabecalho();
 						printf("Digite sua nova senha (3 a %d caracteres): ", PASS_SIZE);

@@ -282,17 +282,20 @@ void deletarAdmin(int id){
     ADMINS[id-1] = admin;
 }
 
-int validarProfessor(int id, char senha[PASS_SIZE]){
-    unsigned senhaCriptografada = criptografar(senha);
-    return PROFESSORES[id-1].senha == senhaCriptografada;
-}
-int validarAluno(int id, char senha[PASS_SIZE]){
-    unsigned senhaCriptografada = criptografar(senha);
-    return ALUNOS[id-1].senha == senhaCriptografada;
-}
-int validarAdmin(int id, char senha[PASS_SIZE]){
-    unsigned senhaCriptografada = criptografar(senha);
-    return ADMINS[id-1].senha == senhaCriptografada;
+int validarSenha(int id, int tipo, char senha[PASS_SIZE]) {
+	unsigned hash = 0;
+	switch (tipo) {
+		case TIPO_ADMIN:
+			hash = ADMINS[id-1].senha;
+			break;
+		case TIPO_ALUNO:
+			hash = ALUNOS[id-1].senha;
+			break;
+		case TIPO_PROF:
+			hash = PROFESSORES[id-1].senha;
+			break;
+	}
+	return hash == criptografar(senha);
 }
 
 int buscarProfessor(char nome[NAME_SIZE]){

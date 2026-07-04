@@ -441,7 +441,7 @@ void mostrarMenuAdmin(){
 				scanf("%s", senha);
 				getchar();
 				
-				if(validarAdmin(SESSION_ID, senha)){
+				if(validarSenha(SESSION_ID, TIPO_ADMIN, senha)){
 					cabecalho();
 					while(1){
 						printf("Digite sua nova senha (3 a %d caracteres): ", PASS_SIZE);

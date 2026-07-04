@@ -17,23 +17,8 @@ void cabecalho(){
 
 void menuLogin(){
   cabecalho();
-  int opcao;
-  printf("Bem-vindo, escolha uma forma de login:\n1- Aluno\n2- Professor\n3- Administrador\n");
-  scanf("%d", &opcao);
-  switch(opcao){
-    case 1:
-      loginAluno();
-      return;
-    case 2:
-      loginProfessor();
-      return;
-    case 3:
-      loginAdmin();
-      return;
-    default:
-      menuLogin();
-      return;
-  }
+  printf("Seja bem-vindo.");
+  login();
 }
 
 void padString(char *string, int size){
@@ -45,9 +30,14 @@ void padString(char *string, int size){
 
 void esperar(){
 	printf("\n\nPressione ENTER para continuar");
-	
-	int c;
-	while((c = getchar()) != '\n');
-	fflush(stdout);
-	while((c = getchar()) != '\n');
+	consumirInput();
+}
+
+void mostrarAreaInput() {
+  printf("\n>");
+}
+
+void consumirInput() {
+  int c;
+  while ((c = getchar()) != '\n' && c != EOF);
 }

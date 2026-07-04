@@ -7,6 +7,9 @@
 #define PASS_SIZE 16 // Esse e o tamanho maximo que uma senha pode ter (em caracteres)
 #define NAME_SIZE 21 // Esse e o tamanho maximo de um nome (de usuario ou de prova)
 #define MAXN 2048 // Esse e o tamanho maximo dos vetores
+#define TIPO_ADMIN 1
+#define TIPO_PROF 2
+#define TIPO_ALUNO 3
 
 void importarDatabase(); // Essa funcao importa o database, deve ser usada so no inicio da execucao
 void sobrescreverDatabase(); // Essa funcao sobrescreve o database com os vetores devidamente alterados, deve ser usada so ao fim das sessoes
@@ -78,9 +81,7 @@ void editarNota(int idProva, int idAluno, float nota);
 void incrementarFaltas(int idProfessor, int idAluno, int incremento);
 
 // Conferem se a senha bate para o usuario
-int validarProfessor(int id, char senha[PASS_SIZE]);
-int validarAluno(int id, char senha[PASS_SIZE]);
-int validarAdmin(int id, char senha[PASS_SIZE]);
+int validarSenha(int id, int tipo, char senha[PASS_SIZE]);
 
 // Busca usuarios e provas pelo nome
 int buscarProfessor(char nome[NAME_SIZE]);

@@ -423,7 +423,7 @@ void mostrarMenuProfessor(){
 				printf("Digite sua senha atual: ");
 				scanf("%s", senha);
 				getchar();
-				if(validarProfessor(SESSION_ID, senha)){
+				if(validarSenha(SESSION_ID, TIPO_PROF, senha)){
 					while(1){
 						cabecalho();
 						printf("Digite sua nova senha (3 a %d caracteres): ", PASS_SIZE);
