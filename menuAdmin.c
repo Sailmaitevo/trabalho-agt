@@ -305,35 +305,7 @@ void mostrarMenuAdmin(){
 				admEditar();
 				break;
 			case 7:
-				cabecalho();
-				printf("Digite sua senha atual: ");
-				digitaString(PASS_SIZE, senha);
-				
-				if(validarSenha(SESSION_ID, TIPO_ADMIN, senha)){
-					cabecalho();
-					printf("Digite sua nova senha (3 a %d caracteres): ", PASS_SIZE - 1);
-					int valido = 0;
-					while(!valido){
-						digitaString(PASS_SIZE, senhaNova);
-						if(strlen(senhaNova) > 2) {
-							valido = 1;
-						} else {
-							printf("Input invalido, tente de novo: ");
-						}
-					}
-					printf("Digite a nova senha novamente: ");
-					digitaString(PASS_SIZE, senhaNovaConfirmar);
-					if(!strcmp(senhaNova, senhaNovaConfirmar)){
-						ADMINS[SESSION_ID-1].senha = criptografar(senhaNova);
-						printf("Senha alterada com sucesso");
-					} else {
-						printf("ERRO: As duas senhas nao batem");
-					}
-					esperar();
-				} else {
-					printf("Senha incorreta.");
-					esperar();
-				}
+				mudarSenha(TIPO_ADMIN);
 				break;
 		}
 	} while(opcao);

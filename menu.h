@@ -19,3 +19,4 @@ void digitaTurmaValida(int *ano, char *turma);
 void digitaMateriaValida(char materia[MATERIA_SIZE]);
 int digitaOpcao(int min, int max);
 int inputTurma(int *ano, char *turma);
+void mudarSenha();

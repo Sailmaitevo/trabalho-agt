@@ -158,3 +158,49 @@ void digitaMateriaValida(char materia[MATERIA_SIZE]) {
 		}
 	}
 }
+
+void mudarSenha(int tipo) {
+	cabecalho();
+	char senha[PASS_SIZE];
+	char senhaNova[PASS_SIZE];
+	char senhaNovaConfirmar[PASS_SIZE];
+	printf("Digite sua senha atual: ");
+	digitaString(PASS_SIZE, senha);
+	
+	if(validarSenha(SESSION_ID, tipo, senha)){
+		cabecalho();
+		printf("Digite sua nova senha (3 a %d caracteres): ", PASS_SIZE - 1);
+		int valido = 0;
+		while(!valido){
+			digitaString(PASS_SIZE, senhaNova);
+			if(strlen(senhaNova) > 2) {
+				valido = 1;
+			} else {
+				printf("Input invalido, tente de novo: ");
+			}
+		}
+		printf("Digite a nova senha novamente: ");
+		digitaString(PASS_SIZE, senhaNovaConfirmar);
+		if(!strcmp(senhaNova, senhaNovaConfirmar)){
+			unsigned hash = criptografar(senhaNova);
+			switch (tipo) {
+				case TIPO_ADMIN:
+					ADMINS[SESSION_ID-1].senha = hash;
+					break;
+				case TIPO_ALUNO:
+					ALUNOS[SESSION_ID-1].senha = hash;
+					break;
+				case TIPO_PROF:
+					PROFESSORES[SESSION_ID-1].senha = hash;
+					break;
+			}
+			printf("Senha alterada com sucesso");
+		} else {
+			printf("ERRO: As duas senhas nao batem");
+		}
+		esperar();
+	} else {
+		printf("Senha incorreta.");
+		esperar();
+	}
+}

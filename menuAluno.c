@@ -75,7 +75,7 @@ void alunoVerMedias(int id){
 	
 	int opcao;
 	printf("\n\nInsira uma materia (utilize o numero) para ver detalhes ou 0 para voltar: ");
-	scanf("%d", &opcao);
+	opcao = digitaOpcao(0, maxIndex);
 	if(opcao >= 1 && opcao <= maxIndex){
 		alunoVerNotas(id, materias[opcao-1].idProfessor);
 	}
@@ -109,7 +109,7 @@ void mostrarMenuAluno(){
 		printf("2 - ver faltas\n");
 		printf("3 - alterar senha\n");
 		
-		scanf("%d", &opcao);
+		opcao = digitaOpcao(0, 3);
 		
 		switch(opcao){
 			char senha[PASS_SIZE], senhaNova[PASS_SIZE], senhaNovaConfirmar[PASS_SIZE];
@@ -125,30 +125,7 @@ void mostrarMenuAluno(){
 				alunoVerFaltas(SESSION_ID);
 				break;
 			case 3:
-				printf("Digite sua senha atual: ");
-				scanf("%s", senha);
-				getchar();
-				if(validarSenha(SESSION_ID, TIPO_ALUNO, senha)){
-					while(1){
-						cabecalho();
-						printf("Digite sua nova senha (3 a %d caracteres): ", PASS_SIZE);
-						while(1){
-							scanf("%s", senhaNova);
-							getchar();
-							if(strlen(senha) > 2) break;
-							printf("Input invalido, tente de novo: ");
-						}
-						printf("Digite a nova senha novamente: ");
-						scanf("%s", senhaNovaConfirmar);
-						if(!strcmp(senhaNova, senhaNovaConfirmar)){
-							ALUNOS[SESSION_ID-1].senha = criptografar(senhaNova);
-							printf("Senha alterada com sucesso");
-							break;
-						} else {
-							printf("As duas senhas nao batem, tente novamente");
-						}
-					}
-				}
+				mudarSenha(TIPO_ALUNO);
 				break;
 		}
 	} while(opcao);

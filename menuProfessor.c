@@ -492,30 +492,7 @@ void mostrarMenuProfessor(){
 				professorTabelaDeNotas(SESSION_ID, 1);
 				break;
 			case 10:
-				printf("Digite sua senha atual: ");
-				scanf("%s", senha);
-				getchar();
-				if(validarSenha(SESSION_ID, TIPO_PROF, senha)){
-					while(1){
-						cabecalho();
-						printf("Digite sua nova senha (3 a %d caracteres): ", PASS_SIZE);
-						while(1){
-							scanf("%s", senhaNova);
-							getchar();
-							if(strlen(senha) > 2) break;
-							printf("Input invalido, tente de novo: ");
-						}
-						printf("Digite a nova senha novamente: ");
-						scanf("%s", senhaNovaConfirmar);
-						if(!strcmp(senhaNova, senhaNovaConfirmar)){
-							PROFESSORES[SESSION_ID-1].senha = criptografar(senhaNova);
-							printf("Senha alterada com sucesso");
-							break;
-						} else {
-							printf("As duas senhas nao batem, tente novamente");
-						}
-					}
-				}
+				mudarSenha(TIPO_PROF);
 				break;
 		}
 	} while(opcao);
