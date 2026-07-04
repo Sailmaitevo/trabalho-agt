@@ -300,7 +300,7 @@ int validarSenha(int id, int tipo, char senha[PASS_SIZE]) {
 
 int buscarProfessor(char nome[NAME_SIZE], int capitalizacaoImporta){
     for(int i = 0; i < MAXN; i++){
-			if (compararNomes(PROFESSORES[i].nome, nome, capitalizacaoImporta)) {
+			if (PROFESSORES[i].id != 0 && compararNomes(PROFESSORES[i].nome, nome, capitalizacaoImporta)) {
 				return i + 1;
 			}
     }
@@ -308,7 +308,7 @@ int buscarProfessor(char nome[NAME_SIZE], int capitalizacaoImporta){
 }
 int buscarAluno(char nome[NAME_SIZE], int capitalizacaoImporta){
 	for(int i = 0; i < MAXN; i++){
-		if (compararNomes(ALUNOS[i].nome, nome, capitalizacaoImporta)) {
+		if (ALUNOS[i].id != 0 && compararNomes(ALUNOS[i].nome, nome, capitalizacaoImporta)) {
 			return i + 1;
 		}
 	}
@@ -316,7 +316,7 @@ int buscarAluno(char nome[NAME_SIZE], int capitalizacaoImporta){
 }
 int buscarAdmin(char nome[NAME_SIZE], int capitalizacaoImporta){
     for(int i = 0; i < MAXN; i++){
-				if(compararNomes(ADMINS[i].nome, nome, capitalizacaoImporta)) {
+				if(ALUNOS[i].id != 0 && compararNomes(ADMINS[i].nome, nome, capitalizacaoImporta)) {
 					return i + 1;
 				}
     }
