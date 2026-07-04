@@ -17,7 +17,6 @@ void cabecalho(){
 
 void menuLogin(){
   cabecalho();
-  printf("Seja bem-vindo.");
   login();
 }
 

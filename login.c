@@ -1,4 +1,11 @@
 #include "login.h"
+#define LIMITE_TENTATIVA 5
+
+void digitaString(int tamanho, char str[tamanho]) {
+  mostrarAreaInput();
+  fgets(str, tamanho, stdin);
+  str[strcspn(str, "\n")] = '\0';
+}
 
 void login(){
 	char usuario[NAME_SIZE];
@@ -7,14 +14,10 @@ void login(){
 
 	int tipo = 0;
 	int flag = 0;
-	printf("Insira seu nome de usuario (0 para voltar): ");
-	while(1){
-		scanf("%s", usuario);
-
-		if(!strcmp(usuario, "0")){
-			menuLogin();
-			return;
-		}
+	printf("Digite o seu nome:");
+	int valido = 0;
+	while(!valido){
+		digitaString(NAME_SIZE, usuario);
 
 		id = buscarAdmin(usuario);
 		if (id == 0) {
@@ -23,27 +26,29 @@ void login(){
 				id = buscarAluno(usuario);
 				if (id != 0) {
 					tipo = TIPO_ALUNO;
-					break;
+					valido = 1;
 				}
 			} else {
 				tipo = TIPO_PROF;
-				break;
+				valido = 1;
 			}
 		} else {
 			tipo = TIPO_ADMIN;
-			break;
+			valido = 1;
 		}
 
-		printf("Nome de usuario (%s) invalido!\nTente novamente (0 para voltar):", usuario);
+		if (!valido) {
+			printf("Nome de usuario (%s) invalido!\nTente novamente:", usuario);
+		}
 	}
 
 	cabecalho();
 
-	printf("Ola, %s!\nInsira sua senha: ", usuario);
+	printf("Insira a senha de %s: ", usuario);
 
 	flag = 0;
-	for(int i = 0; i < 5; i++){
-		scanf("%s", senha);
+	for(int i = 0; i < LIMITE_TENTATIVA; i++){
+		digitaString(PASS_SIZE, senha);
 		if(validarSenha(id, tipo, senha)){
 			flag = 1;
 			break;
@@ -52,8 +57,9 @@ void login(){
 		printf("Senha incorreta, tente novamente: ");
 	}
 	if(!flag){
-		printf("Senha errada inserida mais de 5 vezes, encerrando o programa");
-		exit(EXIT_FAILURE);
+		limpar();
+		printf("Senha errada inserida %d vezes, encerrando o programa...", LIMITE_TENTATIVA);
+		exit(0);
 	}
 
 	SESSION_ID = id;
