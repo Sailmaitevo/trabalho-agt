@@ -2,7 +2,7 @@
 
 void admListarProfessores(){
 	cabecalho();
-	printf("id - nome - materia");
+	printf("ID - Nome - Materia");
 	for(int i = 0; i < MAXN; i++){
 		Professor professor = PROFESSORES[i-1];
 		if(!professor.id) continue;
@@ -13,12 +13,12 @@ void admListarProfessores(){
 }
 void admListarAlunos(){
 	cabecalho();
-	printf("id - nome - turma - media");
+	printf("ID - Nome - Turma");
 	for(int i = 0; i < MAXN; i++){
 		Aluno aluno = ALUNOS[i-1];
 		if(!aluno.id) continue;
 		
-		printf("\n%d - %s - %d%c - %.1f", aluno.id, aluno.nome, aluno.ano, aluno.turma, alunoMedia(aluno.id, 0));
+		printf("\n%d - %s - %d%c", aluno.id, aluno.nome, aluno.ano, aluno.turma);
 	}
 	esperar();
 }
@@ -96,7 +96,7 @@ void admCadastrar(){
 	char senhaPadrao[PASS_SIZE] = "123456";
 	switch(permissao){
 		int ano, id;
-		char turma, materia[4];
+		char turma, materia[MATERIA_SIZE];
 		case 1:
 			printf("Digite a turma de %s (Ano e letra, ex. 9A):", nome);
 			mostrarAreaInput();
@@ -142,15 +142,27 @@ void admCadastrar(){
 			esperar();
 			break;
 		case 2:
-			printf("Digite a materia d@ professor(a) (3 caracteres): ");
-			while(1){
-				scanf("%s", materia);
-				getchar();
-				if(strlen(materia) == 3 && !strchr(materia, ' ')) break;
-				printf("Tente novamente: ");
+			printf("Digite a materia d@ professor@ (3 caracteres):");
+			int validoMateria = 0;
+			while(!validoMateria){
+				digitaString(MATERIA_SIZE, materia);
+				int tudoLetra = 1;
+				for (int i = 0; i < MATERIA_SIZE - 1; i++) {
+					if (!ehLetra(materia[i])) {
+						tudoLetra = 0;
+						break;
+					} else {
+						materia[i] = fazerMaiusculo(materia[i]);
+					}
+				}
+				if(strlen(materia) == MATERIA_SIZE - 1 && tudoLetra) {
+					validoMateria = 1;
+				} else {
+					printf("Tente novamente:");
+				}
 			}
 			id = cadastrarProfessor(nome, senhaPadrao, materia);
-			printf("Professor %s criado sem sucesso para a materia %s com o id %d\nA senha padrao e 123456", nome, materia, id);
+			printf("Professor@ %s criado com sucesso para a materia %s com o id %d\nA senha padrao e 123456", nome, materia, id);
 			esperar();
 			break;
 		case 3:

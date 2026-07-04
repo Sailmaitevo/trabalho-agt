@@ -4,6 +4,14 @@
 void digitaString(int tamanho, char str[tamanho]) {
   mostrarAreaInput();
   fgets(str, tamanho, stdin);
+
+	// ver se o newline foi lido ou nao
+	if (strchr(str, '\n') != NULL) {
+		str[strcspn(str, "\n")] = '\0';
+	} else {
+		consumirInput();
+	}
+
   str[strcspn(str, "\n")] = '\0';
 }
 
