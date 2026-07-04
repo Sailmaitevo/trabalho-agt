@@ -91,6 +91,7 @@ void admCadastrar(){
 	}
 	
 	cabecalho();
+	char senhaPadrao[PASS_SIZE] = "123456";
 	switch(permissao){
 		int ano, id;
 		char turma, materia[4];
@@ -114,7 +115,7 @@ void admCadastrar(){
 				}
 			}
 			
-			id = cadastrarAluno(nome, "123456", ano, turma);
+			id = cadastrarAluno(nome, senhaPadrao, ano, turma);
 			printf("Alun@ %s criad@ com sucesso na turma %d%c com o id %d\nA senha padrao e 123456", nome, ano, turma, id);
 			esperar();
 			break;
@@ -126,12 +127,12 @@ void admCadastrar(){
 				if(strlen(materia) == 3 && !strchr(materia, ' ')) break;
 				printf("Tente novamente: ");
 			}
-			id = cadastrarProfessor(nome, "123456", materia);
+			id = cadastrarProfessor(nome, senhaPadrao, materia);
 			printf("Professor %s criado sem sucesso para a materia %s com o id %d\nA senha padrao e 123456", nome, materia, id);
 			esperar();
 			break;
 		case 3:
-			id = cadastrarAdmin(nome, "123456");
+			id = cadastrarAdmin(nome, senhaPadrao);
 			printf("Admin %s criado com sucesso com o id %d\nA senha padrao e 123456", nome, id);
 			esperar();
 			break;
