@@ -31,10 +31,13 @@ void admListarTurmas(){
 	Turma jaForam[MAXN] = {};
 	int maiorIndex = -1;
 	
-	printf("turma - qtd - media");
+	printf("Turma - Alunos");
 	for(int i = 0; i < MAXN; i++){
 		Turma turma = {ALUNOS[i].ano, ALUNOS[i].turma};
-		
+		if (turma.ano == 0) {
+			break;
+		}
+
 		int flag = 0;
 		for(int j = 0; j <= maiorIndex; j++){
 			if(turma.ano == jaForam[j].ano && turma.turma == jaForam[j].turma){
@@ -44,11 +47,11 @@ void admListarTurmas(){
 		}
 		if(flag) continue;
 		
-		jaForam[maiorIndex] = turma;
 		maiorIndex++;
+		jaForam[maiorIndex] = turma;
 	}
-	
-	for(int i = 0; i < maiorIndex; i++){
+
+	for(int i = 0; i <= maiorIndex; i++){
 		int ano = jaForam[i].ano;
 		char turma = jaForam[i].turma;
 		
@@ -56,12 +59,7 @@ void admListarTurmas(){
 		Aluno alunos[MAXN] = {};
 		int tamanho = preencherTurma(ano, turma, alunos);
 		
-		for(int i = 0; i < tamanho; i++){
-			soma += alunoMedia(alunos[i].id, 0);
-		}
-		float media = tamanho ? soma/tamanho : 0;
-		
-		printf("\n%d%c - %d - %.1f", ano, turma, tamanho, soma/tamanho);
+		printf("\n%d%c - %d", ano, turma, tamanho);
 	}
 	
 	esperar();
