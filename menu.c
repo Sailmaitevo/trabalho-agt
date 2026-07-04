@@ -122,10 +122,8 @@ int digitaOpcao(int min, int max) {
 	while (!valido) {
 		mostrarAreaInput();
 		int resultado = scanf("%d", &opcao);
+		consumirInput();
 		if (!resultado || !(opcao >= min && opcao <= max)) {
-			if (!resultado) {
-				consumirInput();
-			}
 			printf("Tente novamente:");
 		} else {
 			valido = 1;

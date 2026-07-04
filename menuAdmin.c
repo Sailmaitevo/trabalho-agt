@@ -277,23 +277,7 @@ void mostrarMenuAdmin(){
 		printf("6 - Editar dados de um usuario\n");
 		printf("7 - Alterar senha");
 		
-		mostrarAreaInput();
-		int valido = 0;
-		while(!valido) {
-			int resultado = scanf("%d", &opcao);
-			consumirInput();
-			if (resultado) {
-				if (opcao < 0 || opcao > 7) {
-					printf("Digite uma opcao valida:");
-					mostrarAreaInput();
-				} else {
-					valido = 1;
-				}
-			} else {
-				printf("Digite um numero:");
-				mostrarAreaInput();
-			}
-		}
+		opcao = digitaOpcao(0, 7);
 		
 		switch(opcao){
 			char senha[PASS_SIZE], senhaNova[PASS_SIZE], senhaNovaConfirmar[PASS_SIZE];
@@ -321,31 +305,34 @@ void mostrarMenuAdmin(){
 				admEditar();
 				break;
 			case 7:
+				cabecalho();
 				printf("Digite sua senha atual: ");
-				scanf("%s", senha);
-				getchar();
+				digitaString(PASS_SIZE, senha);
 				
 				if(validarSenha(SESSION_ID, TIPO_ADMIN, senha)){
 					cabecalho();
-					while(1){
-						printf("Digite sua nova senha (3 a %d caracteres): ", PASS_SIZE);
-						while(1){
-							scanf("%s", senhaNova);
-							getchar();
-							if(strlen(senha) > 2) break;
+					printf("Digite sua nova senha (3 a %d caracteres): ", PASS_SIZE - 1);
+					int valido = 0;
+					while(!valido){
+						digitaString(PASS_SIZE, senhaNova);
+						if(strlen(senhaNova) > 2) {
+							valido = 1;
+						} else {
 							printf("Input invalido, tente de novo: ");
 						}
-						printf("Digite a nova senha novamente: ");
-						scanf("%s", senhaNovaConfirmar);
-						if(!strcmp(senhaNova, senhaNovaConfirmar)){
-							ADMINS[SESSION_ID-1].senha = criptografar(senhaNova);
-							printf("Senha alterada com sucesso");
-							break;
-						} else {
-							cabecalho();
-							printf("As duas senhas nao batem, tente novamente\n");
-						}
 					}
+					printf("Digite a nova senha novamente: ");
+					digitaString(PASS_SIZE, senhaNovaConfirmar);
+					if(!strcmp(senhaNova, senhaNovaConfirmar)){
+						ADMINS[SESSION_ID-1].senha = criptografar(senhaNova);
+						printf("Senha alterada com sucesso");
+					} else {
+						printf("ERRO: As duas senhas nao batem");
+					}
+					esperar();
+				} else {
+					printf("Senha incorreta.");
+					esperar();
 				}
 				break;
 		}
