@@ -101,6 +101,7 @@ void admCadastrar(){
 			int valido = 0;
 			while(!valido){
 				int resultado = scanf("%d%c", &ano, &turma);
+				getchar();
 				if (resultado && turma != '\n') {
 					consumirInput();
 				}
