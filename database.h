@@ -12,6 +12,9 @@
 #define TIPO_ALUNO 3
 #define TURMA_SIZE 40
 #define MATERIA_SIZE 4
+#define AULAS_NUM 72
+#define MEDIA_MIN 7
+#define EXAME_MIN 3
 
 void importarDatabase(); // Essa funcao importa o database, deve ser usada so no inicio da execucao
 void sobrescreverDatabase(); // Essa funcao sobrescreve o database com os vetores devidamente alterados, deve ser usada so ao fim das sessoes

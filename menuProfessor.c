@@ -12,16 +12,19 @@ void professorListarTurmas(int id){
     int maxIndex = 0;
 	
     for(int i = 0; i < MAXN; i++){
-		int flag = 1;
-		Aluno aluno = ALUNOS[i];
-        for(int j = 0; j <= maxIndex; j++){ // percorre o array de turmas vendo se ja existe a struct da turma do aluno
-            if(aluno.ano == turmas[j].ano && aluno.turma == turmas[j].turma){
-				turmas[j].soma += alunoMedia(aluno.id, id);
-				turmas[j].contador++;
-				flag = 0;
-            }
-        }
-        if(!flag) continue;
+			int flag = 1;
+			Aluno aluno = ALUNOS[i];
+			for(int j = 0; j <= maxIndex; j++){ // percorre o array de turmas vendo se ja existe a struct da turma do aluno
+				if(aluno.ano == turmas[j].ano && aluno.turma == turmas[j].turma){
+					int mediaAluno = alunoMedia(aluno.id, id);
+					if (mediaAluno != -1) {
+						turmas[j].soma += 
+						turmas[j].contador++;
+					}
+					flag = 0;
+				}
+			}
+			if(!flag) continue;
         
 		Turma aux = {aluno.ano, aluno.turma, 0, 0};
         turmas[maxIndex] = aux;
@@ -29,16 +32,21 @@ void professorListarTurmas(int id){
     }
 	
 	cabecalho();
-    float soma = 0;
-    int contador = 0;
-    for(int i = 0; i < maxIndex; i++){
-		float media = turmas[i].soma/turmas[i].contador;
-		printf("%d%c - %.1f\n", turmas[i].ano, turmas[i].turma, media);
-        soma += media;
-        contador++;
-    }
-	
-    printf("Media geral: %.1f", soma/contador);
+	int turmasComNota = 0;
+	for(int i = 0; i < maxIndex; i++){
+		if (turmas[i].contador) {
+			if (turmasComNota == 0) {
+				printf("Turma - Media\n");
+			}
+			turmasComNota++;
+			printf("%d%c - %1.f\n", turmas[i].ano, turmas[i].turma, turmas[i].soma/turmas[i].contador);
+		}
+	}
+
+	if (turmasComNota == 0) {
+		printf("Nenhuma turma com nota ainda...\n");
+	}
+	esperar();
 }
 int professorListarNotas(int id, int ano, char turma){
 	Aluno alunos[TURMA_SIZE] = {};
@@ -75,7 +83,11 @@ void professorConsultarNotas(int id, int idAluno){
 	esperar();
 }
 
-void professorTabelaDeNotas(int id){
+float calcularMediaExame(float media) {
+  return (50 - (media*6)) / 4;
+}
+
+void professorTabelaDeNotas(int id, int final){
 	int ano; char turma;
 	
 	int tamanhoA;
@@ -83,8 +95,7 @@ void professorTabelaDeNotas(int id){
 	
 	printf("\nEscolha uma turma para fazer a tabela: ");
 	while(1){
-		scanf("%d%c", &ano, &turma);
-		getchar();
+		inputTurma(&ano, &turma);
 
 		tamanhoA = preencherTurma(ano, turma, alunos);
 		
@@ -107,18 +118,39 @@ void professorTabelaDeNotas(int id){
 	padString(s, NAME_SIZE);
 	printf("\n| %s |", s);
 	
-	for(int i = 0; i < tamanhoP; i++){
-		char c[NAME_SIZE];
-		strcpy(c, provas[i].nome);
-		padString(c, NAME_SIZE);
-		printf(" %s |", c);
+	if (!final) {
+		for(int i = 0; i < tamanhoP; i++){
+			char c[NAME_SIZE];
+			strcpy(c, provas[i].nome);
+			padString(c, NAME_SIZE);
+			printf(" %s |", c);
+		}
 	}
+
+	if (final) {
+		strcpy(s, "Media");
+		padString(s, NAME_SIZE);
+		printf(" %s |", s);
+	}
+
 	strcpy(s, "Faltas");
 	padString(s, NAME_SIZE);
 	printf(" %s |", s);
+
+	if (final) {
+		strcpy(s, "Resultado");
+		padString(s, NAME_SIZE);
+		printf(" %s |", s);
+	
+		strcpy(s, "Nota Exame");
+		padString(s, NAME_SIZE);
+		printf(" %s |", s);
+	}
 	
 	for(int i = 0; i < tamanhoA; i++){
 		char n[NAME_SIZE];
+		float media = 0;
+
 		strcpy(n, alunos[i].nome);
 		padString(n, NAME_SIZE);
 		printf("\n| %s |", n);
@@ -128,17 +160,58 @@ void professorTabelaDeNotas(int id){
 		
 		for(int j = 0; j < tamanhoP; j++){
 			char aux[NAME_SIZE];
-			sprintf(aux, "%.1f", alunoNota(provas[j].id, alunos[i].id));
-			padString(aux, NAME_SIZE);
-			
-			sprintf(c+strlen(c), " %s |", aux);
+			float notaProva = alunoNota(provas[j].id, alunos[i].id);
+			media += notaProva;
+
+			if (!final) {
+				sprintf(aux, "%.1f", notaProva);
+				padString(aux, NAME_SIZE);
+				
+				sprintf(c+strlen(c), " %s |", aux);
+			}
 		}
 		printf("%s", c);
-		
+
+		if (final) {
+			strcpy(n, "");
+			sprintf(n, "%.1f", media / tamanhoP);
+			padString(n, NAME_SIZE);
+			printf(" %s |", n);
+		}
+
+		int faltas = alunoFaltas(id, alunos[i].id);
+
 		strcpy(n, "");
-		sprintf(n, "%d", alunoFaltas(id, alunos[i].id));
+		sprintf(n, "%d", faltas);
 		padString(n, NAME_SIZE);
 		printf(" %s |", n);
+
+		if (final) {
+			int exame = 0;
+			strcpy(n, "");
+			if (faltas > AULAS_NUM / 4) {
+				sprintf(n, "REPROVAD@ POR FALTA");
+			} else if (media < EXAME_MIN) {
+				sprintf(n, "REPROVAD@");
+			} else if (media < MEDIA_MIN) {
+				exame = 1;
+				sprintf(n, "EM EXAME");
+			} else {
+				sprintf(n, "APROVAD@");
+			}
+			padString(n, NAME_SIZE);
+			printf(" %s |", n);
+	
+			strcpy(n, "");
+			if (exame) {
+				sprintf(n, "%d", calcularMediaExame(media));
+			} else {
+				sprintf(n, " - ");
+			}
+			
+			padString(n, NAME_SIZE);
+			printf(" %s |", n);
+		}
 	}
 	
 	esperar();
@@ -169,33 +242,36 @@ void professorCriarProva(int id){
 	
 	cabecalho();
 	printf("Cadastrando prova nova\n");
-	do {
-		printf("Insira a turma: ");
-		scanf("%d%c", &ano, &turma);
-		getchar();
-		
-		Aluno alunos[MAXN];
-		tamanho = preencherTurma(ano, turma, alunos);
-		if(!tamanho) printf("Turma invalida, tente de novo\n");
-	} while(!tamanho);
+	printf("Insira a turma: ");
+	int resultado = scanf("%d%c", &ano, &turma);
+	if (!resultado || turma != '\n') {
+		consumirInput();
+	}
 	
-	int confirma;
+	Aluno alunos[MAXN];
+	tamanho = preencherTurma(ano, turma, alunos);
+	if(!tamanho) {
+		printf("Turma invalida.\n");
+		esperar();
+		return;
+	}
+	
+	int confirma = 0;
 	do {
-		printf("Insira o nome para a prova (ate %d caracteres sem espaco): ", NAME_SIZE - 1);
-		scanf("%s", &nome);
-		getchar();
+		printf("Insira o nome para a prova (ate %d caracteres): ", NAME_SIZE - 1);
+		digitaString(NAME_SIZE, nome);
 		
 		if(buscarProva(nome, ano, turma)){
 			printf("Prova ja existe, tente novamente.\n");
 			continue;
 		}
 		
-		printf("O nome e %s, confirma? (s/n)", nome);
-		confirma = getchar();
-	} while (confirma != 's');
+		printf("O nome e %s, confirma? (s para confirmar)", nome);
+		confirma = inputSimNao();
+	} while (!confirma);
 	
 	cabecalho();
-	printf("Cadastrando %s\n para %d%c", nome);
+	printf("Cadastrando %s\n para %d%c", nome, ano, turma);
 	
 
 	cadastrarProva(nome, id, ano, turma);
@@ -206,13 +282,13 @@ void professorEditarNotas(int id, int unico){
 	char turma;
 	Aluno alunos[MAXN];
 	
-	do{
-		scanf("%d%c", &ano, &turma);
-		getchar();
-		tamanhoA = preencherTurma(ano, turma, alunos);
-		
-		if(!tamanhoA) printf("Turma invalida, tente novamente: ");
-	} while(!tamanhoA);
+	inputTurma(&ano, &turma);
+	tamanhoA = preencherTurma(ano, turma, alunos);
+	
+	if(!tamanhoA) {
+		printf("Turma invalida. ");
+		return;
+	}
 	
 	cabecalho();
 	printf("Provas da turma %d%c", ano, turma);
@@ -225,7 +301,7 @@ void professorEditarNotas(int id, int unico){
 	char nomeProva[NAME_SIZE];
 	int idProva;
 	do {
-		scanf("%s", nomeProva);
+		digitaString(NAME_SIZE, nomeProva);
 		idProva = buscarProva(nomeProva, ano, turma);
 		if(!idProva) printf("Insira uma prova existente");
 	} while(!idProva);
@@ -238,18 +314,23 @@ void professorEditarNotas(int id, int unico){
 		printf("Notas dos alunos da turma %d%c em %s", ano, turma, nomeProva);
 		printf("Alun@ - Nota:");
 		
+		printf("O q eh isso %d\n", tamanhoA);
 		for(int i = 0; i < tamanhoA; i++){
-			printf("\n%s - %.1f", alunos[i].id, alunos[i].nome, alunoNota(idProva, alunos[i].id));
+			printf("o q nisso %d\n", i);
+			printf("\n%s - %.1f", alunos[i].nome, alunoNota(idProva, alunos[i].id));
 		}
 		
 		printf("\n\nEscolha um aluno: ");
+		int alunoExiste = 0;
 		do {
-			scanf("%s", nomeAluno);
-			getchar();
+			digitaString(NAME_SIZE, nomeAluno);
 			idAluno = buscarAluno(nomeAluno, 0);
-			if(!idAluno || ALUNOS[idAluno].ano != ano || ALUNOS[idAluno].turma != turma)
+
+			alunoExiste = idAluno && ALUNOS[idAluno - 1].ano == ano && ALUNOS[idAluno - 1].turma == turma;
+			if (!alunoExiste) {
 				printf("Insira um aluno existente dessa turma");
-		} while(!idAluno);
+			}
+		} while(!alunoExiste);
 		
 		float nota;
 		printf("Insira a nota de %s em %s: ", ALUNOS[idAluno-1].nome, nomeProva);
@@ -263,11 +344,13 @@ void professorEditarNotas(int id, int unico){
 	} else {
 		for(int i = 0; i < tamanhoA; i++){
 			cabecalho();
-			printf("%s\n%s\nNota atual: %.1f\nNova nota: ", nomeProva, alunos[i].nome, alunoNota(idProva, alunos[i].id));
+			float notaAluno = alunoNota(idProva, alunos[i].id);
+			printf("%s\n%s\nNota atual: %.1f\nNova nota: ", nomeProva, alunos[i].nome, notaAluno);
 			
 			float nota;
 			while(1){
 				scanf("%f", &nota);
+				consumirInput();
 				if(nota <= 10 && nota >= 0) break;
 				printf("A nota deve estar entre 0 e 10, tente novamente: ");
 			}
@@ -283,8 +366,7 @@ void professorIncrementarFaltas(int id){
 	Aluno alunos[MAXN];
 	
 	do{
-		scanf("%d%c", &ano, &turma);
-		getchar();
+		inputTurma(&ano, &turma);
 		tamanho = preencherTurma(ano, turma, alunos);
 		
 		if(!tamanho) printf("Turma invalida, tente novamente: ");
@@ -298,20 +380,23 @@ void professorIncrementarFaltas(int id){
 	
 	printf("\n\nEscolha um aluno: ");
 	
-	char nomeAluno[MAXN];
+	char nomeAluno[NAME_SIZE];
 	int idAluno;
+	int existe = 0;
 	do {
-		scanf("%s", nomeAluno);
+		digitaString(NAME_SIZE, nomeAluno);
 		idAluno = buscarAluno(nomeAluno, 0);
-		if(!idAluno || ALUNOS[idAluno-1].ano != ano || ALUNOS[idAluno-1].turma != turma)
+		existe = !(!idAluno || ALUNOS[idAluno-1].ano != ano || ALUNOS[idAluno-1].turma != turma);
+		if(!existe)
 			printf("Insira um aluno existente e dessa turma: ");
-	} while (!idAluno);
+	} while (!existe);
 	
 	cabecalho();
 	int incremento;
 	printf("%s - %d faltas", ALUNOS[idAluno-1].nome, alunoFaltas(id, idAluno));
 	printf("\nQuantas faltas devem ser incrementadas? (numeros negativos podem ser usados) ");
 	scanf("%d", &incremento);
+	consumirInput();
 	incrementarFaltas(id, idAluno, incremento);
 	
 	cabecalho();
@@ -366,10 +451,11 @@ void mostrarMenuProfessor(){
 		printf("5 - Editar notas de um unico aluno\n");
 		printf("6 - Incrementar faltas de um aluno\n");
 		printf("7 - Excluir prova\n");
-		printf("8 - Gerar tabela de notas\n");
-		printf("9 - alterar senha\n");
+		printf("8 - Gerar tabela de nota das provas\n");
+		printf("9 - Gerar tabela de nota final\n");
+		printf("10 - Alterar senha\n");
 		
-		scanf("%d", &opcao);
+		opcao = digitaOpcao(0, 10);
 		
 		switch(opcao){
 			char senha[PASS_SIZE], senhaNova[PASS_SIZE], senhaNovaConfirmar[PASS_SIZE];
@@ -380,23 +466,6 @@ void mostrarMenuProfessor(){
 				break;
 			case 1:
 				professorListarTurmas(SESSION_ID);
-				
-				int ano; char turma;
-				printf("Escolha uma turma: ");
-				if(scanf("%d%c", &ano, &turma) != 2 || ano == 0 || turma == '\n') break;
-				if(!professorListarNotas(SESSION_ID, ano, turma)) break;
-				
-				int aluno;
-				printf("\n\nEscolha um id de aluno (0 para voltar): ");
-				if(!scanf("%d", &aluno) ||
-					aluno <= 0 ||
-					aluno >= MAXN ||
-					ALUNOS[aluno-1].ano != ano ||
-					ALUNOS[aluno-1].turma != turma
-				) break;
-				professorConsultarNotas(SESSION_ID, aluno);
-				esperar();
-				
 				break;
 			case 2:
 				professorListarProvas(SESSION_ID);
@@ -417,9 +486,12 @@ void mostrarMenuProfessor(){
 				professorDeletarProva(SESSION_ID);
 				break;
 			case 8:
-				professorTabelaDeNotas(SESSION_ID);
+				professorTabelaDeNotas(SESSION_ID, 0);
 				break;
 			case 9:
+				professorTabelaDeNotas(SESSION_ID, 1);
+				break;
+			case 10:
 				printf("Digite sua senha atual: ");
 				scanf("%s", senha);
 				getchar();

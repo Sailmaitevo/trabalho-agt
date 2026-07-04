@@ -69,17 +69,22 @@ void digitaNomeValido(char nome[NAME_SIZE], int capitalizacaoImporta) {
 	}
 }
 
+int inputTurma(int *ano, char *turma) {
+	int resultado = scanf("%d%c", ano, turma);
+	// \n foi dado como o %c nesse caso
+	if (resultado && *turma != '\n') {
+		consumirInput();
+	}
+	return resultado;
+}
+
 void digitaTurmaValida(int *anoPointer, char *turmaPointer) {
 mostrarAreaInput();
 	int ano;
 	char turma;
 	int valido = 0;
 	while(!valido){
-		int resultado = scanf("%d%c", &ano, &turma);
-		// \n foi dado como o %c nesse caso
-		if (resultado && turma != '\n') {
-			consumirInput();
-		}
+		int resultado = inputTurma(&ano, &turma);
 
 		if (resultado && ehLetra(turma)) {
 			if (ano < 1 || ano > 12) {

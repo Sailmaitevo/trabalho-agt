@@ -384,7 +384,7 @@ void acharNome(int id, int tipo, char nome[NAME_SIZE]) {
 	}
 }
 
-int alunoPreencherNotas(int id, int idProfessor, Nota *notas){
+int alunoPreencherNotas(int id, int idProfessor, Nota notas[MAXN]){
     int index = 0;
 
     for(int i = 0; i < MAXN; i++){
@@ -415,7 +415,7 @@ int alunoPreencherFaltas(int id, Faltas *arrayFaltas){
 float alunoMedia(int id, int idProfessor){
 	Nota notas[MAXN] = {};
 	int tamanho = alunoPreencherNotas(id, idProfessor, notas);
-	if(!tamanho) return 0;
+	if(!tamanho) return -1;
 	
 	float soma = 0;
 	for(int i = 0; i < tamanho; i++){
@@ -426,7 +426,6 @@ float alunoMedia(int id, int idProfessor){
 float alunoNota(int idProva, int idAluno){
 	for(int i = 0; i < MAXN; i++){
 		if(NOTAS[i].idProva == idProva && NOTAS[i].idAluno == idAluno){
-			//printf("ACHEI UMA NOTA");
 			return NOTAS[i].nota;
 		}
 	}
