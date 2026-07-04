@@ -58,7 +58,7 @@ void login(){
 		printf("Senha incorreta, tente novamente: ");
 	}
 	if(!flag){
-		limpar();
+		cabecalho();
 		printf("Senha errada inserida %d vezes, encerrando o programa...", LIMITE_TENTATIVA);
 		exit(0);
 	}

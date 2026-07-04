@@ -181,7 +181,7 @@ void professorCriarProva(int id){
 	
 	int confirma;
 	do {
-		printf("Insira o nome para a prova (ate 20 caracteres sem espaco): ");
+		printf("Insira o nome para a prova (ate %d caracteres sem espaco): ", NAME_SIZE - 1);
 		scanf("%s", &nome);
 		getchar();
 		

@@ -72,7 +72,7 @@ void admCadastrar(){
 	if(!permissao) return;
 	
 	char nome[NAME_SIZE];
-	printf("Digite o nome (ate 20 caracteres): ");
+	printf("Digite o nome (ate %d caracteres): ", NAME_SIZE - 1);
 	int valido = 0;
 	while(!valido){
 		digitaString(NAME_SIZE, nome);
@@ -437,8 +437,22 @@ void mostrarMenuAdmin(){
 		printf("7 - Alterar senha");
 		
 		mostrarAreaInput();
-		scanf("%d", &opcao);
-		consumirInput();
+		int valido = 0;
+		while(!valido) {
+			int resultado = scanf("%d", &opcao);
+			consumirInput();
+			if (resultado) {
+				if (opcao < 0 || opcao > 7) {
+					printf("Digite uma opcao valida:");
+					mostrarAreaInput();
+				} else {
+					valido = 1;
+				}
+			} else {
+				printf("Digite um numero:");
+				mostrarAreaInput();
+			}
+		}
 		
 		switch(opcao){
 			char senha[PASS_SIZE], senhaNova[PASS_SIZE], senhaNovaConfirmar[PASS_SIZE];
