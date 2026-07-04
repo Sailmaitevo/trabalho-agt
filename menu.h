@@ -14,3 +14,7 @@ void esperar();
 void mostrarAreaInput();
 void consumirInput();
 int inputSimNao();
+void digitaNomeValido(char nome[NAME_SIZE], int capitalizacaoImporta);
+void digitaTurmaValida(int *ano, char *turma);
+void digitaMateriaValida(char materia[MATERIA_SIZE]);
+int digitaOpcao(int min, int max);

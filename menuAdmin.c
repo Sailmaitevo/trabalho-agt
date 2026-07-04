@@ -71,25 +71,7 @@ void admCadastrar(){
 	
 	char nome[NAME_SIZE];
 	printf("Digite o nome (ate %d caracteres): ", NAME_SIZE - 1);
-	int valido = 0;
-	while(!valido){
-		digitaString(NAME_SIZE, nome);
-		
-		if(strlen(nome) > 0) {
-			if(
-				buscarAluno(nome) ||
-				buscarProfessor(nome) ||
-				buscarAdmin(nome)
-			){
-				printf("Esse nome ja foi cadastrado, tente novamente: ");
-				continue;
-			} else {
-				valido = 1;
-			}
-		} else {
-			printf("Digite um nome: ");
-		}
-	}
+	digitaNomeValido(nome, 0);
 	
 	char senhaPadrao[PASS_SIZE] = "123456";
 	switch(permissao){
@@ -97,46 +79,7 @@ void admCadastrar(){
 		char turma, materia[MATERIA_SIZE];
 		case 1:
 			printf("Digite a turma de %s (Ano e letra, ex. 9A):", nome);
-			mostrarAreaInput();
-			int valido = 0;
-			while(!valido){
-				int resultado = scanf("%d%c", &ano, &turma);
-				// \n foi dado como o %c nesse caso
-				if (resultado && turma != '\n') {
-					consumirInput();
-				}
-
-				if (resultado && ehLetra(turma)) {
-					if (ano < 1 || ano > 12) {
-						printf("Ano invalido. O ano deve ser de 1-9 para o ensino fundamental e 10-12 para o ensino medio.\nDigite novamente:");
-						mostrarAreaInput();
-					} else {
-						valido = 1;
-						turma = fazerMaiusculo(turma);
-					}
-				} else {
-					printf("Formato invalido, voce deve digitar no formato ano e letra, ex. 9A.\nTente novamente:");
-					if (!resultado) {
-						consumirInput();
-					}
-					mostrarAreaInput();
-				}
-
-				if (valido) {
-					Aluno alunos[TURMA_SIZE];
-					int tamanho = preencherTurma(ano, turma, alunos);
-					if(tamanho >= TURMA_SIZE) printf("Turma %d%c cheia, escolha outra: ", ano, turma);
-					if(!tamanho){
-						printf("Turma %d%c inexistente, digite S para cria-la: ", ano, turma);
-						if (!inputSimNao()) {
-							valido = 0;
-							printf("Digite outra turma:");
-							mostrarAreaInput();
-						}
-					}
-				}
-				
-			}
+			digitaTurmaValida(&ano, &turma);
 			
 			id = cadastrarAluno(nome, senhaPadrao, ano, turma);
 			printf("Alun@ %s criad@ com sucesso na turma %d%c com o id %d\nA senha padrao e 123456", nome, ano, turma, id);
@@ -144,24 +87,7 @@ void admCadastrar(){
 			break;
 		case 2:
 			printf("Digite a materia d@ professor@ (3 caracteres):");
-			int validoMateria = 0;
-			while(!validoMateria){
-				digitaString(MATERIA_SIZE, materia);
-				int tudoLetra = 1;
-				for (int i = 0; i < MATERIA_SIZE - 1; i++) {
-					if (!ehLetra(materia[i])) {
-						tudoLetra = 0;
-						break;
-					} else {
-						materia[i] = fazerMaiusculo(materia[i]);
-					}
-				}
-				if(strlen(materia) == MATERIA_SIZE - 1 && tudoLetra) {
-					validoMateria = 1;
-				} else {
-					printf("Tente novamente:");
-				}
-			}
+			digitaMateriaValida(materia);
 			id = cadastrarProfessor(nome, senhaPadrao, materia);
 			printf("Professor@ %s criado com sucesso para a materia %s com o id %d\nA senha padrao e 123456", nome, materia, id);
 			esperar();
@@ -225,151 +151,94 @@ void admDeletar(){
 	esperar();
 }
 void admEditar(){
-	int permissao = admPedirNivelDePermissao(0);
-	
-	switch(permissao){
+	cabecalho();
+	printf("Digite o nome do usuario:");
+	int valido = 0;
+	char nome[NAME_SIZE];
+	int id;
+	int tipo;
+
+	while (!valido) {
+		digitaString(NAME_SIZE, nome);
+		if (acharIdTipo(&id, &tipo, nome)) {
+			valido = 1;
+		} else {
+			printf("Tente de novo:");
+		}
+	}
+
+	switch (tipo) {
 		Aluno aluno;
 		Professor professor;
 		Admin admin;
-		int id, opcao;
-		case 1:
-			for(int i = 0; i < MAXN; i++){
-				aluno = ALUNOS[i];
-				if(!aluno.id) continue;
-				
-				printf("\n%d - %s - %d%c", aluno.id, aluno.nome, aluno.ano, aluno.turma);
-			}
-			printf("\n\nEscolha um id para editar (0 volta): ");
-			while(1){
-				scanf("%d", &id);
-				getchar();
-				if(!id) return;
-				
-				aluno = ALUNOS[id-1];
-				if(!aluno.id) printf("Alun@ inexistente, tente novamente: ");
-				else break;
-			}
-			
+		int opcao;
+		case TIPO_ALUNO:
+			aluno = ALUNOS[id - 1];
 			cabecalho();
+			printf("O que deseja alterar? ");
 			printf("\n1 - Nome: %s", aluno.nome);
 			printf("\n2 - Turma: %d%c", aluno.ano, aluno.turma);
-			printf("\nQual deseja alterar? ");
-			while(1){
-				scanf("%d", &opcao);
-				getchar();
-				if(opcao == 1 || opcao == 2) break;
-				if(!opcao) return;
-				printf("Tente novamente: ");
-			}
-			cabecalho();
+			opcao = digitaOpcao(1, 2);
+			printf("opcao ainda %d\n", opcao);
 			if(opcao == 1){
 				char nomeNovo[NAME_SIZE];
+				int nomeValido = 0;
 				printf("Nome atual: %s\n", aluno.nome);
 				printf("Nome novo: ");
-				while(1){
-					scanf("%s", nomeNovo);
-					getchar();
-					if(buscarAluno(nomeNovo)) printf("O nome inserido ja existe\n");
-					else if(strlen(nomeNovo) >= 3) break;
-					printf("Tente novamente: ");
-				}
-				
+				digitaNomeValido(nomeNovo, 1);
 				strcpy(aluno.nome, nomeNovo);
 			} else if(opcao == 2){
 				int ano; char turma;
 				printf("Turma atual: %d%c\n", aluno.ano, aluno.turma);
 				printf("Turma nova: ");
-				while(1){
-					if(!scanf("%d%c", &ano, &turma)){
-						printf("Input invalido, tente novamente: ");
-						continue;
-					};
-					getchar();
-					
-					Aluno alunos[MAXN];
-					int tamanho = preencherTurma(ano, turma, alunos);
-					if(tamanho >= 40) printf("Turma %d%c cheia, escolha outra: ", ano, turma);
-					if(!tamanho){
-						printf("Turma %d%c inexistente, digite S para cria-la: ", ano, turma);
-						if(getchar() == 'S') break;
-						else printf("Digite outra turma: ");
-						while(getchar() != '\n');
-					}
-				}
-				
+				digitaTurmaValida(&ano, &turma);
 				aluno.ano = ano;
 				aluno.turma = turma;
 			}
 			
-			cabecalho();
 			ALUNOS[id-1] = aluno;
 			printf("Aluno alterado com sucesso");
-			esperar();
 			break;
-		case 2:
-			for(int i = 0; i < MAXN; i++){
-				professor = PROFESSORES[i];
-				if(!professor.id) continue;
-				
-				printf("\n%d - %s - %s", professor.id, professor.nome, professor.materia);
-			}
-			printf("\n\nEscolha um id para editar (0 volta): ");
-			while(1){
-				scanf("%d", &id);
-				getchar();
-				if(!id) return;
-				
-				professor = PROFESSORES[id-1];
-				if(!professor.id) printf("Professor inexistente, tente novamente: ");
-				else break;
-			}
-			
+		case TIPO_PROF:
 			cabecalho();
+			professor = PROFESSORES[id - 1];
+			printf("\nQual deseja alterar? ");
 			printf("\n1 - Nome: %s", professor.nome);
 			printf("\n2 - Materia: %s", professor.materia);
-			printf("\nQual deseja alterar? ");
-			while(1){
-				scanf("%d", &opcao);
-				getchar();
-				if(opcao == 1 || opcao == 2) break;
-				if(!opcao) return;
-				printf("Tente novamente: ");
-			}
-			
-			cabecalho();
+			opcao = digitaOpcao(1, 2);
 			if(opcao == 1){
 				char nomeNovo[NAME_SIZE];
 				printf("Nome atual: %s\n", professor.nome);
 				printf("Nome novo: ");
-				while(1){
-					scanf("%s", nomeNovo);
-					getchar();
-					if(buscarProfessor(nomeNovo)) printf("O nome inserido ja existe\n");
-					else if(strlen(nomeNovo) >= 3) break;
-					printf("Tente novamente: ");
-				}
-				
+				digitaNomeValido(nomeNovo, 1);
 				strcpy(professor.nome, nomeNovo);
 			} else if(opcao == 2){
-				char materiaNova[4];
+				char materiaNova[MATERIA_SIZE];
 				printf("Materia atual: %s\n", professor.materia);
 				printf("Materia nova: ");
-				while(1){
-					scanf("%s", materiaNova);
-					getchar();
-					if(strlen(materiaNova) == 3 && !strchr(materiaNova, ' ')) break;
-					printf("Tente novamente: ");
-				}
-				
+				digitaMateriaValida(materiaNova);
 				strcpy(professor.materia, materiaNova);
 			}
 			
-			cabecalho();
 			PROFESSORES[id-1] = professor;
 			printf("Professor alterado com sucesso");
-			esperar();
 			break;
+		case TIPO_ADMIN:
+			if (SESSION_ID == id) {
+				cabecalho();
+				char nomeNovo[NAME_SIZE];
+				printf("Nome atual: %s\n", ADMINS[id - 1].nome);
+				printf("Nome novo: ");
+				digitaNomeValido(nomeNovo, 1);
+
+				strcpy(ADMINS[id - 1].nome, nomeNovo);
+				printf("Admin alterado com sucesso");
+			} else {
+				printf("Nao pode modificar outros admins");
+			}
 	}
+
+	esperar();
 }
 
 int admPedirNivelDePermissao(int admin){

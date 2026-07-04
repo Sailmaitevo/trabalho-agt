@@ -86,11 +86,11 @@ void incrementarFaltas(int idProfessor, int idAluno, int incremento);
 int validarSenha(int id, int tipo, char senha[PASS_SIZE]);
 
 // Busca usuarios e provas pelo nome
-int buscarProfessor(char nome[NAME_SIZE]);
-int buscarAluno(char nome[NAME_SIZE]);
-int buscarAdmin(char nome[NAME_SIZE]);
+int buscarProfessor(char nome[NAME_SIZE], int capializacaoImporta);
+int buscarAluno(char nome[NAME_SIZE], int capializacaoImporta);
+int buscarAdmin(char nome[NAME_SIZE], int capializacaoImporta);
 int buscarProva(char nome[NAME_SIZE], int ano, char turma);
-int compararNomes(char nome1[NAME_SIZE], char nome2[NAME_SIZE]);
+int compararNomes(char nome1[NAME_SIZE], char nome2[NAME_SIZE], int capializacaoImporta);
 char fazerMinusculo(char c);
 char fazerMaiusculo(char c);
 char ehLetra(char c);

@@ -298,25 +298,25 @@ int validarSenha(int id, int tipo, char senha[PASS_SIZE]) {
 	return hash == criptografar(senha);
 }
 
-int buscarProfessor(char nome[NAME_SIZE]){
+int buscarProfessor(char nome[NAME_SIZE], int capitalizacaoImporta){
     for(int i = 0; i < MAXN; i++){
-			if (compararNomes(PROFESSORES[i].nome, nome)) {
+			if (compararNomes(PROFESSORES[i].nome, nome, capitalizacaoImporta)) {
 				return i + 1;
 			}
     }
     return 0;
 }
-int buscarAluno(char nome[NAME_SIZE]){
+int buscarAluno(char nome[NAME_SIZE], int capitalizacaoImporta){
 	for(int i = 0; i < MAXN; i++){
-		if (compararNomes(ALUNOS[i].nome, nome)) {
+		if (compararNomes(ALUNOS[i].nome, nome, capitalizacaoImporta)) {
 			return i + 1;
 		}
 	}
 	return 0;
 }
-int buscarAdmin(char nome[NAME_SIZE]){
+int buscarAdmin(char nome[NAME_SIZE], int capitalizacaoImporta){
     for(int i = 0; i < MAXN; i++){
-				if(compararNomes(ADMINS[i].nome, nome)) {
+				if(compararNomes(ADMINS[i].nome, nome, capitalizacaoImporta)) {
 					return i + 1;
 				}
     }
@@ -349,16 +349,22 @@ char ehLetra(char c) {
 	return (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z');
 }
 
-int compararNomes(char nome1[NAME_SIZE], char nome2[NAME_SIZE]) {
+int compararNomes(char nome1[NAME_SIZE], char nome2[NAME_SIZE], int capializacaoImporta) {
   for (int i = 0; i < NAME_SIZE - 1; i++) {
     char c1 = nome1[i];
     char c2 = nome2[i];
     if (c1 == '\0' && c2 == '\0') {
       return 1;
     }
-    if (fazerMinusculo(c1) != fazerMinusculo(c2)) {
-      return 0;
-    }
+		if (capializacaoImporta) {
+			if (c1 != c2) {
+				return 0;
+			}
+		} else {
+			if (fazerMinusculo(c1) != fazerMinusculo(c2)) {
+				return 0;
+			}
+		}
   }
 
   return 1;
@@ -474,15 +480,13 @@ int preencherTurma(int ano, char turma, Aluno alunos[TURMA_SIZE]){
 int acharIdTipo(int *id, int *tipo, char nome[NAME_SIZE]) {
 	int novoId = *id;
 	int novoTipo;
-	novoId = buscarAluno(nome);
+	novoId = buscarAluno(nome, 0);
 	if (novoId == 0) {
-		novoId = buscarProfessor(nome);
+		novoId = buscarProfessor(nome, 0);
 		if (novoId == 0) {
-			novoId = buscarAdmin(nome);
+			novoId = buscarAdmin(nome, 0);
 			if (novoId == 0) {
 				return 0;
-				// printf("Nome invalido, tente de novo:");
-				// valido = 0;
 			} else {
 				novoTipo = TIPO_ADMIN;
 			}

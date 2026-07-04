@@ -246,7 +246,7 @@ void professorEditarNotas(int id, int unico){
 		do {
 			scanf("%s", nomeAluno);
 			getchar();
-			idAluno = buscarAluno(nomeAluno);
+			idAluno = buscarAluno(nomeAluno, 0);
 			if(!idAluno || ALUNOS[idAluno].ano != ano || ALUNOS[idAluno].turma != turma)
 				printf("Insira um aluno existente dessa turma");
 		} while(!idAluno);
@@ -302,7 +302,7 @@ void professorIncrementarFaltas(int id){
 	int idAluno;
 	do {
 		scanf("%s", nomeAluno);
-		idAluno = buscarAluno(nomeAluno);
+		idAluno = buscarAluno(nomeAluno, 0);
 		if(!idAluno || ALUNOS[idAluno-1].ano != ano || ALUNOS[idAluno-1].turma != turma)
 			printf("Insira um aluno existente e dessa turma: ");
 	} while (!idAluno);
