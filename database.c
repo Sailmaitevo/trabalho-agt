@@ -107,56 +107,56 @@ unsigned criptografar(const unsigned char *str) {
     return hash;
 }
 
-void cadastrarProfessor(char nome[NAME_SIZE], char senha[PASS_SIZE], char materia[4]){
+int cadastrarProfessor(char nome[NAME_SIZE], char senha[PASS_SIZE], char materia[4]){
     for(int i = 0; i < MAXN; i++){
         if(PROFESSORES[i].id == 0){
 			Professor professor = {i+1, "", criptografar(senha), ""};
 			strcpy(professor.nome, nome);
 			strcpy(professor.materia, materia);
             PROFESSORES[i] = professor;
-            return;
+            return i+1;
         }
     }
     
-    printf("Erro! O banco de dados esta cheio!");
+    printf(MSG_DB_CHEIO);
     sobrescreverDatabase();
 }
-void cadastrarAluno(char nome[NAME_SIZE], char senha[PASS_SIZE], int ano, char turma){
+int cadastrarAluno(char nome[NAME_SIZE], char senha[PASS_SIZE], int ano, char turma){
     for(int i = 0; i < MAXN; i++){
         if(ALUNOS[i].id == 0){
 			Aluno aluno = {i+1, "", criptografar(senha), ano, turma};
 			strcpy(aluno.nome, nome);
             ALUNOS[i] = aluno;
-            return;
+            return i+1;
         }
     }
-    printf("Erro! O banco de dados esta cheio!");
+    printf(MSG_DB_CHEIO);
     sobrescreverDatabase(); 
 }
-void cadastrarProva(char nome[NAME_SIZE], int idProfessor, int ano, char turma){
+int cadastrarProva(char nome[NAME_SIZE], int idProfessor, int ano, char turma){
     for(int i = 0; i < MAXN; i++){
         if(!PROVAS[i].id){
 			Prova prova = {i+1, "", idProfessor, ano, turma};
 			strcpy(prova.nome, nome);
             PROVAS[i] = prova;
             zerarNotas(i+1, 0);
-            return;
+            return i+1;
         }
     }
-    printf("Erro! O banco de dados esta cheio!\nSobrescrevendo o banco de dados e fechando a aplicação...");
+    printf(MSG_DB_CHEIO);
     sobrescreverDatabase();
 }
-void cadastrarAdmin(char nome[NAME_SIZE], char senha[PASS_SIZE]){
+int cadastrarAdmin(char nome[NAME_SIZE], char senha[PASS_SIZE]){
     for(int i = 0; i < MAXN; i++){
         if(ADMINS[i].id == 0){
 			Admin admin = {i+1, "", criptografar(senha)};
 			strcpy(admin.nome, nome);
             ADMINS[i] = admin;
-            return;
+            return i+1;
         }
     }
     
-    printf("Erro! O banco de dados esta cheio!");
+    printf(MSG_DB_CHEIO);
     sobrescreverDatabase();
 }
 

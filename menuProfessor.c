@@ -44,7 +44,7 @@ void professorListarTurmas(int id){
 
 int professorListarNotas(int id, int ano, char turma){
 	Aluno alunos[MAXN] = {};
-	int tamanho = professorPreencherTurma(ano, turma, alunos);
+	int tamanho = preencherTurma(ano, turma, alunos);
 	if(!tamanho) return 0;
 	
 	cabecalho();
@@ -102,7 +102,7 @@ void professorTabelaDeNotas(int id){
 		scanf("%d%c", &ano, &turma);
 		getchar();
 
-		tamanhoA = professorPreencherTurma(ano, turma, alunos);
+		tamanhoA = preencherTurma(ano, turma, alunos);
 		
 		if(tamanhoA) break;
 		printf("Turma invalida! Tente novamente: ");
@@ -150,7 +150,7 @@ void professorTabelaDeNotas(int id){
 	esperar();
 }
 
-int professorPreencherTurma(int ano, char turma, Aluno *alunos){
+int preencherTurma(int ano, char turma, Aluno *alunos){
 	int index = 0;
 	
 	for(int i = 0; i < MAXN; i++){
@@ -196,7 +196,7 @@ void professorCriarProva(int id){
 		getchar();
 		
 		Aluno alunos[MAXN];
-		tamanho = professorPreencherTurma(ano, turma, alunos);
+		tamanho = preencherTurma(ano, turma, alunos);
 		if(!tamanho) printf("Turma invalida, tente de novo\n");
 	} while(!tamanho);
 	
@@ -238,7 +238,7 @@ void professorEditarNotas(int id, int unico){
 	do{
 		scanf("%d%c", &ano, &turma);
 		getchar();
-		tamanhoA = professorPreencherTurma(ano, turma, alunos);
+		tamanhoA = preencherTurma(ano, turma, alunos);
 		
 		if(!tamanhoA) printf("Turma invalida, tente novamente: ");
 	} while(!tamanhoA);
@@ -360,6 +360,7 @@ void mostrarMenuProfessor(){
 		scanf("%d", &opcao);
 		
 		switch(opcao){
+			char senha[PASS_SIZE], senhaNova[PASS_SIZE], senhaNovaConfirmar[PASS_SIZE];
 			case 0:
 				cabecalho();
 				printf("Saindo...");
@@ -404,7 +405,6 @@ void mostrarMenuProfessor(){
 				professorTabelaDeNotas(SESSION_ID);
 				break;
 			case 8:
-				char senha[PASS_SIZE], senhaNova[PASS_SIZE], senhaNovaConfirmar[PASS_SIZE];
 				printf("Digite sua senha atual: ");
 				scanf("%s", senha);
 				getchar();

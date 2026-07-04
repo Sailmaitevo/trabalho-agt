@@ -50,11 +50,11 @@ typedef struct {
 // "Criptografia" (e so um djb2)
 unsigned criptografar(const unsigned char *str);
 
-// Funcoes para cadastrar usuarios e provas no banco de dados
-void cadastrarProfessor(char nome[NAME_SIZE], char senha[PASS_SIZE], char materia[4]);
-void cadastrarAluno(char nome[NAME_SIZE], char senha[PASS_SIZE], int ano, char turma);
-void cadastrarProva(char nome[NAME_SIZE], int idProfessor, int ano, char turma);
-void cadastrarAdmin(char nome[NAME_SIZE], char senha[PASS_SIZE]);
+// Funcoes para cadastrar usuarios e provas no banco de dados, retorna o id
+int cadastrarProfessor(char nome[NAME_SIZE], char senha[PASS_SIZE], char materia[4]);
+int cadastrarAluno(char nome[NAME_SIZE], char senha[PASS_SIZE], int ano, char turma);
+int cadastrarProva(char nome[NAME_SIZE], int idProfessor, int ano, char turma);
+int cadastrarAdmin(char nome[NAME_SIZE], char senha[PASS_SIZE]);
 
 // Funcoes para deletar dados do banco de dados
 void deletarProfessor(int id);

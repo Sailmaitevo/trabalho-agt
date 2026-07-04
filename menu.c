@@ -12,7 +12,7 @@ void limpar() {
 
 void cabecalho(){
   limpar();
-  printf("==== SIGA (Sistema Integrado de Gestão Algoritmica) ====\n");
+  printf("==== SIGA (Sistema Integrado de Gestao Algoritmica) ====\n");
 }
 
 void menuLogin(){

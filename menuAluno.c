@@ -127,6 +127,7 @@ void mostrarMenuAluno(){
 		scanf("%d", &opcao);
 		
 		switch(opcao){
+			char senha[PASS_SIZE], senhaNova[PASS_SIZE], senhaNovaConfirmar[PASS_SIZE];
 			case 0:
 				cabecalho();
 				printf("Saindo...");
@@ -136,7 +137,6 @@ void mostrarMenuAluno(){
 				alunoVerMedias(SESSION_ID);
 				break;
 			case 2:
-				char senha[PASS_SIZE], senhaNova[PASS_SIZE], senhaNovaConfirmar[PASS_SIZE];
 				printf("Digite sua senha atual: ");
 				scanf("%s", senha);
 				getchar();
