@@ -10,6 +10,8 @@
 #define AULAS_NUM 72
 #define MEDIA_MIN 7
 #define EXAME_MIN 3
+#define ALUNOS_CSV "Alunos.csv"
+#define DADOS_CSV "Resultados.csv"
 
 #define STR_EXPAND(tok) #tok
 #define STR(tok) STR_EXPAND(tok)
@@ -82,9 +84,10 @@ int obterOpcao() {
   mostrarAreaInput();
 
   while (!valido) {
-    if (!scanf("%d", &opcao)) {
+    int resultado = scanf("%d", &opcao);
+    consumirInput();
+    if (!resultado) {
       printf("Input invalido! Escreva um digito:\n>");
-      consumirInput();
     } else {
       if (opcao < OPCAO_MIN || opcao > OPCAO_MAX) {
         printf("Input invalido! Escreva um valor de %d a %d:", OPCAO_MIN, OPCAO_MAX);
@@ -94,8 +97,6 @@ int obterOpcao() {
       }
     }
   }
-
-  consumirInput();
 
   return opcao;
 }
@@ -110,8 +111,6 @@ void digitaString(int tamanho, char str[tamanho]) {
 	} else {
 		consumirInput();
 	}
-
-  str[strcspn(str, "\n")] = '\0';
 }
 
 void inputNome(char nome[NOME_MAX]) {
@@ -265,20 +264,15 @@ void removerItem() {
   } else if (index == -1) {
     printf("Estudante nao encontrado! Nenhum item foi removido\n");
   } else {
-    int encontrado = 0;
-    for (int i = 0; i < dadosQuantia; i++) {
-      if (dados[i][0] == index) {
-        encontrado = 1;
-        break;
-      }
-    }
+    int dadoIndex = acharIndexDados(index);
 
-    if (encontrado) {
-      printf("O estudante ja tem nota da disciplina. Nao eh possivel remover-lo\n");
+    if (dadoIndex != -1) {
+      printf("O estudante ja tem resultados semestrais. Nao eh possivel remove-lo\n");
       return;
     } else {
       for (int i = index; i < estudanteQuantia - 1; i++) {
         strcpy(estudantes[i], estudantes[i + 1]);
+        escores[i] = escores[i + 1];
       }
       estudanteQuantia--;
       printf("Estudante removido com sucesso!\n");
@@ -337,8 +331,8 @@ void listarEstudantes() {
 }
 
 void sobrescreverDatabase(){
-	FILE *alunos = fopen("Alunos.csv", "w");
-	FILE *resultados = fopen("Resultados.csv", "w");
+	FILE *alunos = fopen(ALUNOS_CSV, "w");
+	FILE *resultados = fopen(DADOS_CSV, "w");
 	
   for (int i = 0; i < estudanteQuantia; i++) {
     fprintf(alunos, "%s,%f\n", estudantes[i], escores[i]);
@@ -367,8 +361,8 @@ FILE *importarArquivo(char *caminho){
 }
 
 void importarDatabase(){
-	FILE *alunos = importarArquivo("Alunos.csv");
-  FILE *resultados = importarArquivo("Resultados.csv");
+	FILE *alunos = importarArquivo(ALUNOS_CSV);
+  FILE *resultados = importarArquivo(DADOS_CSV);
 	char linha[NOME_MAX+20];
 	for(int i = 0; fgets(linha, sizeof(linha), alunos) != NULL; i++){
     char nome[NOME_MAX];
@@ -413,37 +407,21 @@ void listarDadosEspecificos() {
     if (dadoIndex != -1) {
       float media = dados[dadoIndex][1];
       float faltas = dados[dadoIndex][2];
+      char resultado[16];
+      char nota[16];
+      escreverResultado(resultado, nota, media, faltas);
 
       if (i > 0) {
         printf("|---------------------------------------------------------------------------------------------------|\n");
       }
 
-      printf("| %-" STR(NOME_MAX) "s | %-6.1f | %-15.1f | %-6.0f ",
+      printf("| %-" STR(NOME_MAX) "s | %-6.1f | %-15.1f | %-6.0f | %-18s | %-16s |\n",
         estudantes[i],
         escores[i],
         media,
-        faltas);
-
-      if (faltas >= AULAS_NUM / 4) {
-        printf("| %-18s | %-16s |\n",
-          "Reprovad@ falta",
-          "-");
-      }
-      else if (media >= MEDIA_MIN) {
-        printf("| %-18s %-16s |\n",
-          "Aprovad@",
-          "| -");
-      }
-      else if (media >= EXAME_MIN) {
-        printf("| %-18s | %-16.1f |\n",
-          "Em exame",
-          calcularMediaExame(media));
-      }
-      else {
-        printf("| %-18s %-16s |\n",
-          "Reprovad@",
-          "| -");
-      }
+        faltas,
+        resultado,
+        nota);
     }
   }
 
@@ -498,7 +476,7 @@ int inputSimNao() {
 
 void inserirDadosEstudante() {
   limparTela();
-  printf("Opcao 5 escolhida, cadastrando resultados de um estudante...\n\n");
+  printf("Opcao 5 escolhida, cadastrando resultados semestrais de um estudante...\n\n");
   
   char nome[NOME_MAX];
   inputNome(nome);
@@ -523,9 +501,10 @@ void inserirDadosEstudante() {
       }
     }
     // j sera o index a sobreescrever
+    int incrementar = 0;
     if (j == -1) {
       j = dadosQuantia;
-      dadosQuantia++;
+      incrementar = 1;
     }
     float media;
     float faltas;
@@ -576,6 +555,9 @@ void inserirDadosEstudante() {
         printf("Valor invalido, deve ser um numero. Digite de novo:");
       }
     }
+    if (incrementar) {
+      dadosQuantia++;
+    }
     dados[j][0] = index;
     dados[j][1] = media;
     dados[j][2] = faltas;
@@ -603,8 +585,6 @@ void limparDatabase() {
   printf("Cancelando...\n");  
 }
 
-
-
 void sair() {
   limparTela();
   printf("Obrigado por usar o nosso servico. Nos vemos em breve.\n\nTerminando o programa...");
@@ -613,16 +593,14 @@ void sair() {
 int main() {
   limparTela();
 
-  char estudantes[ALUNOS_MAX][NOME_MAX];
-  float dados[ALUNOS_MAX][DADOS_Q];
+  printf("Seja bem-vindo\n\n");
+
+  estudanteQuantia = 0;
+  dadosQuantia = 0;
 
   importarDatabase();
 
-  float escores[ALUNOS_MAX];
-  int estudanteQuantia = 0;
-  int dadosQuantia = 0;
   int opcao = 0;
-
 
   while (1) {
     int opcao = obterOpcao();
