@@ -28,7 +28,7 @@ void alunoVerMedias(int id){
 	typedef struct {
 		char materia[4];
         float soma;
-        unsigned contador;
+        int contador;
 		int idProfessor;
     } Materia;
 	
@@ -38,17 +38,17 @@ void alunoVerMedias(int id){
     int maxIndex = 0;
 	
     for(int i = 0; i < tamanho; i++){
-        int flag = 1;
+        int flag = 0;
 		int idProfessor = PROVAS[notas[i].idProva-1].idProfessor;
-        for(int j = 0; j <= maxIndex; j++){ // percorre o array de notas vendo se ja existe um struct da materia em questao
+        for(int j = 0; j < maxIndex; j++){ // percorre o array de notas vendo se ja existe um struct da materia em questao
             if(idProfessor == materias[j].idProfessor){
 				materias[j].soma += notas[i].nota;
                 materias[j].contador++;
-                flag = 0;
+                flag = 1;
                 break;
             }
         }
-        if(!flag) continue;
+        if(flag) continue;
         
 		Materia aux = {"", notas[i].nota, 1, idProfessor};
 		strcpy(aux.materia, PROFESSORES[idProfessor-1].materia);
@@ -66,7 +66,7 @@ void alunoVerMedias(int id){
 		return;
 	}
 	
-    for(int i = 0; i < maxIndex; i++){
+    for(int i = 0; i <= maxIndex; i++){
 		printf("%d - %s: %.1f\n", i+1, materias[i].materia, materias[i].soma/materias[i].contador);
         soma += materias[i].soma/materias[i].contador;
         contador++;

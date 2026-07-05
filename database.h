@@ -7,14 +7,17 @@
 #define PASS_SIZE 16 // Esse e o tamanho maximo que uma senha pode ter (em caracteres)
 #define NAME_SIZE 21 // Esse e o tamanho maximo de um nome (de usuario ou de prova)
 #define MAXN 2048 // Esse e o tamanho maximo dos vetores
-#define TIPO_ADMIN 1
-#define TIPO_PROF 2
-#define TIPO_ALUNO 3
-#define TURMA_SIZE 40
-#define MATERIA_SIZE 4
-#define AULAS_NUM 72
-#define MEDIA_MIN 7
-#define EXAME_MIN 3
+#define TIPO_ADMIN 1 // O nivel de permissao de um admin
+#define TIPO_PROF 2 // O nivel de permissao de um professor
+#define TIPO_ALUNO 3 // O nivel de permissao de um aluno
+#define TURMA_SIZE 40 // O tamanho maximo de uma turma
+#define MATERIA_SIZE 4 // O tamanho maximo da materia (contando o NULL)
+
+#define AULAS_NUM 72 // O numero de aulas de cada materia
+#define MEDIA_MIN 7 // A media minima para passar direto
+#define EXAME_MIN 5 // O minimo necessario para passar em exame
+#define PESO_EXAME 4 // O peso da nota do exame
+#define PESO_MEDIA 6 // O peso da media original
 
 void importarDatabase(); // Essa funcao importa o database, deve ser usada so no inicio da execucao
 void sobrescreverDatabase(); // Essa funcao sobrescreve o database com os vetores devidamente alterados, deve ser usada so ao fim das sessoes

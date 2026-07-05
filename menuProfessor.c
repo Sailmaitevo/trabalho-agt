@@ -84,7 +84,10 @@ void professorConsultarNotas(int id, int idAluno){
 }
 
 float calcularMediaExame(float media) {
-  return (50 - (media*6)) / 4;
+  return (EXAME_MIN*(PESO_EXAME+PESO_MEDIA) - PESO_MEDIA*media) / PESO_EXAME;
+  
+  float x;
+  x >= (EXAME_MIN*(PESO_EXAME+PESO_MEDIA) - PESO_MEDIA*media) / PESO_EXAME;
 }
 
 void professorTabelaDeNotas(int id, int final){
@@ -109,8 +112,8 @@ void professorTabelaDeNotas(int id, int final){
 	Prova provas[MAXN] = {};
 	int tamanhoP = preencherProvas(id, ano, turma, provas);
 	if(!tamanhoP){
-		printf("Nao foram encontradas provas para essa turma");
-		esperar("\n\nPressione ENTER para continuar");
+		printf("\nNao foram encontradas provas para essa turma");
+		esperar();
 		return;
 	}
 	
@@ -118,19 +121,17 @@ void professorTabelaDeNotas(int id, int final){
 	padString(s, NAME_SIZE);
 	printf("\n| %s |", s);
 	
-	if (!final) {
+	if (final){
+		strcpy(s, "Media");
+		padString(s, NAME_SIZE);
+		printf(" %s |", s);
+	} else {
 		for(int i = 0; i < tamanhoP; i++){
 			char c[NAME_SIZE];
 			strcpy(c, provas[i].nome);
 			padString(c, NAME_SIZE);
 			printf(" %s |", c);
 		}
-	}
-
-	if (final) {
-		strcpy(s, "Media");
-		padString(s, NAME_SIZE);
-		printf(" %s |", s);
 	}
 
 	strcpy(s, "Faltas");
@@ -172,9 +173,11 @@ void professorTabelaDeNotas(int id, int final){
 		}
 		printf("%s", c);
 
+		media /= tamanhoP;
+		
 		if (final) {
 			strcpy(n, "");
-			sprintf(n, "%.1f", media / tamanhoP);
+			sprintf(n, "%.1f", media);
 			padString(n, NAME_SIZE);
 			printf(" %s |", n);
 		}
@@ -191,7 +194,7 @@ void professorTabelaDeNotas(int id, int final){
 			strcpy(n, "");
 			if (faltas > AULAS_NUM / 4) {
 				sprintf(n, "REPROVAD@ POR FALTA");
-			} else if (media < EXAME_MIN) {
+			} else if (calcularMediaExame(media) > 10) {
 				sprintf(n, "REPROVAD@");
 			} else if (media < MEDIA_MIN) {
 				exame = 1;
@@ -204,7 +207,7 @@ void professorTabelaDeNotas(int id, int final){
 	
 			strcpy(n, "");
 			if (exame) {
-				sprintf(n, "%d", calcularMediaExame(media));
+				sprintf(n, "%.1f", calcularMediaExame(media));
 			} else {
 				sprintf(n, " - ");
 			}
