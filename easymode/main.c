@@ -38,7 +38,7 @@ void limparTela() {
 void esperarInput() {
   // essa função por si só não garante que o programa vai esperar, é preciso que
   // não haja um \n no buffer
-  printf("Pressione enter para prosseguir...");
+  printf("\nPressione enter para prosseguir...");
   consumirInput();
 }
 
@@ -51,17 +51,31 @@ void printHiphensNome() {
 int obterOpcao() {
   int opcao;
   int valido = 0;
-  printf("Escolha uma opcao:\n");
+  printf("  Opcoes\n");
 
   printf("------------------------------------------------------\n");
-  printf("1 - Inserir um novo estudante\n");
-  printf("2 - Remover um estudante existente\n");
-  printf("3 - Ver a listagem de todos os estudantes\n");
-  printf("4 - Consultar o escore de um estudante\n");
-  printf("5 - Cadastrar resultado semetral de um estudante\n");
-  printf("6 - Listar os resultados semestrais dos estudantes\n");
-  printf("7 - Sair\n");
-  printf("8 - Apagar database\n");
+  printf("| 1 | %-46s |\n", "Inserir um novo estudante");
+
+  printf("|----------------------------------------------------|\n");
+  printf("| 2 | %-46s |\n", "Remover um estudante existente");
+  
+  printf("|----------------------------------------------------|\n");
+  printf("| 3 | %-46s |\n", "Ver a listagem de todos os estudantes");
+  
+  printf("|----------------------------------------------------|\n");
+  printf("| 4 | %-46s |\n", "Consultar os dados de um estudante");
+  
+  printf("|----------------------------------------------------|\n");
+  printf("| 5 | %-46s |\n", "Cadastrar resultado semetral de um estudante");
+  
+  printf("|----------------------------------------------------|\n");
+  printf("| 6 | %-46s |\n", "Listar os resultados semestrais dos estudantes");
+  
+  printf("|----------------------------------------------------|\n");
+  printf("| 7 | %-46s |\n", "Sair");
+  
+  printf("|----------------------------------------------------|\n");
+  printf("| 8 | %-46s |\n", "Apagar database");
   printf("------------------------------------------------------\n");
 
   printf("\nDigite uma das opcoes:");
@@ -170,7 +184,7 @@ void inserirItem() {
     char nome[NOME_MAX];
     float escore;
   
-    printf("Opcao 1 escolhida. Inserindo um novo estudante...\n");
+    printf("Opcao 1 escolhida. Inserindo um novo estudante...\n\n");
 
     int valido = 0;
     while (!valido) {
@@ -182,7 +196,7 @@ void inserirItem() {
         printf("Cancelando a insercao.\n");
         return;
       } else if (indexNome != -1) {
-        printf("Estudante ja existe! Cancelando a insercao.\n");
+        printf("Estudante ja existe! Cancelando a insercao...\n");
         return;
       } else if (!nomeEhValido(nome)) {
         printf("Nome invalido! Deve conter apenas letras, hifens e espacos.\n");
@@ -239,7 +253,7 @@ void inserirItem() {
 
 void removerItem() {
   limparTela();
-  printf("Opcao 2 escolhida, removendo um estudante (digite nada para cancelar)...\n");
+  printf("Opcao 2 escolhida, removendo um estudante (digite nada para cancelar)...\n\n");
   
   char nome[NOME_MAX];
   inputNome(nome);
@@ -278,18 +292,23 @@ float calcularMediaExame(float media) {
   return (50 - (media*6)) / 4;
 }
 
-int max(int a, int b) {
-  return a > b ? a : b;
-}
-
-int acharMaxLen() {
-  int maxLen = 0;
-
-  for (int i = 0; i < estudanteQuantia; i++) {
-    maxLen = max(strlen(estudantes[i]), maxLen);
+void escreverResultado(char resultado[16], char nota[16], float media, float faltas) {
+  if (faltas >= AULAS_NUM / 4) {
+    strcpy(resultado, "Reprovad@ falta");
+    strcpy(nota, "-");
   }
-
-  return maxLen;
+  else if (media >= MEDIA_MIN) {
+    strcpy(resultado, "Aprovad@");
+    strcpy(nota, "-");
+  }
+  else if (media >= EXAME_MIN) {
+    strcpy(resultado, "Em exame");
+    strcpy(nota, "");
+    sprintf(nota, "%.1f", calcularMediaExame(media));
+  } else {
+    strcpy(resultado, "Reprovad@");
+    strcpy(nota, "-");
+  }
 }
 
 void listarEstudantes() {
@@ -302,16 +321,19 @@ void listarEstudantes() {
 
   printf("Estudantes cadastrados:\n\n");
 
-  printf("%-" STR(NOME_MAX) "s %s\n", "Estudante", "| Escore");
+  printf("  %-" STR(NOME_MAX) "s | %-6s \n", "Estudante", "Escore");
   printHiphensNome();
-  printf("----------\n");
+  printf("-------------\n");
 
   for (int i = 0; i < estudanteQuantia; i++) {
-    printf("%-" STR(NOME_MAX) "s | %.2f\n", estudantes[i], escores[i]);
+    if (i > 0) {
+      printf("|--------------------------------|\n");
+    }
+    printf("| %-" STR(NOME_MAX) "s | %-6.2f |\n", estudantes[i], escores[i]);
   }
 
   printHiphensNome();
-  printf("----------\n");
+  printf("-------------\n");
 }
 
 void sobrescreverDatabase(){
@@ -374,16 +396,16 @@ void listarDadosEspecificos() {
     printf("Resultado dos alunos no semestre:\n\n");
   }
 
-  printf("%-" STR(NOME_MAX) "s %-8s %-17s %-8s %-20s %s\n",
+  printf("  %-" STR(NOME_MAX) "s %-8s %-17s %-8s %-20s %-17s\n",
   "Estudante",
   "| Escore",
   "| Media Semestral",
   "| Faltas",
   "| Resultado",
-  "| Nota Exame");
+  "| Nota Minima Exame");
 
   printHiphensNome();
-  printf("--------------------------------------------------------------------------\n");
+  printf("--------------------------------------------------------------------------------\n");
 
   for (int i = 0; i < estudanteQuantia; i++) {
     int dadoIndex = acharIndexDados(i);
@@ -392,29 +414,33 @@ void listarDadosEspecificos() {
       float media = dados[dadoIndex][1];
       float faltas = dados[dadoIndex][2];
 
-      printf("%-" STR(NOME_MAX) "s | %-6.1f | %-15.1f | %-6.0f ",
+      if (i > 0) {
+        printf("|---------------------------------------------------------------------------------------------------|\n");
+      }
+
+      printf("| %-" STR(NOME_MAX) "s | %-6.1f | %-15.1f | %-6.0f ",
         estudantes[i],
         escores[i],
         media,
         faltas);
 
       if (faltas >= AULAS_NUM / 4) {
-        printf("| %-18s | %s\n",
+        printf("| %-18s | %-16s |\n",
           "Reprovad@ falta",
           "-");
       }
       else if (media >= MEDIA_MIN) {
-        printf("| %-18s %s\n",
+        printf("| %-18s %-16s |\n",
           "Aprovad@",
           "| -");
       }
       else if (media >= EXAME_MIN) {
-        printf("| %-18s | %.1f\n",
+        printf("| %-18s | %-16.1f |\n",
           "Em exame",
           calcularMediaExame(media));
       }
       else {
-        printf("| %-18s %s\n",
+        printf("| %-18s %-16s |\n",
           "Reprovad@",
           "| -");
       }
@@ -422,14 +448,14 @@ void listarDadosEspecificos() {
   }
 
   printHiphensNome();
-  printf("--------------------------------------------------------------------------\n");
+  printf("--------------------------------------------------------------------------------\n");
 }
 
 void listarDados() {
   char nome[NOME_MAX];
   
   limparTela();
-  printf("Opcao 4 escolhida. Buscando o escore de um estudante...\n");
+  printf("Opcao 4 escolhida. Buscando os dados de um estudante...\n\n");
   
   inputNome(nome);
 
@@ -439,7 +465,28 @@ void listarDados() {
   } else if (index == -1) {
     printf("O estudante nao existe!\n");
   } else {
-    printf("O estudante %s tem um escore de %.1f\n", nome, escores[index]);
+    int indexDado = acharIndexDados(index);
+    limparTela();
+    printf("Dados de %s:\n", estudantes[index]);
+    printf("------------------------------------------\n");
+    printf("| %-20s | %-15.1f |\n", "Escore", escores[index]);
+    if (indexDado != -1) {
+      char resultado[16];
+      char nota[16];
+      escreverResultado(resultado, nota, dados[indexDado][1], dados[indexDado][2]);
+      printf("|----------------------------------------|\n");
+      printf("| %-20s | %-15.1f |\n", "Media Semestral", dados[indexDado][1]);
+      printf("|----------------------------------------|\n");
+      printf("| %-20s | %-15.0f |\n", "Faltas", dados[indexDado][2]);
+      printf("|----------------------------------------|\n");
+      printf("| %-20s | %-15s |\n", "Resultado", resultado);
+      printf("|----------------------------------------|\n");
+      printf("| %-20s | %-15s |\n", "Nota minima exame", nota);      
+    }
+    printf("------------------------------------------\n");
+    if (indexDado == -1) {
+      printf("\nO estudante nao tem resultados semestrais cadastrados.\n");
+    }
   }
 }
 
@@ -451,7 +498,7 @@ int inputSimNao() {
 
 void inserirDadosEstudante() {
   limparTela();
-  printf("Opcao 5 escolhida, cadastrando resultados de um estudante...\n");
+  printf("Opcao 5 escolhida, cadastrando resultados de um estudante...\n\n");
   
   char nome[NOME_MAX];
   inputNome(nome);
@@ -560,7 +607,7 @@ void limparDatabase() {
 
 void sair() {
   limparTela();
-  printf("Obrigado por usar o nosso servico. Nos vemos em breve.\nTerminando o programa...");
+  printf("Obrigado por usar o nosso servico. Nos vemos em breve.\n\nTerminando o programa...");
 }
 
 int main() {
