@@ -105,12 +105,13 @@ void admDeletar(){
 	cabecalho();
 
 	int valido = 0;
-	printf("Digite o nome para excluir:");
+	printf("Digite o nome para excluir (0 para voltar):");
 	
 	int tipo = 0;
 	int id = 0;
 	while(!valido) {
 		digitaString(NAME_SIZE, nome);
+		if(!strcmp(nome, "0")) return;
 		if (acharIdTipo(&id, &tipo, nome)) {
 			valido = 1;
 		} else {
@@ -152,7 +153,7 @@ void admDeletar(){
 }
 void admEditar(){
 	cabecalho();
-	printf("Digite o nome do usuario:");
+	printf("Digite o nome do usuario (0 para voltar):");
 	int valido = 0;
 	char nome[NAME_SIZE];
 	int id;
@@ -160,6 +161,7 @@ void admEditar(){
 
 	while (!valido) {
 		digitaString(NAME_SIZE, nome);
+		if(!strcmp(nome, "0")) return;
 		if (acharIdTipo(&id, &tipo, nome)) {
 			valido = 1;
 		} else {
@@ -167,76 +169,90 @@ void admEditar(){
 		}
 	}
 
-	switch (tipo) {
-		Aluno aluno;
-		Professor professor;
-		Admin admin;
-		int opcao;
-		case TIPO_ALUNO:
-			aluno = ALUNOS[id - 1];
-			cabecalho();
-			printf("O que deseja alterar? ");
-			printf("\n1 - Nome: %s", aluno.nome);
-			printf("\n2 - Turma: %d%c", aluno.ano, aluno.turma);
-			opcao = digitaOpcao(1, 2);
-			printf("opcao ainda %d\n", opcao);
-			if(opcao == 1){
-				char nomeNovo[NAME_SIZE];
-				int nomeValido = 0;
-				printf("Nome atual: %s\n", aluno.nome);
-				printf("Nome novo: ");
-				digitaNomeValido(nomeNovo, 1);
-				strcpy(aluno.nome, nomeNovo);
-			} else if(opcao == 2){
-				int ano; char turma;
-				printf("Turma atual: %d%c\n", aluno.ano, aluno.turma);
-				printf("Turma nova: ");
-				digitaTurmaValida(&ano, &turma);
-				aluno.ano = ano;
-				aluno.turma = turma;
-			}
-			
-			ALUNOS[id-1] = aluno;
-			printf("Aluno alterado com sucesso");
-			break;
-		case TIPO_PROF:
-			cabecalho();
-			professor = PROFESSORES[id - 1];
-			printf("\nQual deseja alterar? ");
-			printf("\n1 - Nome: %s", professor.nome);
-			printf("\n2 - Materia: %s", professor.materia);
-			opcao = digitaOpcao(1, 2);
-			if(opcao == 1){
-				char nomeNovo[NAME_SIZE];
-				printf("Nome atual: %s\n", professor.nome);
-				printf("Nome novo: ");
-				digitaNomeValido(nomeNovo, 1);
-				strcpy(professor.nome, nomeNovo);
-			} else if(opcao == 2){
-				char materiaNova[MATERIA_SIZE];
-				printf("Materia atual: %s\n", professor.materia);
-				printf("Materia nova: ");
-				digitaMateriaValida(materiaNova);
-				strcpy(professor.materia, materiaNova);
-			}
-			
-			PROFESSORES[id-1] = professor;
-			printf("Professor alterado com sucesso");
-			break;
-		case TIPO_ADMIN:
-			if (SESSION_ID == id) {
+	int volta;
+	
+	do {
+		volta = 0;
+		switch (tipo) {
+			Aluno aluno;
+			Professor professor;
+			Admin admin;
+			int opcao;
+			case TIPO_ALUNO:
+				aluno = ALUNOS[id - 1];
 				cabecalho();
-				char nomeNovo[NAME_SIZE];
-				printf("Nome atual: %s\n", ADMINS[id - 1].nome);
-				printf("Nome novo: ");
-				digitaNomeValido(nomeNovo, 1);
+				printf("Qual deseja alterar? ");
+				printf("\n1 - Nome: %s", aluno.nome);
+				printf("\n2 - Turma: %d%c", aluno.ano, aluno.turma);
+				opcao = digitaOpcao(1, 2);
+				if(opcao == 1){
+					char nomeNovo[NAME_SIZE];
+					int nomeValido = 0;
+					printf("Digite 0 para voltar\n");
+					printf("Nome atual: %s\n", aluno.nome);
+					printf("Nome novo: ");
+					digitaNomeValido(nomeNovo, 1);
+					if(!strcmp(nomeNovo, "0")){
+						volta = 1;
+						continue;
+					}
+					strcpy(aluno.nome, nomeNovo);
+				} else if(opcao == 2){
+					int ano; char turma;
+					printf("Turma atual: %d%c\n", aluno.ano, aluno.turma);
+					printf("Turma nova: ");
+					digitaTurmaValida(&ano, &turma);
+					aluno.ano = ano;
+					aluno.turma = turma;
+				}
+				
+				ALUNOS[id-1] = aluno;
+				printf("Aluno alterado com sucesso");
+				break;
+			case TIPO_PROF:
+				cabecalho();
+				professor = PROFESSORES[id - 1];
+				printf("Qual deseja alterar? ");
+				printf("\n1 - Nome: %s", professor.nome);
+				printf("\n2 - Materia: %s", professor.materia);
+				opcao = digitaOpcao(1, 2);
+				if(opcao == 1){
+					char nomeNovo[NAME_SIZE];
+					printf("Digite 0 para voltar\n");
+					printf("Nome atual: %s\n", professor.nome);
+					printf("Nome novo: ");
+					digitaNomeValido(nomeNovo, 1);
+					if(!strcmp(nomeNovo, "0")){
+						volta = 1;
+						continue;
+					}
+					strcpy(professor.nome, nomeNovo);
+				} else if(opcao == 2){
+					char materiaNova[MATERIA_SIZE];
+					printf("Materia atual: %s\n", professor.materia);
+					printf("Materia nova: ");
+					digitaMateriaValida(materiaNova);
+					strcpy(professor.materia, materiaNova);
+				}
+				
+				PROFESSORES[id-1] = professor;
+				printf("Professor alterado com sucesso");
+				break;
+			case TIPO_ADMIN:
+				if (SESSION_ID == id) {
+					cabecalho();
+					char nomeNovo[NAME_SIZE];
+					printf("Nome atual: %s\n", ADMINS[id - 1].nome);
+					printf("Nome novo: ");
+					digitaNomeValido(nomeNovo, 1);
 
-				strcpy(ADMINS[id - 1].nome, nomeNovo);
-				printf("Admin alterado com sucesso");
-			} else {
-				printf("Nao pode modificar outros admins");
-			}
-	}
+					strcpy(ADMINS[id - 1].nome, nomeNovo);
+					printf("Admin alterado com sucesso");
+				} else {
+					printf("Voce nao pode modificar outros admins");
+				}
+		}
+	} while (volta);
 
 	esperar();
 }
