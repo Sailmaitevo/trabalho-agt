@@ -264,7 +264,7 @@ void professorCriarProva(int id){
 		printf("Insira o nome para a prova (ate %d caracteres): ", NAME_SIZE - 1);
 		digitaString(NAME_SIZE, nome);
 		
-		if(buscarProva(nome, ano, turma)){
+		if(buscarProva(nome, ano, turma, id)){
 			printf("Prova ja existe, tente novamente.\n");
 			continue;
 		}
@@ -296,8 +296,17 @@ void professorEditarNotas(int id, int unico){
 	cabecalho();
 	printf("Provas da turma %d%c", ano, turma);
 
+	int flag = 1;
 	for(int i = 0; i < MAXN; i++){
-		if(PROVAS[i].idProfessor == id && PROVAS[i].ano == ano && PROVAS[i].turma == turma) printf("\n%s", PROVAS[i].nome);
+		if(PROVAS[i].idProfessor == id && PROVAS[i].ano == ano && PROVAS[i].turma == turma){
+			printf("\n%s", PROVAS[i].nome);
+			flag = 0;
+		}
+	}
+	if(flag){
+		printf("\nNao foram encontradas provas para essa turma");
+		esperar();
+		return;
 	}
 	printf("\n\nEscolha uma das provas acima: ");
 	
@@ -305,7 +314,8 @@ void professorEditarNotas(int id, int unico){
 	int idProva;
 	do {
 		digitaString(NAME_SIZE, nomeProva);
-		idProva = buscarProva(nomeProva, ano, turma);
+		if(!strcmp(nomeProva, "0")) return;
+		idProva = buscarProva(nomeProva, ano, turma, id);
 		if(!idProva) printf("Insira uma prova existente");
 	} while(!idProva);
 	
@@ -315,11 +325,9 @@ void professorEditarNotas(int id, int unico){
 		
 		cabecalho();
 		printf("Notas dos alunos da turma %d%c em %s", ano, turma, nomeProva);
-		printf("Alun@ - Nota:");
+		printf("\nAlun@ - Nota:");
 		
-		printf("O q eh isso %d\n", tamanhoA);
 		for(int i = 0; i < tamanhoA; i++){
-			printf("o q nisso %d\n", i);
 			printf("\n%s - %.1f", alunos[i].nome, alunoNota(idProva, alunos[i].id));
 		}
 		

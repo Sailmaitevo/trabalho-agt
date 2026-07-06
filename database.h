@@ -95,7 +95,7 @@ int validarSenha(int id, int tipo, char senha[PASS_SIZE]);
 int buscarProfessor(char nome[NAME_SIZE], int capializacaoImporta);
 int buscarAluno(char nome[NAME_SIZE], int capializacaoImporta);
 int buscarAdmin(char nome[NAME_SIZE], int capializacaoImporta);
-int buscarProva(char nome[NAME_SIZE], int ano, char turma);
+int buscarProva(char nome[NAME_SIZE], int ano, char turma, int idProfessor);
 int compararNomes(char nome1[NAME_SIZE], char nome2[NAME_SIZE], int capializacaoImporta);
 char fazerMinusculo(char c);
 char fazerMaiusculo(char c);

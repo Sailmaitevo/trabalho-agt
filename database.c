@@ -322,9 +322,9 @@ int buscarAdmin(char nome[NAME_SIZE], int capitalizacaoImporta){
     }
     return 0;
 }
-int buscarProva(char nome[NAME_SIZE], int ano, char turma){	
+int buscarProva(char nome[NAME_SIZE], int ano, char turma, int idProfessor){	
 	for(int i = 0; i < MAXN; i++){
-		if(!strcmp(PROVAS[i].nome, nome) && PROVAS[i].ano == ano && PROVAS[i].turma == turma) return i+1;
+		if(!strcmp(PROVAS[i].nome, nome) && PROVAS[i].ano == ano && PROVAS[i].turma == turma && PROVAS[i].idProfessor == idProfessor) return i+1;
 	}
 	return 0;
 }
