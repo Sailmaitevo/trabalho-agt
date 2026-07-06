@@ -12,22 +12,27 @@ void professorListarTurmas(int id){
     int maxIndex = 0;
 	
     for(int i = 0; i < MAXN; i++){
-			int flag = 1;
-			Aluno aluno = ALUNOS[i];
-			for(int j = 0; j <= maxIndex; j++){ // percorre o array de turmas vendo se ja existe a struct da turma do aluno
-				if(aluno.ano == turmas[j].ano && aluno.turma == turmas[j].turma){
-					int mediaAluno = alunoMedia(aluno.id, id);
-					if (mediaAluno != -1) {
-						turmas[j].soma += 
-						turmas[j].contador++;
-					}
-					flag = 0;
+		int flag = 1;
+		Aluno aluno = ALUNOS[i];
+		for(int j = 0; j < maxIndex; j++){ // percorre o array de turmas vendo se ja existe a struct da turma do aluno
+			if(aluno.ano == turmas[j].ano && aluno.turma == turmas[j].turma){
+				int mediaAluno = alunoMedia(aluno.id, id);
+				if (mediaAluno != -1) {
+					turmas[j].soma += mediaAluno;
+					turmas[j].contador++;
 				}
+				flag = 0;
 			}
-			if(!flag) continue;
+		}
+		if(!flag) continue;
         
 		Turma aux = {aluno.ano, aluno.turma, 0, 0};
-        turmas[maxIndex] = aux;
+		int mediaAluno = alunoMedia(aluno.id, id);
+        if(mediaAluno != -1){
+			turmas[maxIndex].soma += mediaAluno;
+			turmas[maxIndex].contador++;
+		}
+		turmas[maxIndex] = aux;
 		maxIndex++;
     }
 	
@@ -39,7 +44,7 @@ void professorListarTurmas(int id){
 				printf("Turma - Media\n");
 			}
 			turmasComNota++;
-			printf("%d%c - %1.f\n", turmas[i].ano, turmas[i].turma, turmas[i].soma/turmas[i].contador);
+			printf("%d%c - %.1f\n", turmas[i].ano, turmas[i].turma, turmas[i].soma/turmas[i].contador);
 		}
 	}
 
