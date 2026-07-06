@@ -123,7 +123,6 @@ void professorTabelaDeNotas(int id, int final){
 				fclose(arquivo);
 				continue;
 			}
-			fclose(arquivo);
 			break;
 		}
 		arquivo = fopen(caminho, "w");
