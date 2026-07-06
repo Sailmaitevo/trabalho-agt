@@ -118,7 +118,6 @@ void alunoBoletim(int id){
 				fclose(arquivo);
 				continue;
 			}
-			fclose(arquivo);
 			break;
 		}
 		arquivo = fopen(caminho, "w");
