@@ -56,28 +56,28 @@ int obterOpcao() {
   printf("  Opcoes\n");
 
   printf("------------------------------------------------------\n");
-  printf("| 1 | %-46s |\n", "Inserir um novo estudante");
+  printf("  1 - %-46s  \n", "Inserir um novo estudante");
 
-  printf("|----------------------------------------------------|\n");
-  printf("| 2 | %-46s |\n", "Remover um estudante existente");
+  printf("------------------------------------------------------\n");
+  printf("  2 - %-46s  \n", "Remover um estudante existente");
   
-  printf("|----------------------------------------------------|\n");
-  printf("| 3 | %-46s |\n", "Ver a listagem de todos os estudantes");
+  printf("------------------------------------------------------\n");
+  printf("  3 - %-46s  \n", "Ver a listagem de todos os estudantes");
   
-  printf("|----------------------------------------------------|\n");
-  printf("| 4 | %-46s |\n", "Consultar os dados de um estudante");
+  printf("------------------------------------------------------\n");
+  printf("  4 - %-46s  \n", "Consultar os dados de um estudante");
   
-  printf("|----------------------------------------------------|\n");
-  printf("| 5 | %-46s |\n", "Cadastrar resultado semetral de um estudante");
+  printf("------------------------------------------------------\n");
+  printf("  5 - %-46s  \n", "Cadastrar resultado semetral de um estudante");
   
-  printf("|----------------------------------------------------|\n");
-  printf("| 6 | %-46s |\n", "Listar os resultados semestrais dos estudantes");
+  printf("------------------------------------------------------\n");
+  printf("  6 - %-46s  \n", "Listar os resultados semestrais dos estudantes");
   
-  printf("|----------------------------------------------------|\n");
-  printf("| 7 | %-46s |\n", "Sair");
+  printf("------------------------------------------------------\n");
+  printf("  7 - %-46s  \n", "Sair");
   
-  printf("|----------------------------------------------------|\n");
-  printf("| 8 | %-46s |\n", "Apagar database");
+  printf("------------------------------------------------------\n");
+  printf("  8 - %-46s  \n", "Apagar database");
   printf("------------------------------------------------------\n");
 
   printf("\nDigite uma das opcoes:");
