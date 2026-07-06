@@ -54,7 +54,8 @@ void importarDatabase(){
 	char linhaNotas[26];
 	for(int i = 0; fgets(linhaNotas, sizeof(linhaNotas), notas) != NULL; i++){
 		sscanf(linhaNotas, "%d,%d,%f", &NOTAS[i].idProva, &NOTAS[i].idAluno, &NOTAS[i].nota);
-		NOTAS[i].nota = roundf(NOTAS[i].nota * 10.0)/10.0;
+		int aux = (int) NOTAS[i].nota * 10;
+		NOTAS[i].nota = (aux + (NOTAS[i].nota * 10 - aux >= 5 ? 1 : 0)) / 10.f;
 	}
 	
 	FILE *faltas = importarArquivo("Database/Faltas.csv", "");

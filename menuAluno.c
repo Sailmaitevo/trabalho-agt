@@ -201,7 +201,7 @@ void alunoBoletim(int id){
 		printf(" %s |", c);
 		if(salvar) fprintf(arquivo, " %s |", c);
 		
-		sprintf(c, "%.1f", faltas);
+		sprintf(c, "%d", faltas);
 		padString(c, NAME_SIZE);
 		printf(" %s |", c);
 		if(salvar) fprintf(arquivo, " %s |", c);

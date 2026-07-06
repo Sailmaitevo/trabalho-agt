@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <math.h>
 #include <time.h>
 
 #define PASS_SIZE 16 // O tamanho máximo de uma senha (em caracteres)
