@@ -66,7 +66,7 @@ void alunoVerMedias(int id){
 		return;
 	}
 	
-    for(int i = 0; i <= maxIndex; i++){
+    for(int i = 0; i < maxIndex; i++){
 		printf("%d - %s: %.1f\n", i+1, materias[i].materia, materias[i].soma/materias[i].contador);
         soma += materias[i].soma/materias[i].contador;
         contador++;
