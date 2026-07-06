@@ -70,8 +70,9 @@ void admCadastrar(){
 	if(!permissao) return;
 	
 	char nome[NAME_SIZE];
-	printf("Digite o nome (ate %d caracteres): ", NAME_SIZE - 1);
+	printf("Digite o nome (ate %d caracteres, 0 volta): ", NAME_SIZE - 1);
 	digitaNomeValido(nome, 0);
+	if(!strcmp(nome, "0")) return;
 	
 	char senhaPadrao[PASS_SIZE] = "123456";
 	switch(permissao){
