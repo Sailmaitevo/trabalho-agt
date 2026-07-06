@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include <time.h>
 
 #define PASS_SIZE 16 // Esse e o tamanho maximo que uma senha pode ter (em caracteres)
 #define NAME_SIZE 21 // Esse e o tamanho maximo de um nome (de usuario ou de prova)
@@ -111,6 +112,8 @@ int alunoFaltas(int idProfessor, int idAluno);
 
 int preencherTurma(int ano, char turma, Aluno alunos[TURMA_SIZE]); // Preenche um vetor de alunos com todos os alunos de uma mesma turma
 int preencherProvas(int id, int ano, char turma, Prova *provas); // Preenche um vetor de provas com todas as provas aplicadas para uma turma
+
+void pegarTempo(char *tempo, size_t tamanho);
 
 extern Professor PROFESSORES[MAXN];
 extern Aluno ALUNOS[MAXN];

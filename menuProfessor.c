@@ -106,13 +106,47 @@ void professorTabelaDeNotas(int id, int final){
 		printf("Turma invalida! Tente novamente: ");
 	}
 	
+	FILE *arquivo = NULL;
+	printf("Deseja salvar num arquivo de texto? (s/n)");
+	int salvar = inputSimNao();
+	if(salvar){
+		char caminho[NAME_SIZE+4];
+		int flag = 0;
+		printf("Digite o nome do arquivo (ate %d caracteres sem extensao, 0 para cancelar)", NAME_SIZE);
+		while(1){
+			mostrarAreaInput();
+			scanf("%s", caminho);
+			getchar();
+			if(!strcmp(caminho, "0")){
+				salvar = 0;
+				break;
+			}
+			if(!strlen(caminho)) continue;
+			
+			sprintf(caminho+strlen(caminho), ".txt");
+			arquivo = fopen(caminho, "r");
+			if(arquivo != NULL){
+				printf("Arquivo ja existe, tente novamente");
+				fclose(arquivo);
+				continue;
+			}
+			fclose(arquivo);
+			break;
+		}
+		arquivo = fopen(caminho, "w");
+	}
+	
 	cabecalho();
-	printf("Tabela de notas da turma %d%c:", ano, turma);
+	char tempo[80];
+	pegarTempo(tempo, sizeof(tempo));
+	printf("Tabela de notas da turma %d%c\nDocumento gerado em %s", ano, turma, tempo);
+	if(salvar) fprintf(arquivo, "Tabela de notas da turma %d%c\nDocumento gerado em %s", ano, turma, tempo);
 	
 	Prova provas[MAXN] = {};
 	int tamanhoP = preencherProvas(id, ano, turma, provas);
 	if(!tamanhoP){
 		printf("\nNao foram encontradas provas para essa turma");
+		if(salvar) fprintf(arquivo, "\nNao foram encontradas provas para essa turma");
 		esperar();
 		return;
 	}
@@ -120,32 +154,38 @@ void professorTabelaDeNotas(int id, int final){
 	char s[NAME_SIZE] = "Nome";
 	padString(s, NAME_SIZE);
 	printf("\n| %s |", s);
+	if(salvar) fprintf(arquivo, "\n| %s |", s);
 	
 	if (final){
 		strcpy(s, "Media");
 		padString(s, NAME_SIZE);
 		printf(" %s |", s);
+		if(salvar) fprintf(arquivo, " %s |", s);
 	} else {
 		for(int i = 0; i < tamanhoP; i++){
 			char c[NAME_SIZE];
 			strcpy(c, provas[i].nome);
 			padString(c, NAME_SIZE);
 			printf(" %s |", c);
+			if(salvar) fprintf(arquivo, " %s |", c);
 		}
 	}
 
 	strcpy(s, "Faltas");
 	padString(s, NAME_SIZE);
 	printf(" %s |", s);
+	if(salvar) fprintf(arquivo, " %s |", s);
 
 	if (final) {
 		strcpy(s, "Resultado");
 		padString(s, NAME_SIZE);
 		printf(" %s |", s);
+		if(salvar) fprintf(arquivo, " %s |", s);
 	
 		strcpy(s, "Nota Exame");
 		padString(s, NAME_SIZE);
 		printf(" %s |", s);
+		if(salvar) fprintf(arquivo, " %s |", s);
 	}
 	
 	for(int i = 0; i < tamanhoA; i++){
@@ -155,6 +195,7 @@ void professorTabelaDeNotas(int id, int final){
 		strcpy(n, alunos[i].nome);
 		padString(n, NAME_SIZE);
 		printf("\n| %s |", n);
+		if(salvar) fprintf(arquivo, "\n| %s |", n);
 		
 		char c[(NAME_SIZE+3)*tamanhoP];
 		strcpy(c, "");
@@ -172,6 +213,7 @@ void professorTabelaDeNotas(int id, int final){
 			}
 		}
 		printf("%s", c);
+		if(salvar) fprintf(arquivo, "%s", c);
 
 		media /= tamanhoP;
 		
@@ -180,6 +222,7 @@ void professorTabelaDeNotas(int id, int final){
 			sprintf(n, "%.1f", media);
 			padString(n, NAME_SIZE);
 			printf(" %s |", n);
+			if(salvar) fprintf(arquivo, " %s |", n);
 		}
 
 		int faltas = alunoFaltas(id, alunos[i].id);
@@ -188,6 +231,7 @@ void professorTabelaDeNotas(int id, int final){
 		sprintf(n, "%d", faltas);
 		padString(n, NAME_SIZE);
 		printf(" %s |", n);
+		if(salvar) fprintf(arquivo, " %s |", n);
 
 		if (final) {
 			int exame = 0;
@@ -204,6 +248,7 @@ void professorTabelaDeNotas(int id, int final){
 			}
 			padString(n, NAME_SIZE);
 			printf(" %s |", n);
+			if(salvar) fprintf(arquivo, " %s |", n);
 	
 			strcpy(n, "");
 			if (exame) {
@@ -214,8 +259,11 @@ void professorTabelaDeNotas(int id, int final){
 			
 			padString(n, NAME_SIZE);
 			printf(" %s |", n);
+			if(salvar) fprintf(arquivo, " %s |", n);
 		}
 	}
+	
+	if(salvar) fclose(arquivo);
 	
 	esperar();
 }

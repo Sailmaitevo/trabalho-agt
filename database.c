@@ -500,3 +500,17 @@ int acharIdTipo(int *id, int *tipo, char nome[NAME_SIZE]) {
 
 	return 1;
 }
+
+void pegarTempo(char *buffer, size_t tamanho){
+	time_t tempo_atual;
+    struct tm *info_tempo;
+
+    // Obtém o tempo atual
+    time(&tempo_atual);
+
+    // Converte para o horário local
+    info_tempo = localtime(&tempo_atual);
+
+    // Formata a saída (Dia/Mês/Ano Hora:Minuto:Segundo)
+    strftime(buffer, tamanho, "%d/%m/%Y %H:%M:%S", info_tempo);
+}
