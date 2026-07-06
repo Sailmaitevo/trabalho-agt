@@ -17,7 +17,7 @@ FILE *importarArquivo(char *caminho, char *padrao){
 			printf("Erro fatal: não foi possível criar o arquivo %s", caminho);
 			exit(EXIT_FAILURE);
 		}
-		fprintf(arquivo, padrao);
+		fprintf(arquivo, "%s", padrao);
 	}
 	fclose(arquivo);
 	
@@ -29,19 +29,19 @@ void importarDatabase(){
 	FILE *admins = importarArquivo("Database/Admins.csv", "1,Adm,1713679732");
 	char linhaAdmins[NAME_SIZE+19];
 	for(int i = 0; fgets(linhaAdmins, sizeof(linhaAdmins), admins) != NULL; i++){
-		sscanf(linhaAdmins, "%d,%[^,],%u", &ADMINS[i].id, &ADMINS[i].nome, &ADMINS[i].senha);
+		sscanf(linhaAdmins, "%d,%[^,],%u", &ADMINS[i].id, ADMINS[i].nome, &ADMINS[i].senha);
 	}
 	
 	FILE *alunos = importarArquivo("Database/Alunos.csv", "");
 	char linhaAlunos[NAME_SIZE+23];
 	for(int i = 0; fgets(linhaAlunos, sizeof(linhaAlunos), alunos) != NULL; i++){
-		sscanf(linhaAlunos, "%d,%[^,],%u,%d,%c", &ALUNOS[i].id, &ALUNOS[i].nome, &ALUNOS[i].senha, &ALUNOS[i].ano, &ALUNOS[i].turma);
+		sscanf(linhaAlunos, "%d,%[^,],%u,%d,%c", &ALUNOS[i].id, ALUNOS[i].nome, &ALUNOS[i].senha, &ALUNOS[i].ano, &ALUNOS[i].turma);
 	}
 	
 	FILE *professores = importarArquivo("Database/Professores.csv", "");
 	char linhaProfessores[NAME_SIZE+24];
 	for(int i = 0; fgets(linhaProfessores, sizeof(linhaProfessores), professores) != NULL; i++){
-		sscanf(linhaProfessores, "%d,%[^,],%u,%s", &PROFESSORES[i].id, &PROFESSORES[i].nome, &PROFESSORES[i].senha, &PROFESSORES[i].materia);
+		sscanf(linhaProfessores, "%d,%[^,],%u,%s", &PROFESSORES[i].id, PROFESSORES[i].nome, &PROFESSORES[i].senha, PROFESSORES[i].materia);
 	}
 	
 	FILE *provas = importarArquivo("Database/Provas.csv", "");
@@ -313,7 +313,7 @@ int buscarAluno(char nome[NAME_SIZE], int capitalizacaoImporta){
 }
 int buscarAdmin(char nome[NAME_SIZE], int capitalizacaoImporta){
     for(int i = 0; i < MAXN; i++){
-				if(ALUNOS[i].id != 0 && compararNomes(ADMINS[i].nome, nome, capitalizacaoImporta)) {
+		if(ADMINS[i].id != 0 && compararNomes(ADMINS[i].nome, nome, capitalizacaoImporta)) {
 					return i + 1;
 				}
     }
@@ -474,14 +474,13 @@ int preencherTurma(int ano, char turma, Aluno alunos[TURMA_SIZE]){
 }
 
 int acharIdTipo(int *id, int *tipo, char nome[NAME_SIZE]) {
-	int novoId = *id;
-	int novoTipo;
+	int novoTipo, novoId;
 	novoId = buscarAluno(nome, 0);
-	if (novoId == 0) {
+	if (!novoId) {
 		novoId = buscarProfessor(nome, 0);
-		if (novoId == 0) {
+		if (!novoId) {
 			novoId = buscarAdmin(nome, 0);
-			if (novoId == 0) {
+			if (!novoId) {
 				return 0;
 			} else {
 				novoTipo = TIPO_ADMIN;
@@ -513,7 +512,4 @@ void pegarTempo(char *buffer, size_t tamanho){
 }
 float calcularMediaExame(float media) {
   return (EXAME_MIN*(PESO_EXAME+PESO_MEDIA) - PESO_MEDIA*media) / PESO_EXAME;
-  
-  float x;
-  x >= (EXAME_MIN*(PESO_EXAME+PESO_MEDIA) - PESO_MEDIA*media) / PESO_EXAME;
 }
