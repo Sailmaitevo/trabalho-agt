@@ -274,10 +274,6 @@ void deletarProva(int id){
     PROVAS[id-1] = prova;
 }
 void deletarAdmin(int id){
-	if(id == 1){
-		printf("Não é possível remover o usário administrador principal");
-		return;
-	}
 	Admin admin = {0, "", 0};
     ADMINS[id-1] = admin;
 }
@@ -513,4 +509,10 @@ void pegarTempo(char *buffer, size_t tamanho){
 
     // Formata a saída (Dia/Mês/Ano Hora:Minuto:Segundo)
     strftime(buffer, tamanho, "%d/%m/%Y %H:%M:%S", info_tempo);
+}
+float calcularMediaExame(float media) {
+  return (EXAME_MIN*(PESO_EXAME+PESO_MEDIA) - PESO_MEDIA*media) / PESO_EXAME;
+  
+  float x;
+  x >= (EXAME_MIN*(PESO_EXAME+PESO_MEDIA) - PESO_MEDIA*media) / PESO_EXAME;
 }

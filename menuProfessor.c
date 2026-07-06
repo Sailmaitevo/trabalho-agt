@@ -83,13 +83,6 @@ void professorConsultarNotas(int id, int idAluno){
 	esperar();
 }
 
-float calcularMediaExame(float media) {
-  return (EXAME_MIN*(PESO_EXAME+PESO_MEDIA) - PESO_MEDIA*media) / PESO_EXAME;
-  
-  float x;
-  x >= (EXAME_MIN*(PESO_EXAME+PESO_MEDIA) - PESO_MEDIA*media) / PESO_EXAME;
-}
-
 void professorTabelaDeNotas(int id, int final){
 	int ano; char turma;
 	
@@ -112,7 +105,7 @@ void professorTabelaDeNotas(int id, int final){
 	if(salvar){
 		char caminho[NAME_SIZE+4];
 		int flag = 0;
-		printf("Digite o nome do arquivo (ate %d caracteres sem extensao, 0 para cancelar)", NAME_SIZE);
+		printf("Digite o nome do arquivo (ate %d caracteres sem extensao, 0 para cancelar)", NAME_SIZE-1);
 		while(1){
 			mostrarAreaInput();
 			scanf("%s", caminho);
@@ -372,14 +365,14 @@ void professorEditarNotas(int id, int unico){
 		int idAluno;
 		
 		cabecalho();
-		printf("Notas dos alunos da turma %d%c em %s", ano, turma, nomeProva);
+		printf("Notas d@s alun@s da turma %d%c em %s", ano, turma, nomeProva);
 		printf("\nAlun@ - Nota:");
 		
 		for(int i = 0; i < tamanhoA; i++){
 			printf("\n%s - %.1f", alunos[i].nome, alunoNota(idProva, alunos[i].id));
 		}
 		
-		printf("\n\nEscolha um aluno: ");
+		printf("\n\nEscolha um(a) alun@: ");
 		int alunoExiste = 0;
 		do {
 			digitaString(NAME_SIZE, nomeAluno);
@@ -387,7 +380,7 @@ void professorEditarNotas(int id, int unico){
 
 			alunoExiste = idAluno && ALUNOS[idAluno - 1].ano == ano && ALUNOS[idAluno - 1].turma == turma;
 			if (!alunoExiste) {
-				printf("Insira um aluno existente dessa turma");
+				printf("Insira um(a) alun@ existente dessa turma");
 			}
 		} while(!alunoExiste);
 		
@@ -437,7 +430,7 @@ void professorIncrementarFaltas(int id){
 		printf("\n%d - %s - %d", alunos[i].id, alunos[i].nome, alunoFaltas(id, alunos[i].id));
 	};
 	
-	printf("\n\nEscolha um aluno: ");
+	printf("\n\nEscolha um(a) alun@: ");
 	
 	char nomeAluno[NAME_SIZE];
 	int idAluno;
@@ -447,7 +440,7 @@ void professorIncrementarFaltas(int id){
 		idAluno = buscarAluno(nomeAluno, 0);
 		existe = !(!idAluno || ALUNOS[idAluno-1].ano != ano || ALUNOS[idAluno-1].turma != turma);
 		if(!existe)
-			printf("Insira um aluno existente e dessa turma: ");
+			printf("Insira um(a) alun@ existente e dessa turma: ");
 	} while (!existe);
 	
 	cabecalho();
@@ -501,14 +494,14 @@ void mostrarMenuProfessor(){
 	
 	do {
 		cabecalho();
-		printf("Bem-vindo, %s, o que voce quer fazer hoje?\n", PROFESSORES[SESSION_ID - 1].nome);
+		printf("Bem-vind@, %s, o que voce quer fazer hoje?\n", PROFESSORES[SESSION_ID - 1].nome);
 		printf("0 - Sair\n");
 		printf("1 - Ver turmas\n");
 		printf("2 - Ver provas\n");
 		printf("3 - Cadastrar prova\n");
 		printf("4 - Editar notas em massa\n");
-		printf("5 - Editar notas de um unico aluno\n");
-		printf("6 - Incrementar faltas de um aluno\n");
+		printf("5 - Editar notas de um(a) unic@ alun@\n");
+		printf("6 - Incrementar faltas de um(a) alun@\n");
 		printf("7 - Excluir prova\n");
 		printf("8 - Gerar tabela de nota das provas\n");
 		printf("9 - Gerar tabela de nota final\n");
