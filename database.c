@@ -147,7 +147,7 @@ int cadastrarProva(char nome[NAME_SIZE], int idProfessor, int ano, char turma){
 			Prova prova = {i+1, "", idProfessor, ano, turma};
 			strcpy(prova.nome, nome);
             PROVAS[i] = prova;
-            zerarNotas(i+1, 0);
+            zerarNotas(i+1);
             return i+1;
         }
     }
@@ -168,27 +168,34 @@ int cadastrarAdmin(char nome[NAME_SIZE], char senha[PASS_SIZE]){
     sobrescreverDatabase();
 }
 
-void zerarNotas(int idProva, int delete){
+void zerarNotas(int idProva){
     Prova prova = PROVAS[idProva-1];
-    int ultimoIndex = 0;
+    int ultimoVazio = 0;
+	int flag = 0;
 
-    for(int i = 0; i < MAXN; i++){
-        if (ultimoIndex == MAXN){
-            printf("Erro, o banco de dados esta cheio!");
-            deletarProva(idProva);
-            sobrescreverDatabase();
-        }
+    // Passa por todos os alunos da turma, pra cada aluno vai até o próximo index vazio e adiciona
 
-        if(ALUNOS[i].ano == prova.ano && ALUNOS[i].turma == prova.turma){
-            for(ultimoIndex; ultimoIndex < MAXN; ultimoIndex++){
-                if(NOTAS[ultimoIndex].idProva == 0){
-					Nota nota = {delete ? 0 : idProva, i+1, 0.0};
-                    NOTAS[ultimoIndex] = nota;
-                    break;
-                }
-            }
-        }
-    }
+	Alunos alunos[TURMA_SIZE] = {};
+	int tamanho = preencherTurma(prova.ano, prova.turma, provas);
+
+	for(int i = 0; i < tamanho; i++){
+		if(ultimoVazio == MAXN) flag = 1;
+		while(NOTAS[ultimoVazio].idProva){
+			ultimoVazio++;
+			if(ultimoVazio == MAXN){
+				flag = 1;
+				break;
+			}
+		}
+		if(flag){
+			printf(MSG_DB_CHEIO);
+			sobrescreverDatabase();
+		}
+
+		Nota nota = {idProva, alunos[i].id, 0};
+		NOTAS[ultimoVazio] = nota;
+		ultimoVazio++;
+	}
 }
 void editarNota(int idProva, int idAluno, float nota){
 	int ultimoVazio = -1;
@@ -273,7 +280,14 @@ void deletarAluno(int id){
 	ALUNOS[id-1] = aluno;
 }
 void deletarProva(int id){
-    zerarNotas(id, 1);
+	for(int i = 0; i < MAXN; i++){
+		if(NOTAS[i].idProva == id){
+			NOTAS[i].idProva = 0;
+			NOTAS[i].idAluno = 0;
+			NOTAS[i].nota = 0;
+		}
+	}
+
 	Prova prova = {0, "", 0, 0};
     PROVAS[id-1] = prova;
 }
