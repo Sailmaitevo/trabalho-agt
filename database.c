@@ -179,15 +179,18 @@ void zerarNotas(int idProva, int delete){
             sobrescreverDatabase();
         }
 
-        if(ALUNOS[i].ano == prova.ano && ALUNOS[i].turma == prova.turma){
-            for(ultimoIndex; ultimoIndex < MAXN; ultimoIndex++){
-                if(NOTAS[ultimoIndex].idProva == 0){
-					Nota nota = {delete ? 0 : idProva, i+1, 0.0};
-                    NOTAS[ultimoIndex] = nota;
-                    break;
-                }
-            }
-        }
+				if(ALUNOS[i].ano == prova.ano && ALUNOS[i].turma == prova.turma){
+					for(; ultimoIndex < MAXN; ultimoIndex++){
+							if(NOTAS[ultimoIndex].idProva == 0 && !delete){
+									Nota nota = {idProva, i+1, 0.0};
+									NOTAS[ultimoIndex] = nota;
+									break;
+							} else if(idProva == NOTAS[ultimoIndex].idProva){
+									Nota nota = {0, 0, 0};
+									NOTAS[ultimoIndex] = nota;
+							}
+					}
+				}
     }
 }
 void editarNota(int idProva, int idAluno, float nota){
@@ -273,9 +276,9 @@ void deletarAluno(int id){
 	ALUNOS[id-1] = aluno;
 }
 void deletarProva(int id){
-    zerarNotas(id, 1);
+  zerarNotas(id, 1);
 	Prova prova = {0, "", 0, 0};
-    PROVAS[id-1] = prova;
+  PROVAS[id-1] = prova;
 }
 void deletarAdmin(int id){
 	Admin admin = {0, "", 0};
