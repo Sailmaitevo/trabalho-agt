@@ -39,8 +39,8 @@ void alunoVerMedias(int id){
     for(int i = 0; i < tamanho; i++){
         int flag = 0;
 		int idProfessor = PROVAS[notas[i].idProva-1].idProfessor;
-        for(int j = 0; j < maxIndex; j++){ // percorre o array de notas vendo se ja existe um struct da materia em questao
-            if(idProfessor == materias[j].idProfessor){
+        for(int j = 0; j < maxIndex; j++){
+			if(idProfessor == materias[j].idProfessor){
 				materias[j].soma += notas[i].nota;
                 materias[j].contador++;
                 flag = 1;
@@ -153,83 +153,76 @@ void alunoBoletim(int id){
 	}
 	
 	char s[NAME_SIZE+MATERIA_SIZE+2] = "Materia (professor(a))";
-	padString(s, NAME_SIZE+MATERIA_SIZE+2);
+	padString(s, NAME_SIZE+MATERIA_SIZE+2, 'd');
 	printf("\n| %s |", s);
 	if(salvar) fprintf(arquivo, "\n| %s |", s);
 	
-	strcpy(s, "Media");
-	padString(s, NAME_SIZE);
-	printf(" %s |", s);
-	if(salvar) fprintf(arquivo, " %s |", s);
-
-	strcpy(s, "Faltas");
-	padString(s, NAME_SIZE);
-	printf(" %s |", s);
-	if(salvar) fprintf(arquivo, " %s |", s);
-
+	printf(" Media |");
+	if(salvar) fprintf(arquivo, " Media |", s);
+	
+	printf(" Faltas |");
+	if(salvar) fprintf(arquivo, " Faltas |", s);
+	
 	strcpy(s, "Resultado");
-	padString(s, NAME_SIZE);
+	padString(s, NAME_SIZE-6, 'c');
 	printf(" %s |", s);
 	if(salvar) fprintf(arquivo, " %s |", s);
 
-	strcpy(s, "Nota Minima No Exame");
-	padString(s, NAME_SIZE);
-	printf(" %s |", s);
-	if(salvar) fprintf(arquivo, " %s |", s);
+	printf(" Nota Minima No Exame |");
+	if(salvar) fprintf(arquivo, " Nota Minima No Exame |");
 	
 	float notas_total = 0;
 	int faltas_total = 0;
 	for(int i = 0; i < maxIndex; i++){
-		char n[NAME_SIZE+MATERIA_SIZE+2];
 		Professor professor = PROFESSORES[professores[i]-1];
 		
 		float media = alunoMedia(id, professor.id);
 		int faltas = alunoFaltas(id, professor.id);
 		notas_total += media;
 		faltas_total += faltas;
-
-		sprintf(n, "%s (%s)", professor.materia, professor.nome);
-		padString(n, NAME_SIZE+MATERIA_SIZE+2);
-		printf("\n| %s |", n);
-		if(salvar) fprintf(arquivo, "\n| %s |", n);
+		
+		sprintf(s, "%s (%s)", professor.materia, professor.nome);
+		padString(s, NAME_SIZE+MATERIA_SIZE+2, 'd');
+		printf("\n| %s |", s);
+		if(salvar) fprintf(arquivo, "\n| %s |", s);
 		
 		char c[NAME_SIZE] = {};
 		
 		sprintf(c, "%.1f", media);
-		padString(c, NAME_SIZE);
+		padString(c, 6, 'c');
 		printf(" %s |", c);
 		if(salvar) fprintf(arquivo, " %s |", c);
 		
 		sprintf(c, "%d", faltas);
-		padString(c, NAME_SIZE);
+		padString(c, 7, 'c');
 		printf(" %s |", c);
 		if(salvar) fprintf(arquivo, " %s |", c);
 
 		int exame = 0;
 		if (faltas > AULAS_NUM / 4) {
-			sprintf(n, "REPROVAD@ POR FALTA");
+			sprintf(s, "REP POR FALTA");
 		} else if (calcularMediaExame(media) > 10) {
-			sprintf(n, "REPROVAD@");
+			sprintf(s, "REPROVAD@");
 		} else if (media < MEDIA_MIN) {
 			exame = 1;
-			sprintf(n, "EM EXAME");
+			sprintf(s, "EM EXAME");
 		} else {
-			sprintf(n, "APROVAD@");
+			sprintf(s, "APROVAD@");
 		}
-		padString(n, NAME_SIZE);
-		printf(" %s |", n);
-		if(salvar) fprintf(arquivo, " %s |", n);
+		padString(s, NAME_SIZE-6, 'c');
+		printf(" %s |", s);
+		if(salvar) fprintf(arquivo, " %s |", s);
 
-		strcpy(n, "");
+		strcpy(s, "");
 		if (exame) {
-			sprintf(n, "%.1f", calcularMediaExame(media));
+			sprintf(s, "%.1f", calcularMediaExame(media));
 		} else {
-			sprintf(n, " - ");
+			sprintf(s, " - ");
 		}
 		
-		padString(n, NAME_SIZE);
-		printf(" %s |", n);
-		if(salvar) fprintf(arquivo, " %s |", n);
+		padString(s, strlen("Nota Minima No Exame "), 'c');
+		printf(" %s |", s);
+		if(salvar) fprintf(arquivo, " %s |", s);
 	}
 	
 	if(salvar) fclose(arquivo);

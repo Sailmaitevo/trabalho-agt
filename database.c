@@ -192,14 +192,17 @@ void zerarNotas(int idProva, int delete){
 }
 void editarNota(int idProva, int idAluno, float nota){
 	int ultimoVazio = -1;
+	int flag = 0;
 	
 	for(int i = 0; i < MAXN; i++){
 		if(NOTAS[i].idAluno == idAluno && NOTAS[i].idProva == idProva){
 			NOTAS[i].nota = nota;
-			return;
+			flag = 1;
 		}
 		if(NOTAS[i].idProva == 0) ultimoVazio = i;
 	}
+	
+	if(flag) return;
 	
 	if(ultimoVazio == -1){
 		printf(MSG_DB_CHEIO);
@@ -388,7 +391,7 @@ int alunoPreencherNotas(int id, int idProfessor, Nota notas[MAXN]){
         Nota nota = NOTAS[i];
         int idProfessorNota = PROVAS[nota.idProva - 1].idProfessor;
         if(nota.idAluno == id && (idProfessor == idProfessorNota || idProfessor == 0)){
-            notas[index] = NOTAS[i];
+            notas[index] = nota;
             index++;
         }
     }
@@ -500,14 +503,8 @@ int acharIdTipo(int *id, int *tipo, char nome[NAME_SIZE]) {
 void pegarTempo(char *buffer, size_t tamanho){
 	time_t tempo_atual;
     struct tm *info_tempo;
-
-    // Obtém o tempo atual
     time(&tempo_atual);
-
-    // Converte para o horário local
     info_tempo = localtime(&tempo_atual);
-
-    // Formata a saída (Dia/Mês/Ano Hora:Minuto:Segundo)
     strftime(buffer, tamanho, "%d/%m/%Y %H:%M:%S", info_tempo);
 }
 float calcularMediaExame(float media) {

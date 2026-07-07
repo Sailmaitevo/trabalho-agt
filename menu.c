@@ -3,7 +3,9 @@
 
 int SESSION_ID;
 
-void login(){
+void menuLogin(){
+	cabecalho();
+	
 	char usuario[NAME_SIZE];
 	char senha[PASS_SIZE];
 	int id;
@@ -56,11 +58,24 @@ void login(){
 	}
 }
 
+void cabecalho(){
+  	#ifdef _WIN32
+		system("cls");
+	#else
+		system("clear");
+	#endif
+	
+	printf("==== SIGA (Sistema Integrado de Gestao Algoritmica) ====\n");
+}
+void esperar(){
+	printf("\n\nPressione ENTER para continuar");
+	consumirInput();
+}
+
 void digitaString(int tamanho, char str[tamanho]) {
   mostrarAreaInput();
   fgets(str, tamanho, stdin);
 
-	// ver se o newline foi lido ou nao
 	if (strchr(str, '\n') != NULL) {
 		str[strcspn(str, "\n")] = '\0';
 	} else {
@@ -69,52 +84,18 @@ void digitaString(int tamanho, char str[tamanho]) {
 
   str[strcspn(str, "\n")] = '\0';
 }
-
-void limpar() {
-	#ifdef _WIN32
-		system("cls");
-	#else
-		system("clear");
-	#endif
-}
-
-void cabecalho(){
-  limpar();
-  printf("==== SIGA (Sistema Integrado de Gestao Algoritmica) ====\n");
-}
-
-void menuLogin(){
-  cabecalho();
-  login();
-}
-
-void padString(char *string, int size){
-	for(int i = strlen(string); i < size - 1; i++){
-		string[i] = ' ';
-	}
-	string[size - 1] = 0;
-}
-
-void esperar(){
-	printf("\n\nPressione ENTER para continuar");
-	consumirInput();
-}
-
 void mostrarAreaInput() {
   printf("\n>");
 }
-
 void consumirInput() {
   int c;
   while ((c = getchar()) != '\n' && c != EOF);
 }
-
 int inputSimNao() {
 	char resposta[2];
 	digitaString(2, resposta);
 	return fazerMinusculo(resposta[0]) == 's';
 }
-
 void digitaNomeValido(char nome[NAME_SIZE], int capitalizacaoImporta) {
 	int valido = 0;
 	while(!valido){
@@ -136,16 +117,13 @@ void digitaNomeValido(char nome[NAME_SIZE], int capitalizacaoImporta) {
 		}
 	}
 }
-
 int inputTurma(int *ano, char *turma) {
 	int resultado = scanf("%d%c", ano, turma);
-	// \n foi dado como o %c nesse caso
 	if (resultado && *turma != '\n') {
 		consumirInput();
 	}
 	return resultado;
 }
-
 void digitaTurmaValida(int *anoPointer, char *turmaPointer) {
 mostrarAreaInput();
 	int ano;
@@ -188,7 +166,6 @@ mostrarAreaInput();
 	*anoPointer = ano;
 	*turmaPointer = turma;
 }
-
 int digitaOpcao(int min, int max) {
 	int valido = 0;
 	int opcao;
@@ -205,7 +182,6 @@ int digitaOpcao(int min, int max) {
 
 	return opcao;
 }
-
 void digitaMateriaValida(char materia[MATERIA_SIZE]) {
 	int valido = 0;
 	while(!valido){
@@ -271,4 +247,31 @@ void mudarSenha(int tipo) {
 		printf("Senha incorreta.");
 		esperar();
 	}
+}
+
+void padString(char *string, int padding, char alinhamento){
+	padding--;
+    int tamanho = strlen(string);
+    if(tamanho >= padding) return;
+    
+    char aux[padding + 1]; 
+    strcpy(aux, string);
+    
+    
+    switch (alinhamento){
+        case 'c': {
+		    int espacoTotal = padding - tamanho,
+	            espacoEsquerda = espacoTotal / 2,
+            	espacoDireita = espacoTotal - espacoEsquerda;
+            sprintf(string, "%*s%s%*s", espacoEsquerda, "", aux, espacoDireita, "");
+            break;
+        }
+        case 'd':
+            sprintf(string, "%*s", padding, aux);
+            break;
+            
+        default:
+            sprintf(string, "%-*s", padding, aux);
+            break;
+    }
 }

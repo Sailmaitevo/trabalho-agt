@@ -98,15 +98,14 @@ int buscarAluno(char nome[NAME_SIZE], int capializacaoImporta);
 int buscarAdmin(char nome[NAME_SIZE], int capializacaoImporta);
 int buscarProva(char nome[NAME_SIZE], int ano, char turma, int idProfessor);
 
-// Compara dois nomes considerando (ou não) a capitalização
-int compararNomes(char nome1[NAME_SIZE], char nome2[NAME_SIZE], int capializacaoImporta);
-char fazerMinusculo(char c);
-char fazerMaiusculo(char c);
-char ehLetra(char c);
-void acharNome(int id, int tipo, char nome[NAME_SIZE]);
-int acharIdTipo(int *id, int *tipo, char nome[NAME_SIZE]);
+int compararNomes(char nome1[NAME_SIZE], char nome2[NAME_SIZE], int capializacaoImporta); // Compara dois nomes considerando (ou não) a capitalização
+char fazerMinusculo(char c); // Deixa um caractere minusculo
+char fazerMaiusculo(char c); // Deixa um caractere minusculo
+char ehLetra(char c); // Confere se um caractere e uma letra
+void acharNome(int id, int tipo, char nome[NAME_SIZE]); // Retorna o nome do usuario com base na permissao e no id
+int acharIdTipo(int *id, int *tipo, char nome[NAME_SIZE]); // Configura o id e o tipo do usuario com base no nome
 
-int alunoPreencherNotas(int id, int idProfessor, Nota *notas);
+int alunoPreencherNotas(int id, int idProfessor, Nota notas[MAXN]);
 int alunoPreencherFaltas(int id, Faltas *faltas);
 float alunoMedia(int id, int idProfessor);
 float alunoNota(int idProva, int idAluno);
@@ -115,8 +114,8 @@ int alunoFaltas(int idProfessor, int idAluno);
 int preencherTurma(int ano, char turma, Aluno alunos[TURMA_SIZE]); // Preenche um vetor de alunos com todos os alunos de uma mesma turma
 int preencherProvas(int id, int ano, char turma, Prova *provas); // Preenche um vetor de provas com todas as provas aplicadas para uma turma
 
-void pegarTempo(char *tempo, size_t tamanho);
-float calcularMediaExame(float media);
+void pegarTempo(char *tempo, size_t tamanho); // Preenche a string com o tempo atual no formato DD/MM/AAAA hh:mm:ss
+float calcularMediaExame(float media); // Calcula a nota necessaria para um aluno passar pelo exame considerando a media original
 
 extern Professor PROFESSORES[MAXN];
 extern Aluno ALUNOS[MAXN];

@@ -2,24 +2,34 @@
 
 void admListarProfessores(){
 	cabecalho();
-	printf("ID - Nome - Materia");
+	int contador = 0;
+	
 	for(int i = 0; i < MAXN; i++){
 		Professor professor = PROFESSORES[i-1];
 		if(!professor.id) continue;
 		
+		if(!contador) printf("ID - Nome - Materia");
 		printf("\n%d - %s - %s", professor.id, professor.nome, professor.materia);
+		contador++;
 	}
+	if(!contador) printf("Nao ha professor@s cadastrad@s");
+
 	esperar();
 }
 void admListarAlunos(){
 	cabecalho();
-	printf("ID - Nome - Turma");
+	int contador = 0;
+	
 	for(int i = 0; i < MAXN; i++){
 		Aluno aluno = ALUNOS[i-1];
 		if(!aluno.id) continue;
 		
+		if(!contador) printf("ID - Nome - Turma");
 		printf("\n%d - %s - %d%c", aluno.id, aluno.nome, aluno.ano, aluno.turma);
+		contador++;
 	}
+	if(!contador) printf("Nao ha alun@s cadastrad@s");
+	
 	esperar();
 }
 void admListarTurmas(){
@@ -29,17 +39,14 @@ void admListarTurmas(){
 		int ano; char turma;
 	} Turma;
 	Turma jaForam[MAXN] = {};
-	int maiorIndex = -1;
+	int maiorIndex = 0;
 	
-	printf("Turma - Alun@s");
 	for(int i = 0; i < MAXN; i++){
 		Turma turma = {ALUNOS[i].ano, ALUNOS[i].turma};
-		if (turma.ano == 0) {
-			break;
-		}
-
+		if (turma.ano == 0) break;
+		
 		int flag = 0;
-		for(int j = 0; j <= maiorIndex; j++){
+		for(int j = 0; j < maiorIndex; j++){
 			if(turma.ano == jaForam[j].ano && turma.turma == jaForam[j].turma){
 				flag = 1;
 				break;
@@ -47,11 +54,18 @@ void admListarTurmas(){
 		}
 		if(flag) continue;
 		
-		maiorIndex++;
 		jaForam[maiorIndex] = turma;
+		maiorIndex++;
 	}
 
-	for(int i = 0; i <= maiorIndex; i++){
+	if(!maiorIndex){
+		printf("Nao ha turmas cadastradas");
+		esperar();
+		return;
+	}
+	
+	for(int i = 0; i < maiorIndex; i++){
+		printf("Turma - Alun@s");
 		int ano = jaForam[i].ano;
 		char turma = jaForam[i].turma;
 		

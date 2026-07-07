@@ -14,26 +14,30 @@ void professorListarTurmas(int id){
     for(int i = 0; i < MAXN; i++){
 		int flag = 1;
 		Aluno aluno = ALUNOS[i];
-		for(int j = 0; j < maxIndex; j++){ // percorre o array de turmas vendo se ja existe a struct da turma do aluno
+		for(int j = 0; j < maxIndex; j++){
 			if(aluno.ano == turmas[j].ano && aluno.turma == turmas[j].turma){
-				int mediaAluno = alunoMedia(aluno.id, id);
+				float mediaAluno = alunoMedia(aluno.id, id);
 				if (mediaAluno != -1) {
+					printf("Somado %f: ", mediaAluno);
 					turmas[j].soma += mediaAluno;
 					turmas[j].contador++;
+					printf("%f\n", turmas[j].soma);
 				}
 				flag = 0;
 			}
 		}
 		if(!flag) continue;
         
-		Turma aux = {aluno.ano, aluno.turma, 0, 0};
-		int mediaAluno = alunoMedia(aluno.id, id);
+		
+		float mediaAluno = alunoMedia(aluno.id, id);
         if(mediaAluno != -1){
+			printf("Turma iniciada com nota %f", mediaAluno);
+			Turma aux = {aluno.ano, aluno.turma, 0, 0};
+			turmas[maxIndex] = aux;
 			turmas[maxIndex].soma += mediaAluno;
 			turmas[maxIndex].contador++;
+			maxIndex++;
 		}
-		turmas[maxIndex] = aux;
-		maxIndex++;
     }
 	
 	cabecalho();
@@ -149,75 +153,69 @@ void professorTabelaDeNotas(int id, int final){
 	}
 	
 	char s[NAME_SIZE] = "Nome";
-	padString(s, NAME_SIZE);
+	padString(s, NAME_SIZE, 'd');
 	printf("\n| %s |", s);
 	if(salvar) fprintf(arquivo, "\n| %s |", s);
 	
 	if (final){
-		strcpy(s, "Media");
-		padString(s, NAME_SIZE);
-		printf(" %s |", s);
+		printf(" Media |", s);
 		if(salvar) fprintf(arquivo, " %s |", s);
 	} else {
 		for(int i = 0; i < tamanhoP; i++){
 			char c[NAME_SIZE];
 			strcpy(c, provas[i].nome);
-			padString(c, NAME_SIZE);
+			padString(c, NAME_SIZE, 'c');
 			printf(" %s |", c);
 			if(salvar) fprintf(arquivo, " %s |", c);
 		}
 	}
 
-	strcpy(s, "Faltas");
-	padString(s, NAME_SIZE);
-	printf(" %s |", s);
+	printf(" Faltas |", s);
 	if(salvar) fprintf(arquivo, " %s |", s);
 
 	if (final) {
 		strcpy(s, "Resultado");
-		padString(s, NAME_SIZE);
+		padString(s, NAME_SIZE, 'c');
 		printf(" %s |", s);
 		if(salvar) fprintf(arquivo, " %s |", s);
 	
-		strcpy(s, "Nota Exame");
-		padString(s, NAME_SIZE);
+		strcpy(s, "Nota Minima No Exame");
+		padString(s, NAME_SIZE, 'c');
 		printf(" %s |", s);
 		if(salvar) fprintf(arquivo, " %s |", s);
 	}
 	
 	for(int i = 0; i < tamanhoA; i++){
 		char n[NAME_SIZE];
-		float media = 0;
+		float media = alunoMedia(alunos[i].id, id);
 
 		strcpy(n, alunos[i].nome);
-		padString(n, NAME_SIZE);
+		padString(n, NAME_SIZE, 'd');
 		printf("\n| %s |", n);
 		if(salvar) fprintf(arquivo, "\n| %s |", n);
 		
 		char c[(NAME_SIZE+3)*tamanhoP];
 		strcpy(c, "");
 		
-		for(int j = 0; j < tamanhoP; j++){
-			char aux[NAME_SIZE];
-			float notaProva = alunoNota(provas[j].id, alunos[i].id);
-			media += notaProva;
+		if (!final) {
+			for(int j = 0; j < tamanhoP; j++){
+				char aux[NAME_SIZE];
+				float notaProva = alunoNota(provas[j].id, alunos[i].id);
 
-			if (!final) {
 				sprintf(aux, "%.1f", notaProva);
-				padString(aux, NAME_SIZE);
+				padString(aux, NAME_SIZE, 'c');
 				
 				sprintf(c+strlen(c), " %s |", aux);
 			}
 		}
+		
 		printf("%s", c);
 		if(salvar) fprintf(arquivo, "%s", c);
-
-		media /= tamanhoP;
 		
 		if (final) {
 			strcpy(n, "");
 			sprintf(n, "%.1f", media);
-			padString(n, NAME_SIZE);
+			padString(n, 6, 'c');
 			printf(" %s |", n);
 			if(salvar) fprintf(arquivo, " %s |", n);
 		}
@@ -226,7 +224,7 @@ void professorTabelaDeNotas(int id, int final){
 
 		strcpy(n, "");
 		sprintf(n, "%d", faltas);
-		padString(n, NAME_SIZE);
+		padString(n, 7, 'c');
 		printf(" %s |", n);
 		if(salvar) fprintf(arquivo, " %s |", n);
 
@@ -243,7 +241,7 @@ void professorTabelaDeNotas(int id, int final){
 			} else {
 				sprintf(n, "APROVAD@");
 			}
-			padString(n, NAME_SIZE);
+			padString(n, NAME_SIZE, 'c');
 			printf(" %s |", n);
 			if(salvar) fprintf(arquivo, " %s |", n);
 	
@@ -254,7 +252,7 @@ void professorTabelaDeNotas(int id, int final){
 				sprintf(n, " - ");
 			}
 			
-			padString(n, NAME_SIZE);
+			padString(n, NAME_SIZE, 'c');
 			printf(" %s |", n);
 			if(salvar) fprintf(arquivo, " %s |", n);
 		}
@@ -499,16 +497,16 @@ void mostrarMenuProfessor(){
 	do {
 		cabecalho();
 		printf("Bem-vind@, %s, o que voce quer fazer hoje?\n", PROFESSORES[SESSION_ID - 1].nome);
-		printf("0 - Sair\n");
-		printf("1 - Ver turmas\n");
-		printf("2 - Ver provas\n");
-		printf("3 - Cadastrar prova\n");
-		printf("4 - Editar notas em massa\n");
-		printf("5 - Editar notas de um(a) unic@ alun@\n");
-		printf("6 - Incrementar faltas de um(a) alun@\n");
-		printf("7 - Excluir prova\n");
-		printf("8 - Gerar tabela de nota das provas\n");
-		printf("9 - Gerar tabela de nota final\n");
+		printf(" 0 - Sair\n");
+		printf(" 1 - Ver turmas\n");
+		printf(" 2 - Ver provas\n");
+		printf(" 3 - Cadastrar prova\n");
+		printf(" 4 - Editar notas em massa\n");
+		printf(" 5 - Editar notas de um(a) unic@ alun@\n");
+		printf(" 6 - Incrementar faltas de um(a) alun@\n");
+		printf(" 7 - Excluir prova\n");
+		printf(" 8 - Gerar tabela de nota das provas\n");
+		printf(" 9 - Gerar tabela de nota final\n");
 		printf("10 - Alterar senha\n");
 		
 		opcao = digitaOpcao(0, 10);
