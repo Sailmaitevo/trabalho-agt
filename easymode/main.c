@@ -626,6 +626,7 @@ int main() {
         break;
       case 7:
         sair();
+        sobrescreverDatabase();
         return 0;
       case 8:
         limparDatabase();
