@@ -83,7 +83,7 @@ void deletarAdmin(int id);
 // Função para zerar todas as notas de uma prova
 // Se delete for verdadeiro, procura as notas da prova passada e exclui
 // Se delete for falso, coloca uma nota 0 para cada aluno da turma
-void zerarNotas(int id, int delete);
+void zerarNotas(int id);
 void editarNota(int idProva, int idAluno, float nota);
 
 // Função para incrementar (ou decrementar) o número de faltas de um aluno

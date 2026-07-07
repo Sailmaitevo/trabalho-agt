@@ -175,8 +175,8 @@ void zerarNotas(int idProva){
 
     // Passa por todos os alunos da turma, pra cada aluno vai até o próximo index vazio e adiciona
 
-	Alunos alunos[TURMA_SIZE] = {};
-	int tamanho = preencherTurma(prova.ano, prova.turma, provas);
+	Aluno alunos[TURMA_SIZE] = {};
+	int tamanho = preencherTurma(prova.ano, prova.turma, alunos);
 
 	for(int i = 0; i < tamanho; i++){
 		if(ultimoVazio == MAXN) flag = 1;
