@@ -274,6 +274,11 @@ void removerItem() {
         strcpy(estudantes[i], estudantes[i + 1]);
         escores[i] = escores[i + 1];
       }
+      for (int i = 0; i < dadosQuantia; i++) {
+        if (dados[i][0] > index) {
+          dados[i][0]--;
+        }
+      }
       estudanteQuantia--;
       printf("Estudante removido com sucesso!\n");
     }
@@ -353,7 +358,6 @@ FILE *importarArquivo(char *caminho){
 			printf("Erro fatal: não foi possível criar o arquivo %s", caminho);
 			exit(1);
 		}
-		fprintf(arquivo, "");
 	}
 	fclose(arquivo);
 	
