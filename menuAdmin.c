@@ -31,7 +31,7 @@ void admListarTurmas(){
 	Turma jaForam[MAXN] = {};
 	int maiorIndex = -1;
 	
-	printf("Turma - Alunos");
+	printf("Turma - Alun@s");
 	for(int i = 0; i < MAXN; i++){
 		Turma turma = {ALUNOS[i].ano, ALUNOS[i].turma};
 		if (turma.ano == 0) {
@@ -70,8 +70,9 @@ void admCadastrar(){
 	if(!permissao) return;
 	
 	char nome[NAME_SIZE];
-	printf("Digite o nome (ate %d caracteres): ", NAME_SIZE - 1);
+	printf("Digite o nome (ate %d caracteres, 0 volta): ", NAME_SIZE - 1);
 	digitaNomeValido(nome, 0);
+	if(!strcmp(nome, "0")) return;
 	
 	char senhaPadrao[PASS_SIZE] = "123456";
 	switch(permissao){
@@ -86,15 +87,15 @@ void admCadastrar(){
 			esperar();
 			break;
 		case 2:
-			printf("Digite a materia d@ professor@ (3 caracteres):");
+			printf("Digite a materia d@ professor(a) (3 caracteres):");
 			digitaMateriaValida(materia);
 			id = cadastrarProfessor(nome, senhaPadrao, materia);
-			printf("Professor@ %s criado com sucesso para a materia %s com o id %d\nA senha padrao e 123456", nome, materia, id);
+			printf("Professor(a) %s criad@ com sucesso para a materia %s com o id %d\nA senha padrao e 123456", nome, materia, id);
 			esperar();
 			break;
 		case 3:
 			id = cadastrarAdmin(nome, senhaPadrao);
-			printf("Admin %s criado com sucesso com o id %d\nA senha padrao e 123456", nome, id);
+			printf("Admin %s criad@ com sucesso com o id %d\nA senha padrao e 123456", nome, id);
 			esperar();
 			break;
 	}
@@ -121,28 +122,32 @@ void admDeletar(){
 	}
 	acharNome(id, tipo, nome);
 
-	if (tipo == TIPO_ADMIN && (id == 1 || id == SESSION_ID)) {
+	if (tipo == TIPO_ADMIN && SESSION_ID != 1) {
 		if (id == 1) {
-			printf("Nao eh possivel deletar o admin inicial.");
-		} else {
+			printf("Nao eh possivel deletar @ admin inicial.");
+		} else if (id == SESSION_ID) {
 			printf("Voce nao pode se deletar.");
-		} 
+		} else {
+			printf("Apenas @ admin principal pode deletar outr@ admin");
+		}
+	} else if(tipo == TIPO_ADMIN && id == SESSION_ID){
+		printf("Voce nao pode se deletar");
 	} else {
-		printf("Voce esta prestes a deletar %s, tem certeza?\nDigite S para confirmar: ", nome);
+		printf("Voce esta prestes a deletar @ %s %s, tem certeza?\nDigite S para confirmar: ", tipo == TIPO_ADMIN ? "admin" : (tipo == TIPO_ALUNO ? "alun@" : "professor(a)"), nome);
 	
 		if (inputSimNao()) {
 			switch (tipo) {
 				case TIPO_ALUNO:
 					deletarAluno(id);
-					printf("Aluno@ deletad@ com sucesso");
+					printf("Alun@ deletad@ com sucesso");
 					break;
 				case TIPO_ADMIN:
 					deletarAdmin(id);
-					printf("Admin deletado com sucesso");
+					printf("Admin deletad@ com sucesso");
 					break;
 				case TIPO_PROF:
 					deletarProfessor(id);
-					printf("Professor deletado com sucesso");
+					printf("Professor(a) deletad@ com sucesso");
 					break;
 			}
 		} else {
@@ -153,7 +158,7 @@ void admDeletar(){
 }
 void admEditar(){
 	cabecalho();
-	printf("Digite o nome do usuario (0 para voltar):");
+	printf("Digite o nome de usuari@ (0 para voltar):");
 	int valido = 0;
 	char nome[NAME_SIZE];
 	int id;
@@ -207,7 +212,7 @@ void admEditar(){
 				}
 				
 				ALUNOS[id-1] = aluno;
-				printf("Aluno alterado com sucesso");
+				printf("Alun@ alterad@ com sucesso");
 				break;
 			case TIPO_PROF:
 				cabecalho();
@@ -236,7 +241,7 @@ void admEditar(){
 				}
 				
 				PROFESSORES[id-1] = professor;
-				printf("Professor alterado com sucesso");
+				printf("Professor(a) alterad@ com sucesso");
 				break;
 			case TIPO_ADMIN:
 				if (SESSION_ID == id) {
@@ -247,7 +252,7 @@ void admEditar(){
 					digitaNomeValido(nomeNovo, 1);
 
 					strcpy(ADMINS[id - 1].nome, nomeNovo);
-					printf("Admin alterado com sucesso");
+					printf("Nome alterado com sucesso");
 				} else {
 					printf("Voce nao pode modificar outros admins");
 				}
@@ -259,10 +264,10 @@ void admEditar(){
 
 int admPedirNivelDePermissao(int admin){
 	cabecalho();
-	printf("Qual o nivel de permissao do usuario?\n");
+	printf("Qual o nivel de permissao d@ usuari@?\n");
 	printf("0 - Voltar\n");
-	printf("1 - Aluno\n");
-	printf("2 - Professor\n");
+	printf("1 - Alun@\n");
+	printf("2 - Professor(a)\n");
 	if(admin) printf("3 - Admin");
 
 	mostrarAreaInput();
@@ -283,14 +288,14 @@ void mostrarMenuAdmin(){
 	
 	do {
 		cabecalho();
-		printf("Bem-vindo, %s. O que voce quer fazer hoje?\n", usuario.nome);
+		printf("Bem-vind@, %s. O que voce quer fazer hoje?\n", usuario.nome);
 		printf("0 - Sair\n");
-		printf("1 - Ver professores\n");
-		printf("2 - Ver alunos\n");
+		printf("1 - Ver professor@s\n");
+		printf("2 - Ver alun@s\n");
 		printf("3 - Ver turmas\n");
-		printf("4 - Cadastrar usuario\n");
-		printf("5 - Deletar usuario\n");
-		printf("6 - Editar dados de um usuario\n");
+		printf("4 - Cadastrar usuari@\n");
+		printf("5 - Deletar usuari@\n");
+		printf("6 - Editar dados de um(a) usuari@\n");
 		printf("7 - Alterar senha");
 		
 		opcao = digitaOpcao(0, 7);

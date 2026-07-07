@@ -17,7 +17,7 @@ FILE *importarArquivo(char *caminho, char *padrao){
 			printf("Erro fatal: não foi possível criar o arquivo %s", caminho);
 			exit(EXIT_FAILURE);
 		}
-		fprintf(arquivo, padrao);
+		fprintf(arquivo, "%s", padrao);
 	}
 	fclose(arquivo);
 	
@@ -29,19 +29,19 @@ void importarDatabase(){
 	FILE *admins = importarArquivo("Database/Admins.csv", "1,Adm,1713679732");
 	char linhaAdmins[NAME_SIZE+19];
 	for(int i = 0; fgets(linhaAdmins, sizeof(linhaAdmins), admins) != NULL; i++){
-		sscanf(linhaAdmins, "%d,%[^,],%u", &ADMINS[i].id, &ADMINS[i].nome, &ADMINS[i].senha);
+		sscanf(linhaAdmins, "%d,%[^,],%u", &ADMINS[i].id, ADMINS[i].nome, &ADMINS[i].senha);
 	}
 	
 	FILE *alunos = importarArquivo("Database/Alunos.csv", "");
 	char linhaAlunos[NAME_SIZE+23];
 	for(int i = 0; fgets(linhaAlunos, sizeof(linhaAlunos), alunos) != NULL; i++){
-		sscanf(linhaAlunos, "%d,%[^,],%u,%d,%c", &ALUNOS[i].id, &ALUNOS[i].nome, &ALUNOS[i].senha, &ALUNOS[i].ano, &ALUNOS[i].turma);
+		sscanf(linhaAlunos, "%d,%[^,],%u,%d,%c", &ALUNOS[i].id, ALUNOS[i].nome, &ALUNOS[i].senha, &ALUNOS[i].ano, &ALUNOS[i].turma);
 	}
 	
 	FILE *professores = importarArquivo("Database/Professores.csv", "");
 	char linhaProfessores[NAME_SIZE+24];
 	for(int i = 0; fgets(linhaProfessores, sizeof(linhaProfessores), professores) != NULL; i++){
-		sscanf(linhaProfessores, "%d,%[^,],%u,%s", &PROFESSORES[i].id, &PROFESSORES[i].nome, &PROFESSORES[i].senha, &PROFESSORES[i].materia);
+		sscanf(linhaProfessores, "%d,%[^,],%u,%s", &PROFESSORES[i].id, PROFESSORES[i].nome, &PROFESSORES[i].senha, PROFESSORES[i].materia);
 	}
 	
 	FILE *provas = importarArquivo("Database/Provas.csv", "");
@@ -54,7 +54,8 @@ void importarDatabase(){
 	char linhaNotas[26];
 	for(int i = 0; fgets(linhaNotas, sizeof(linhaNotas), notas) != NULL; i++){
 		sscanf(linhaNotas, "%d,%d,%f", &NOTAS[i].idProva, &NOTAS[i].idAluno, &NOTAS[i].nota);
-		NOTAS[i].nota = roundf(NOTAS[i].nota * 10.0)/10.0;
+		int aux = (int) NOTAS[i].nota * 10;
+		NOTAS[i].nota = (aux + (NOTAS[i].nota * 10 - aux >= 5 ? 1 : 0)) / 10.f;
 	}
 	
 	FILE *faltas = importarArquivo("Database/Faltas.csv", "");
@@ -274,10 +275,6 @@ void deletarProva(int id){
     PROVAS[id-1] = prova;
 }
 void deletarAdmin(int id){
-	if(id == 1){
-		printf("Não é possível remover o usário administrador principal");
-		return;
-	}
 	Admin admin = {0, "", 0};
     ADMINS[id-1] = admin;
 }
@@ -316,15 +313,15 @@ int buscarAluno(char nome[NAME_SIZE], int capitalizacaoImporta){
 }
 int buscarAdmin(char nome[NAME_SIZE], int capitalizacaoImporta){
     for(int i = 0; i < MAXN; i++){
-				if(ALUNOS[i].id != 0 && compararNomes(ADMINS[i].nome, nome, capitalizacaoImporta)) {
+		if(ADMINS[i].id != 0 && compararNomes(ADMINS[i].nome, nome, capitalizacaoImporta)) {
 					return i + 1;
 				}
     }
     return 0;
 }
-int buscarProva(char nome[NAME_SIZE], int ano, char turma){	
+int buscarProva(char nome[NAME_SIZE], int ano, char turma, int idProfessor){	
 	for(int i = 0; i < MAXN; i++){
-		if(!strcmp(PROVAS[i].nome, nome) && PROVAS[i].ano == ano && PROVAS[i].turma == turma) return i+1;
+		if(!strcmp(PROVAS[i].nome, nome) && PROVAS[i].ano == ano && PROVAS[i].turma == turma && PROVAS[i].idProfessor == idProfessor) return i+1;
 	}
 	return 0;
 }
@@ -477,14 +474,13 @@ int preencherTurma(int ano, char turma, Aluno alunos[TURMA_SIZE]){
 }
 
 int acharIdTipo(int *id, int *tipo, char nome[NAME_SIZE]) {
-	int novoId = *id;
-	int novoTipo;
+	int novoTipo, novoId;
 	novoId = buscarAluno(nome, 0);
-	if (novoId == 0) {
+	if (!novoId) {
 		novoId = buscarProfessor(nome, 0);
-		if (novoId == 0) {
+		if (!novoId) {
 			novoId = buscarAdmin(nome, 0);
-			if (novoId == 0) {
+			if (!novoId) {
 				return 0;
 			} else {
 				novoTipo = TIPO_ADMIN;
@@ -499,4 +495,21 @@ int acharIdTipo(int *id, int *tipo, char nome[NAME_SIZE]) {
 	*tipo = novoTipo;
 
 	return 1;
+}
+
+void pegarTempo(char *buffer, size_t tamanho){
+	time_t tempo_atual;
+    struct tm *info_tempo;
+
+    // Obtém o tempo atual
+    time(&tempo_atual);
+
+    // Converte para o horário local
+    info_tempo = localtime(&tempo_atual);
+
+    // Formata a saída (Dia/Mês/Ano Hora:Minuto:Segundo)
+    strftime(buffer, tamanho, "%d/%m/%Y %H:%M:%S", info_tempo);
+}
+float calcularMediaExame(float media) {
+  return (EXAME_MIN*(PESO_EXAME+PESO_MEDIA) - PESO_MEDIA*media) / PESO_EXAME;
 }
