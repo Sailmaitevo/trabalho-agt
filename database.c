@@ -147,7 +147,7 @@ int cadastrarProva(char nome[NAME_SIZE], int idProfessor, int ano, char turma){
 			Prova prova = {i+1, "", idProfessor, ano, turma};
 			strcpy(prova.nome, nome);
             PROVAS[i] = prova;
-            zerarNotas(i+1, 0);
+            zerarNotas(i+1);
             return i+1;
         }
     }
@@ -168,7 +168,7 @@ int cadastrarAdmin(char nome[NAME_SIZE], char senha[PASS_SIZE]){
     sobrescreverDatabase();
 }
 
-void zerarNotas(int idProva, int delete){
+void zerarNotas(int idProva){
     Prova prova = PROVAS[idProva-1];
     int ultimoIndex = 0;
 
